@@ -6,16 +6,16 @@
 
 namespace cppy {
 
-	class str {
+	class PyStr {
 	private:
 		std::string m_str;
 
 	public:
-		str() = default;
-		explicit str(const char* chars);
-		explicit str(const std::string& s);
-		explicit str(int i);
-		explicit str(double d, int precision = 15);
+		PyStr() = default;
+		explicit PyStr(const char* chars);
+		explicit PyStr(const std::string& s);
+		explicit PyStr(int i);
+		explicit PyStr(double d, int precision = 15);
 
 		std::string toString() const;
 
@@ -55,13 +55,14 @@ namespace cppy {
 		*
 		*  If chars is given and not None, remove characters in chars instead.
 		*/
-		str strip(const signed char& ch = -1) const;
+		PyStr strip(const signed char& ch = -1) const;
+		PyStr strip(const std::string& ch) const;
 
 		/* slice(start, stop[, step])
 		*
 		*  sub-string from the given string by slicing it respectively from start to end.
 		*/
-		str slice(int start, int stop, int step = 1) const;
+		PyStr slice(int start, int stop, int step = 1) const;
 
 		/* Return a list of the substrings in the string, using sep as the separator string.
 		*
@@ -79,7 +80,7 @@ namespace cppy {
 		*  delimited.  With natural text that includes punctuation, consider using
 		*  the regular expression module.
 		*/
-		std::vector<str> split(const std::string& sep = " ") const;
+		std::vector<PyStr> split(const std::string& sep = " ") const;
 
 		/* Return a copy with all occurrences of substring old replaced by new.
 		*
@@ -88,20 +89,23 @@ namespace cppy {
 		*
 		*  If the optional argument count is given, only the first count occurrences are replaced.
 		*/
-		str replace(const std::string& old_str, const std::string& new_str) const;
+		PyStr replace(const std::string& old_str, const std::string& new_str, int count = -1) const;
 
 		/* Return a copy of the string converted to lowercase.
 		*/
-		str lower() const;
+		PyStr lower() const;
 
 		/* Return a copy of the string converted to uppercase.
 		*/
-		str upper() const;
+		PyStr upper() const;
 
 		bool contains(const std::string& other) const;
 
+		char at(int index) const;
 		char operator[](int index) const;
-		bool operator==(const str& that) const;
+
+		bool equal(const std::string& other) const;
+		bool operator==(const std::string& other) const;
 	};
 } // namespace cppy
 #endif // CPPY_STR_H
