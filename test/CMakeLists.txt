@@ -9,7 +9,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-aux_source_directory(${WORKSPACE}/test SRC_LIST)
+aux_source_directory(${WORKSPACE}/test TESTCPPY_SRC_LIST)
 
 include_directories(${WORKSPACE}/include)
 
@@ -20,8 +20,9 @@ message(STATUS "find library cppy path: ${CPPY_LIB} ${WORKSPACE}/out")
 set(EXECUTABLE_OUTPUT_PATH ${WORKSPACE}/out)
 
 enable_testing()
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_executable(${PROJECT_NAME} ${TESTCPPY_SRC_LIST})
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main cppy)
+# target_compile_definitions(${PROJECT_NAME} PRIVATE "CPPY_LINKED_AS_SHARED_LIBRARY")
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})

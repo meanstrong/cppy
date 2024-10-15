@@ -6,17 +6,17 @@
 #include "cppy/str.h"
 
 
-PyException CPPY_STR_init(const char* chars, std::string* const result) {
+CPPY_API PyException CPPY_STR_init(const char* chars, std::string* const result) {
 	*result = chars;
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_init(int i, std::string* const result) {
+CPPY_API PyException CPPY_STR_init(int i, std::string* const result) {
 	*result = std::to_string(i);
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_init(double d, int precision, std::string* const result) {
+CPPY_API PyException CPPY_STR_init(double d, int precision, std::string* const result) {
 	std::ostringstream ss;
 	std::string nstr{""}, estr{ "" };
 	if ((d > -1.0e15 && d < -1.0e-5) || (d > 1.0e-5 && d < 1.0e15))
@@ -59,20 +59,20 @@ PyException CPPY_STR_init(double d, int precision, std::string* const result) {
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_length(const std::string& str, int* result) {
+CPPY_API PyException CPPY_STR_length(const std::string& str, int* result) {
 	*result = (int)str.size();
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_count(const std::string& str, const std::string& sub, int* const result) {
+CPPY_API PyException CPPY_STR_count(const std::string& str, const std::string& sub, int* const result) {
 	return CPPY_STR_count(str, sub, 0, INT_MAX, result);
 }
 
-PyException CPPY_STR_count(const std::string& str, const std::string& sub, int start, int* const result) {
+CPPY_API PyException CPPY_STR_count(const std::string& str, const std::string& sub, int start, int* const result) {
 	return CPPY_STR_count(str, sub, start, INT_MAX, result);
 }
 
-PyException CPPY_STR_count(const std::string& str, const std::string& sub, int start, int end, int* const result) {
+CPPY_API PyException CPPY_STR_count(const std::string& str, const std::string& sub, int start, int end, int* const result) {
 	*result = 0;
 	int cursor = start;
 
@@ -88,7 +88,7 @@ PyException CPPY_STR_count(const std::string& str, const std::string& sub, int s
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_partition(const std::string& str, const std::string& sep, std::string** const result) {
+CPPY_API PyException CPPY_STR_partition(const std::string& str, const std::string& sep, std::string** const result) {
 	int index = 0;
 	CPPY_STR_find(str, sep, &index);
 	if (index < 0)
@@ -106,7 +106,7 @@ PyException CPPY_STR_partition(const std::string& str, const std::string& sep, s
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_rpartition(const std::string& str, const std::string& sep, std::string** const result) {
+CPPY_API PyException CPPY_STR_rpartition(const std::string& str, const std::string& sep, std::string** const result) {
 	int index = 0;
 	CPPY_STR_rfind(str, sep, &index);
 	if (index < 0)
@@ -124,14 +124,14 @@ PyException CPPY_STR_rpartition(const std::string& str, const std::string& sep, 
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_startswith(const std::string& str, const std::string& prefix, bool* const result)
+CPPY_API PyException CPPY_STR_startswith(const std::string& str, const std::string& prefix, bool* const result)
 {
 	size_t pos = str.rfind(prefix, 0);
 	*result = pos == 0;
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_endswith(const std::string& str, const std::string& suffix, bool* const result)
+CPPY_API PyException CPPY_STR_endswith(const std::string& str, const std::string& suffix, bool* const result)
 {
 	if (suffix.size() > str.size())
 		*result = false;
@@ -142,15 +142,15 @@ PyException CPPY_STR_endswith(const std::string& str, const std::string& suffix,
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_find(const std::string& str, const std::string& sub, int* const result) {
+CPPY_API PyException CPPY_STR_find(const std::string& str, const std::string& sub, int* const result) {
 	return CPPY_STR_find(str, sub, 0, INT_MAX, result);
 }
 
-PyException CPPY_STR_find(const std::string& str, const std::string& sub, int start, int* const result) {
+CPPY_API PyException CPPY_STR_find(const std::string& str, const std::string& sub, int start, int* const result) {
 	return CPPY_STR_find(str, sub, start, INT_MAX, result);
 }
 
-PyException CPPY_STR_find(const std::string& str, const std::string& sub, int start, int end, int* const result)
+CPPY_API PyException CPPY_STR_find(const std::string& str, const std::string& sub, int start, int end, int* const result)
 {
 	int len = (int)str.length();
 
@@ -178,29 +178,29 @@ PyException CPPY_STR_find(const std::string& str, const std::string& sub, int st
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_index(const std::string& str, const std::string& sub, int* const result) {
+CPPY_API PyException CPPY_STR_index(const std::string& str, const std::string& sub, int* const result) {
 	return CPPY_STR_index(str, sub, 0, INT_MAX, result);
 }
 
-PyException CPPY_STR_index(const std::string& str, const std::string& sub, int start, int* const result) {
+CPPY_API PyException CPPY_STR_index(const std::string& str, const std::string& sub, int start, int* const result) {
 	return CPPY_STR_index(str, sub, start, INT_MAX, result);
 }
 
-PyException CPPY_STR_index(const std::string& str, const std::string& sub, int start, int end, int* const result) {
+CPPY_API PyException CPPY_STR_index(const std::string& str, const std::string& sub, int start, int end, int* const result) {
 	CPPY_STR_find(str, sub, start, end, result);
 	if (*result < 0) return PyException::ValueError;
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int* const result) {
+CPPY_API PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int* const result) {
 	return CPPY_STR_rfind(str, sub, 0, INT_MAX, result);
 }
 
-PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int start, int* const result) {
+CPPY_API PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int start, int* const result) {
 	return CPPY_STR_rfind(str, sub, start, INT_MAX, result);
 }
 
-PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int start, int end, int* const result)
+CPPY_API PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int start, int end, int* const result)
 {
 	int len = (int)str.length();
 
@@ -226,21 +226,21 @@ PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int s
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int* const result) {
+CPPY_API PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int* const result) {
 	return CPPY_STR_rindex(str, sub, 0, INT_MAX, result);
 }
 
-PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int start, int* const result) {
+CPPY_API PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int start, int* const result) {
 	return CPPY_STR_rindex(str, sub, start, INT_MAX, result);
 }
 
-PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int start, int end, int* const result) {
+CPPY_API PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int start, int end, int* const result) {
 	CPPY_STR_rfind(str, sub, start, end, result);
 	if (*result < 0) return PyException::ValueError;
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_strip(const std::string& str, std::string* const result) {
+CPPY_API PyException CPPY_STR_strip(const std::string& str, std::string* const result) {
 	int len = (int)str.length();
 	int i = 0, j = len;
 
@@ -267,7 +267,7 @@ PyException CPPY_STR_strip(const std::string& str, std::string* const result) {
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_strip(const std::string& str, const std::string& ch, std::string* const result) {
+CPPY_API PyException CPPY_STR_strip(const std::string& str, const std::string& ch, std::string* const result) {
 	int chlen = (int)ch.size();
 
 	if (chlen == 0)
@@ -302,11 +302,11 @@ PyException CPPY_STR_strip(const std::string& str, const std::string& ch, std::s
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_slice(const std::string& str, int start, int stop, std::string* const result) {
+CPPY_API PyException CPPY_STR_slice(const std::string& str, int start, int stop, std::string* const result) {
 	return CPPY_STR_slice(str, start, stop, 1, result);
 }
 
-PyException CPPY_STR_slice(const std::string& str, int start, int stop, int step, std::string* const result)
+CPPY_API PyException CPPY_STR_slice(const std::string& str, int start, int stop, int step, std::string* const result)
 {
 	int len = (int)str.length();
 
@@ -326,7 +326,7 @@ PyException CPPY_STR_slice(const std::string& str, int start, int stop, int step
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_join(const std::string& str, int n_iterables, const std::string iterable[], std::string* const result) {
+CPPY_API PyException CPPY_STR_join(const std::string& str, int n_iterables, const std::string iterable[], std::string* const result) {
 	if (n_iterables <= 0) {
 		*result = "";
 		return PyException::Ok;
@@ -344,11 +344,11 @@ PyException CPPY_STR_join(const std::string& str, int n_iterables, const std::st
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result) {
+CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result) {
 	return CPPY_STR_split(str, INT_MAX, result);
 }
 
-PyException CPPY_STR_split(const std::string& str, int maxsplit, std::vector<std::string>* const result) {
+CPPY_API PyException CPPY_STR_split(const std::string& str, int maxsplit, std::vector<std::string>* const result) {
 	if (maxsplit < 0) maxsplit = INT_MAX;
 	std::string::size_type i, j, len = str.size();
 	for (i = j = 0; i < len; )
@@ -378,11 +378,11 @@ PyException CPPY_STR_split(const std::string& str, int maxsplit, std::vector<std
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_split(const std::string& str, const std::string& sep, std::vector<std::string>* const result) {
+CPPY_API PyException CPPY_STR_split(const std::string& str, const std::string& sep, std::vector<std::string>* const result) {
 	return CPPY_STR_split(str, sep, INT_MAX, result);
 }
 
-PyException CPPY_STR_split(const std::string& str, const std::string& sep, int maxsplit, std::vector<std::string>* const result)
+CPPY_API PyException CPPY_STR_split(const std::string& str, const std::string& sep, int maxsplit, std::vector<std::string>* const result)
 {
 	if (maxsplit < 0) maxsplit = INT_MAX;
 
@@ -416,11 +416,11 @@ PyException CPPY_STR_split(const std::string& str, const std::string& sep, int m
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_replace(const std::string& str, const std::string& old_str, const std::string& new_str, std::string* const result) {
+CPPY_API PyException CPPY_STR_replace(const std::string& str, const std::string& old_str, const std::string& new_str, std::string* const result) {
 	return CPPY_STR_replace(str, old_str, new_str, INT_MAX, result);
 }
 
-PyException CPPY_STR_replace(const std::string& str, const std::string& old_str, const std::string& new_str, int count, std::string* const result) {
+CPPY_API PyException CPPY_STR_replace(const std::string& str, const std::string& old_str, const std::string& new_str, int count, std::string* const result) {
 	*result = str;
 	std::string::size_type start_pos = 0;
 	if (count < 0) count = INT_MAX;
@@ -432,7 +432,7 @@ PyException CPPY_STR_replace(const std::string& str, const std::string& old_str,
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_lower(const std::string& str, std::string* const result) {
+CPPY_API PyException CPPY_STR_lower(const std::string& str, std::string* const result) {
 	*result = str;
 	std::string::size_type len = str.size(), i;
 
@@ -444,7 +444,7 @@ PyException CPPY_STR_lower(const std::string& str, std::string* const result) {
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_upper(const std::string& str, std::string* const result) {
+CPPY_API PyException CPPY_STR_upper(const std::string& str, std::string* const result) {
 	*result = str;
 	std::string::size_type len = str.size(), i;
 
@@ -456,7 +456,7 @@ PyException CPPY_STR_upper(const std::string& str, std::string* const result) {
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_swapcase(const std::string& str, std::string* const result) {
+CPPY_API PyException CPPY_STR_swapcase(const std::string& str, std::string* const result) {
 	*result = str;
 	std::string::size_type len = str.size(), i;
 
@@ -469,7 +469,7 @@ PyException CPPY_STR_swapcase(const std::string& str, std::string* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_title(const std::string& str, std::string* const result) {
+CPPY_API PyException CPPY_STR_title(const std::string& str, std::string* const result) {
 	*result = str;
 	std::string::size_type len = str.size(), i;
 	bool previous_is_cased = false;
@@ -502,11 +502,11 @@ PyException CPPY_STR_title(const std::string& str, std::string* const result) {
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_expandtabs(const std::string& str, std::string* const result) {
+CPPY_API PyException CPPY_STR_expandtabs(const std::string& str, std::string* const result) {
 	return CPPY_STR_expandtabs(str, 8, result);
 }
 
-PyException CPPY_STR_expandtabs(const std::string& str, int tabsize, std::string* const result) {
+CPPY_API PyException CPPY_STR_expandtabs(const std::string& str, int tabsize, std::string* const result) {
 	*result = str;
 
 	std::string::size_type len = str.size(), i = 0;
@@ -544,11 +544,11 @@ PyException CPPY_STR_expandtabs(const std::string& str, int tabsize, std::string
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_splitlines(const std::string& str, std::vector<std::string>* const result) {
+CPPY_API PyException CPPY_STR_splitlines(const std::string& str, std::vector<std::string>* const result) {
 	return CPPY_STR_splitlines(str, false, result);
 }
 
-PyException CPPY_STR_splitlines(const std::string& str, bool keepends, std::vector<std::string>* const result) {
+CPPY_API PyException CPPY_STR_splitlines(const std::string& str, bool keepends, std::vector<std::string>* const result) {
 	std::string::size_type len = str.size(), i, j, eol;
 
 	for (i = j = 0; i < len; )
@@ -583,7 +583,7 @@ PyException CPPY_STR_splitlines(const std::string& str, bool keepends, std::vect
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_removeprefix(const std::string& str, const std::string& prefix, std::string* const result) {
+CPPY_API PyException CPPY_STR_removeprefix(const std::string& str, const std::string& prefix, std::string* const result) {
 	bool whether;
 	CPPY_STR_startswith(str, prefix, &whether);
 	if (whether)
@@ -597,7 +597,7 @@ PyException CPPY_STR_removeprefix(const std::string& str, const std::string& pre
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_removesuffix(const std::string& str, const std::string& suffix, std::string* const result) {
+CPPY_API PyException CPPY_STR_removesuffix(const std::string& str, const std::string& suffix, std::string* const result) {
 	bool whether;
 	CPPY_STR_endswith(str, suffix, &whether);
 	if (whether)
@@ -612,7 +612,7 @@ PyException CPPY_STR_removesuffix(const std::string& str, const std::string& suf
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_zfill(const std::string& str, int width, std::string* const result) {
+CPPY_API PyException CPPY_STR_zfill(const std::string& str, int width, std::string* const result) {
 	int len = (int)str.length();
 	if (len >= width)
 	{
@@ -634,11 +634,11 @@ PyException CPPY_STR_zfill(const std::string& str, int width, std::string* const
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_ljust(const std::string& str, int width, std::string* const result) {
+CPPY_API PyException CPPY_STR_ljust(const std::string& str, int width, std::string* const result) {
 	return CPPY_STR_ljust(str, width, ' ', result);
 }
 
-PyException CPPY_STR_ljust(const std::string& str, int width, char fillchar, std::string* const result) {
+CPPY_API PyException CPPY_STR_ljust(const std::string& str, int width, char fillchar, std::string* const result) {
 	std::string::size_type len = str.size();
 	if (((int)len) >= width) {
 		*result = str;
@@ -650,11 +650,11 @@ PyException CPPY_STR_ljust(const std::string& str, int width, char fillchar, std
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_rjust(const std::string& str, int width, std::string* const result) {
+CPPY_API PyException CPPY_STR_rjust(const std::string& str, int width, std::string* const result) {
 	return CPPY_STR_rjust(str, width, ' ', result);
 }
 
-PyException CPPY_STR_rjust(const std::string& str, int width, char fillchar, std::string* const result) {
+CPPY_API PyException CPPY_STR_rjust(const std::string& str, int width, char fillchar, std::string* const result) {
 	std::string::size_type len = str.size();
 	if (((int)len) >= width) {
 		*result = str;
@@ -666,11 +666,11 @@ PyException CPPY_STR_rjust(const std::string& str, int width, char fillchar, std
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_center(const std::string& str, int width, std::string* const result) {
+CPPY_API PyException CPPY_STR_center(const std::string& str, int width, std::string* const result) {
 	return CPPY_STR_center(str, width, ' ', result);
 }
 
-PyException CPPY_STR_center(const std::string& str, int width, char fillchar, std::string* const result) {
+CPPY_API PyException CPPY_STR_center(const std::string& str, int width, char fillchar, std::string* const result) {
 	int len = (int)str.length();
 	if (len >= width) {
 		*result = str;
@@ -684,7 +684,7 @@ PyException CPPY_STR_center(const std::string& str, int width, char fillchar, st
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_capitalize(const std::string& str, std::string* const result) {
+CPPY_API PyException CPPY_STR_capitalize(const std::string& str, std::string* const result) {
 	*result = str;
 	std::string::size_type len = str.size(), i;
 
@@ -701,7 +701,7 @@ PyException CPPY_STR_capitalize(const std::string& str, std::string* const resul
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_isspace(const std::string& str, bool* const result)
+CPPY_API PyException CPPY_STR_isspace(const std::string& str, bool* const result)
 {
 	std::string::size_type len = str.size(), i;
 	if (len == 0) {
@@ -724,7 +724,7 @@ PyException CPPY_STR_isspace(const std::string& str, bool* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_isalnum(const std::string& str, bool* const result)
+CPPY_API PyException CPPY_STR_isalnum(const std::string& str, bool* const result)
 {
 	std::string::size_type len = str.size(), i;
 	if (len == 0) {
@@ -748,7 +748,7 @@ PyException CPPY_STR_isalnum(const std::string& str, bool* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_isalpha(const std::string& str, bool* const result)
+CPPY_API PyException CPPY_STR_isalpha(const std::string& str, bool* const result)
 {
 	std::string::size_type len = str.size(), i;
 	if (len == 0) {
@@ -771,7 +771,7 @@ PyException CPPY_STR_isalpha(const std::string& str, bool* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_isdigit(const std::string& str, bool* const result)
+CPPY_API PyException CPPY_STR_isdigit(const std::string& str, bool* const result)
 {
 	std::string::size_type len = str.size(), i;
 	if (len == 0) {
@@ -794,7 +794,7 @@ PyException CPPY_STR_isdigit(const std::string& str, bool* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_islower(const std::string& str, bool* const result)
+CPPY_API PyException CPPY_STR_islower(const std::string& str, bool* const result)
 {
 	std::string::size_type len = str.size(), i;
 	if (len == 0) {
@@ -817,7 +817,7 @@ PyException CPPY_STR_islower(const std::string& str, bool* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_isupper(const std::string& str, bool* const result)
+CPPY_API PyException CPPY_STR_isupper(const std::string& str, bool* const result)
 {
 	std::string::size_type len = str.size(), i;
 	if (len == 0) {
@@ -840,7 +840,7 @@ PyException CPPY_STR_isupper(const std::string& str, bool* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_istitle(const std::string& str, bool* const result)
+CPPY_API PyException CPPY_STR_istitle(const std::string& str, bool* const result)
 {
 	std::string::size_type len = str.size(), i;
 
@@ -890,22 +890,22 @@ PyException CPPY_STR_istitle(const std::string& str, bool* const result)
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_contains(const std::string& str, const std::string& other, bool* const result) {
+CPPY_API PyException CPPY_STR_contains(const std::string& str, const std::string& other, bool* const result) {
 	*result = str.find(other) != std::string::npos;
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_at(const std::string& str, int index, char* const result) {
+CPPY_API PyException CPPY_STR_at(const std::string& str, int index, char* const result) {
 	*result = str.at(index >= 0 ? index : index + str.length());
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_equal(const std::string& str, const std::string& other, bool* const result) {
+CPPY_API PyException CPPY_STR_equal(const std::string& str, const std::string& other, bool* const result) {
 	*result = str == other;
 	return PyException::Ok;
 }
 
-PyException CPPY_STR_mul(const std::string& str, int n, std::string* const result) {
+CPPY_API PyException CPPY_STR_mul(const std::string& str, int n, std::string* const result) {
 	if (n <= 0) {
 		*result = "";
 		return PyException::Ok;

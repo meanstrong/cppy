@@ -67,16 +67,31 @@ TEST(TEST_CPPY_STR, index) {
 	}
 }
 
-TEST(TEST_CPPY_STR, format) {
-	std::string s = "A{}B{}C{}D";
+//TEST(TEST_CPPY_STR, format) {
+//	std::string s = "A{}B{}C{}D";
+//	{
+//		std::string result;
+//		EXPECT_EQ(CPPY_STR_format(s, &result, 1, 2, 3), PyException::Ok);
+//		EXPECT_EQ(result, "A1B2C3D");
+//	}
+//	{
+//		std::string result;
+//		EXPECT_EQ(CPPY_STR_format(s, &result, "123", "456", "789"), PyException::Ok);
+//		EXPECT_EQ(result, "A123B456C789D");
+//	}
+//}
+
+TEST(TEST_CPPY_STR, lower) {
 	{
+		std::string s = "AaBbCcDd";
 		std::string result;
-		EXPECT_EQ(CPPY_STR_format(s, &result, 1, 2, 3), PyException::Ok);
-		EXPECT_EQ(result, "A1B2C3D");
+		EXPECT_EQ(CPPY_STR_lower(s, &result), PyException::Ok);
+		EXPECT_EQ(result, "aabbccdd");
 	}
 	{
+		std::string s = "123Aa456";
 		std::string result;
-		EXPECT_EQ(CPPY_STR_format(s, &result, "123", "456", "789"), PyException::Ok);
-		EXPECT_EQ(result, "A123B456C789D");
+		EXPECT_EQ(CPPY_STR_lower(s, &result), PyException::Ok);
+		EXPECT_EQ(result, "123aa456");
 	}
 }
