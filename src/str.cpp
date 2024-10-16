@@ -896,6 +896,11 @@ CPPY_API PyException CPPY_STR_contains(const std::string& str, const std::string
 }
 
 CPPY_API PyException CPPY_STR_at(const std::string& str, int index, char* const result) {
+	int len = (int)str.length();
+	if (index >= len || index < -len)
+	{
+		return PyException::IndexError;
+	}
 	*result = str.at(index >= 0 ? index : index + str.length());
 	return PyException::Ok;
 }

@@ -1,4 +1,4 @@
-#include "cppy/str.h"
+#include "cppy/cppy.h"
 #include <gtest/gtest.h>
 
 TEST(TEST_CPPY_STR, count) {
@@ -93,5 +93,37 @@ TEST(TEST_CPPY_STR, lower) {
 		std::string result;
 		EXPECT_EQ(CPPY_STR_lower(s, &result), PyException::Ok);
 		EXPECT_EQ(result, "123aa456");
+	}
+}
+
+TEST(TEST_CPPY_STR, at) {
+	std::string s = "123";
+	char result;
+	EXPECT_EQ(CPPY_STR_at(s, 0, &result), PyException::Ok);
+	EXPECT_EQ(result, '1');
+	EXPECT_EQ(CPPY_STR_at(s, 2, &result), PyException::Ok);
+	EXPECT_EQ(result, '3');
+	EXPECT_EQ(CPPY_STR_at(s, -2, &result), PyException::Ok);
+	EXPECT_EQ(result, '2');
+	EXPECT_EQ(CPPY_STR_at(s, 3, &result), PyException::IndexError);
+	EXPECT_EQ(CPPY_STR_at(s, -4, &result), PyException::IndexError);
+}
+
+TEST(TEST_CPPY_INT, init) {
+	{
+		std::string s = "123";
+		int result;
+		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::Ok);
+		EXPECT_EQ(result, 123);
+	}
+	{
+		std::string s = "99999999999999999999999999999999";
+		int result;
+		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::ValueError);
+	}
+	{
+		std::string s = "XXX";
+		int result;
+		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::ValueError);
 	}
 }
