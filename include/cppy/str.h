@@ -9,10 +9,10 @@
 #include "cppy/exception.h"
 
 
+/* Create a new string object from the given object.
+*/
 CPPY_API PyException CPPY_STR_init(const char* chars, std::string* const result);
-
 CPPY_API PyException CPPY_STR_init(int i, std::string* const result);
-
 CPPY_API PyException CPPY_STR_init(double d, std::string* const result);
 CPPY_API PyException CPPY_STR_init(double d, int precision, std::string* const result);
 

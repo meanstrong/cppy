@@ -119,11 +119,47 @@ TEST(TEST_CPPY_INT, init) {
 	{
 		std::string s = "99999999999999999999999999999999";
 		int result;
-		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::ValueError);
+		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::OverflowError);
 	}
 	{
 		std::string s = "XXX";
 		int result;
 		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::ValueError);
+	}
+}
+
+TEST(TEST_CPPY_INT, bit_length) {
+	{
+		int x = 37;
+		int result;
+		EXPECT_EQ(CPPY_INT_bit_length(x, &result), PyException::Ok);
+		EXPECT_EQ(result, 6);
+	}
+	{
+		int x = 30665;
+		int result;
+		EXPECT_EQ(CPPY_INT_bit_length(x, &result), PyException::Ok);
+		EXPECT_EQ(result, 15);
+	}
+}
+
+TEST(TEST_CPPY_INT, bit_count) {
+	{
+		int x = 13;
+		int result;
+		EXPECT_EQ(CPPY_INT_bit_count(x, &result), PyException::Ok);
+		EXPECT_EQ(result, 3);
+	}
+	{
+		int x = 37;
+		int result;
+		EXPECT_EQ(CPPY_INT_bit_count(x, &result), PyException::Ok);
+		EXPECT_EQ(result, 3);
+	}
+	{
+		int x = -30665;
+		int result;
+		EXPECT_EQ(CPPY_INT_bit_count(x, &result), PyException::Ok);
+		EXPECT_EQ(result, 10);
 	}
 }

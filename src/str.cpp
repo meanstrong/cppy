@@ -16,6 +16,10 @@ CPPY_API PyException CPPY_STR_init(int i, std::string* const result) {
 	return PyException::Ok;
 }
 
+CPPY_API PyException CPPY_STR_init(double d, std::string* const result) {
+	return CPPY_STR_init(d, 15, result);
+}
+
 CPPY_API PyException CPPY_STR_init(double d, int precision, std::string* const result) {
 	std::ostringstream ss;
 	std::string nstr{""}, estr{ "" };
