@@ -1,5 +1,4 @@
 #include <stdexcept>
-#include <bit>
 
 #include "cppy/int.h"
 
