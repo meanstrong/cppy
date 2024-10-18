@@ -3,6 +3,7 @@
 
 #include "cppy/int.h"
 #include "cppy/str.h"
+#include "cppy/set.h"
 
 
 #endif // CPPY_CPPY_H

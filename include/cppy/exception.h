@@ -8,5 +8,6 @@ enum class PyException : unsigned int
 	ValueError = 1,
 	IndexError = 2,
 	OverflowError = 3,
+	KeyError = 4,
 };
 #endif // CPPY_EXCEPTION_H
