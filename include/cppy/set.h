@@ -237,4 +237,23 @@ PyException CPPY_SET_issuperset(const std::set<T>& this_set, const std::set<T>& 
 	return PyException::Ok;
 }
 
+template <typename T>
+PyException CPPY_SET_equal(const std::set<T>& this_set, const std::set<T>& other_set, bool* const result) {
+	if (this_set.size() != other_set.size())
+	{
+		*result = false;
+		return PyException::Ok;
+	}
+	for (auto it = this_set.begin(); it != this_set.end(); it++)
+	{
+		if (other_set.count(*it) == 0)
+		{
+			*result = false;
+			return PyException::Ok;
+		}
+	}
+	*result = true;
+	return PyException::Ok;
+}
+
 #endif // CPPY_SET_H

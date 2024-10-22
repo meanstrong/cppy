@@ -501,3 +501,27 @@ TEST(TEST_CPPY_SET, symmetric_difference) {
 		EXPECT_EQ(result.size(), 2);
 	}
 }
+
+TEST(TEST_CPPY_SET, equal) {
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{1, 2};
+		bool result;
+		EXPECT_EQ(CPPY_SET_equal(a, b, &result), PyException::Ok);
+		EXPECT_FALSE(result);
+	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{3, 4, 5};
+		bool result;
+		EXPECT_EQ(CPPY_SET_equal(a, b, &result), PyException::Ok);
+		EXPECT_FALSE(result);
+	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{3, 2, 1};
+		bool result;
+		EXPECT_EQ(CPPY_SET_equal(a, b, &result), PyException::Ok);
+		EXPECT_TRUE(result);
+	}
+}
