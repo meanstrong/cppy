@@ -84,10 +84,10 @@ PyException CPPY_SET_intersection(const std::set<T>& this_set, const std::set<T>
 */
 template <typename T>
 PyException CPPY_SET_intersection_update(std::set<T>* const this_set, const std::set<T>& other_set) {
-	std::set<T> intersection_result;
-	std::set_intersection(
-		this_set->begin(), this_set->end(), other_set.begin(), other_set.end(), std::inserter(intersection_result, intersection_result.begin()));
-	for (auto it = intersection_result.begin(); it != intersection_result.end(); ++it) this_set->erase(*it);
+	std::set<T> difference;
+	std::set_difference(
+		this_set->begin(), this_set->end(), other_set.begin(), other_set.end(), std::inserter(difference, difference.begin()));
+	for (auto it = difference.begin(); it != difference.end(); ++it) this_set->erase(*it);
 	return PyException::Ok;
 }
 

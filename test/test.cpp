@@ -238,6 +238,13 @@ TEST(TEST_CPPY_SET, difference) {
 		EXPECT_EQ(CPPY_SET_contains(result, 2, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
 	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{4, 5, 6};
+		std::set<int> result;
+		EXPECT_EQ(CPPY_SET_difference(a, b, &result), PyException::Ok);
+		EXPECT_EQ(result.size(), 3);
+	}
 }
 
 TEST(TEST_CPPY_SET, difference_update) {
@@ -259,6 +266,12 @@ TEST(TEST_CPPY_SET, difference_update) {
 		EXPECT_EQ(CPPY_SET_contains(a, 2, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
 	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{4, 5, 6};
+		EXPECT_EQ(CPPY_SET_difference_update(&a, b), PyException::Ok);
+		EXPECT_EQ(a.size(), 3);
+	}
 }
 
 TEST(TEST_CPPY_SET, intersection) {
@@ -276,6 +289,13 @@ TEST(TEST_CPPY_SET, intersection) {
 		EXPECT_EQ(CPPY_SET_intersection(a, b, &result), PyException::Ok);
 		EXPECT_EQ(result.size(), 1);
 	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{4, 5, 6};
+		std::set<int> result;
+		EXPECT_EQ(CPPY_SET_intersection(a, b, &result), PyException::Ok);
+		EXPECT_EQ(result.size(), 0);
+	}
 }
 
 TEST(TEST_CPPY_SET, intersection_update) {
@@ -283,18 +303,22 @@ TEST(TEST_CPPY_SET, intersection_update) {
 		std::set<int> a{1, 2, 3};
 		std::set<int> b{1, 2, 3};
 		EXPECT_EQ(CPPY_SET_intersection_update(&a, b), PyException::Ok);
-		EXPECT_EQ(a.size(), 0);
+		EXPECT_EQ(a.size(), 3);
 	}
 	{
 		std::set<int> a{1, 2, 3};
 		std::set<int> b{3, 4, 5};
 		EXPECT_EQ(CPPY_SET_intersection_update(&a, b), PyException::Ok);
-		EXPECT_EQ(a.size(), 2);
+		EXPECT_EQ(a.size(), 1);
 		bool is_contain;
-		EXPECT_EQ(CPPY_SET_contains(a, 1, &is_contain), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_contains(a, 3, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
-		EXPECT_EQ(CPPY_SET_contains(a, 2, &is_contain), PyException::Ok);
-		EXPECT_TRUE(is_contain);
+	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{4, 5, 6};
+		EXPECT_EQ(CPPY_SET_intersection_update(&a, b), PyException::Ok);
+		EXPECT_EQ(a.size(), 0);
 	}
 }
 
@@ -304,7 +328,7 @@ TEST(TEST_CPPY_SET, _union) {
 		std::set<int> b{1, 2, 3};
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_union(a, b, &result), PyException::Ok);
-		EXPECT_EQ(a.size(), 3);
+		EXPECT_EQ(result.size(), 3);
 	}
 	{
 		std::set<int> a{1, 2, 3};
@@ -312,6 +336,13 @@ TEST(TEST_CPPY_SET, _union) {
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_union(a, b, &result), PyException::Ok);
 		EXPECT_EQ(result.size(), 5);
+	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{4, 5, 6};
+		std::set<int> result;
+		EXPECT_EQ(CPPY_SET_union(a, b, &result), PyException::Ok);
+		EXPECT_EQ(result.size(), 6);
 	}
 }
 
@@ -327,6 +358,12 @@ TEST(TEST_CPPY_SET, update) {
 		std::set<int> b{3, 4, 5};
 		EXPECT_EQ(CPPY_SET_update(&a, b), PyException::Ok);
 		EXPECT_EQ(a.size(), 5);
+	}
+	{
+		std::set<int> a{1, 2, 3};
+		std::set<int> b{4, 5, 6};
+		EXPECT_EQ(CPPY_SET_update(&a, b), PyException::Ok);
+		EXPECT_EQ(a.size(), 6);
 	}
 }
 
