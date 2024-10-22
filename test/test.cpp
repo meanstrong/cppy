@@ -188,19 +188,25 @@ TEST(TEST_CPPY_SET, init) {
 TEST(TEST_CPPY_SET, add) {
 	{
 		std::set<int> result;
-		EXPECT_EQ(CPPY_SET_add(10, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_add(&result, 10), PyException::Ok);
 		EXPECT_EQ(result.size(), 1);
 	}
 	{
 		std::set<int> result{1, 2};
-		EXPECT_EQ(CPPY_SET_add(10, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_add(&result, 10), PyException::Ok);
 		EXPECT_EQ(result.size(), 3);
 	}
 	{
 		std::set<int> result{1, 2};
-		EXPECT_EQ(CPPY_SET_add(1, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_add(&result, 1), PyException::Ok);
 		EXPECT_EQ(result.size(), 2);
 	}
+}
+
+TEST(TEST_CPPY_SET, clear) {
+	std::set<int> result{1, 2, 3};
+	EXPECT_EQ(CPPY_SET_clear(&result), PyException::Ok);
+	EXPECT_EQ(result.size(), 0);
 }
 
 TEST(TEST_CPPY_SET, copy) {
@@ -364,6 +370,20 @@ TEST(TEST_CPPY_SET, update) {
 		std::set<int> b{4, 5, 6};
 		EXPECT_EQ(CPPY_SET_update(&a, b), PyException::Ok);
 		EXPECT_EQ(a.size(), 6);
+	}
+}
+
+TEST(TEST_CPPY_SET, pop) {
+	{
+		std::set<int> a{1, 2, 3};
+		int result;
+		EXPECT_EQ(CPPY_SET_pop(&a, &result), PyException::Ok);
+		EXPECT_EQ(a.size(), 2);
+	}
+	{
+		std::set<int> a;
+		int result;
+		EXPECT_EQ(CPPY_SET_pop(&a, &result), PyException::KeyError);
 	}
 }
 
