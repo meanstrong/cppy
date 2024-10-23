@@ -3,14 +3,10 @@
 #include "cppy/int.h"
 
 
-CPPY_API PyException CPPY_INT_init(const std::string& str, int* const result) {
-	return CPPY_INT_init(str, 10, result);
-}
-
-CPPY_API PyException CPPY_INT_init(const std::string& str, int base, int* const result) {
+CPPY_API PyException CPPY_INT_init(int* const x, const std::string& str, int base) {
 	try
 	{
-		*result = std::stoi(str, nullptr, base);
+		*x = std::stoi(str, nullptr, base);
 	}
 	catch (const std::invalid_argument&)
 	{

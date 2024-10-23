@@ -10,8 +10,29 @@ TEST(TEST_CPPY_STR, count) {
 	EXPECT_EQ(count, 2);
 	EXPECT_EQ(CPPY_STR_count(s, "AAA", &count), PyException::Ok);
 	EXPECT_EQ(count, 1);
-	EXPECT_EQ(CPPY_STR_count(s, "AA", 4, &count), PyException::Ok);
+	EXPECT_EQ(CPPY_STR_count(s, "AA", &count,4), PyException::Ok);
 	EXPECT_EQ(count, 0);
+}
+
+TEST(TEST_CPPY_STR, strip) {
+	{
+		std::string s = "AAAAA";
+		std::string result;
+		EXPECT_EQ(CPPY_STR_strip(s, &result, "A"), PyException::Ok);
+		EXPECT_EQ(result.size(), 0);
+	}
+	{
+		std::string s = " \t \tAAAAA\r\n";
+		std::string result;
+		EXPECT_EQ(CPPY_STR_strip(s, &result), PyException::Ok);
+		EXPECT_EQ(result.size(), 5);
+	}
+	{
+		std::string s = "ABCDBA";
+		std::string result;
+		EXPECT_EQ(CPPY_STR_strip(s, &result, "AB"), PyException::Ok);
+		EXPECT_EQ(result.size(), 2);
+	}
 }
 
 TEST(TEST_CPPY_STR, split) {
@@ -29,7 +50,7 @@ TEST(TEST_CPPY_STR, split) {
 	}
 	{
 		std::vector<std::string> result;
-		EXPECT_EQ(CPPY_STR_split(s, " ", &result), PyException::Ok);
+		EXPECT_EQ(CPPY_STR_split(s, &result, " "), PyException::Ok);
 		EXPECT_EQ(result.size(), 6);
 		EXPECT_EQ(result[0], "A");
 		EXPECT_EQ(result[1], "B\tC\nD");
@@ -117,20 +138,26 @@ TEST(TEST_CPPY_STR, at) {
 
 TEST(TEST_CPPY_INT, init) {
 	{
-		std::string s = "123";
+		std::string s = "+123";
 		int result;
-		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_INT_init(&result, s), PyException::Ok);
 		EXPECT_EQ(result, 123);
+	}
+	{
+		std::string s = "-123";
+		int result;
+		EXPECT_EQ(CPPY_INT_init(&result, s), PyException::Ok);
+		EXPECT_EQ(result, -123);
 	}
 	{
 		std::string s = "99999999999999999999999999999999";
 		int result;
-		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::OverflowError);
+		EXPECT_EQ(CPPY_INT_init(&result, s), PyException::OverflowError);
 	}
 	{
 		std::string s = "XXX";
 		int result;
-		EXPECT_EQ(CPPY_INT_init(s, &result), PyException::ValueError);
+		EXPECT_EQ(CPPY_INT_init(&result, s), PyException::ValueError);
 	}
 }
 
@@ -174,13 +201,13 @@ TEST(TEST_CPPY_SET, init) {
 	{
 		int elements[10]{ 0,1,2,3,4,5,4,3,2,1 };
 		std::set<int> result;
-		EXPECT_EQ(CPPY_SET_init(10, elements, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_init(&result, 10, elements), PyException::Ok);
 		EXPECT_EQ(result.size(), 6);
 	}
 	{
 		double elements[10]{ 0.,1.,2.,3.,4.,5.,4.,3.,2.,1. };
 		std::set<double> result;
-		EXPECT_EQ(CPPY_SET_init(10, elements, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_init(&result, 10, elements), PyException::Ok);
 		EXPECT_EQ(result.size(), 6);
 	}
 }
@@ -523,5 +550,18 @@ TEST(TEST_CPPY_SET, equal) {
 		bool result;
 		EXPECT_EQ(CPPY_SET_equal(a, b, &result), PyException::Ok);
 		EXPECT_TRUE(result);
+	}
+}
+
+
+TEST(TEST_CPPY_SET, iterator) {
+	{
+		std::set<int> a{};
+		EXPECT_EQ(CPPY_SET_iterator<int>(a, nullptr), PyException::Ok);
+	}
+	{
+		std::set<int> a{1, 2, 3};
+		int result[3];
+		EXPECT_EQ(CPPY_SET_iterator(a, result), PyException::Ok);
 	}
 }

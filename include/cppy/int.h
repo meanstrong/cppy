@@ -14,8 +14,7 @@
 *  by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
 *  Base 0 means to interpret the base from the string as an integer literal.
 */
-CPPY_API PyException CPPY_INT_init(const std::string& str, int* const result);
-CPPY_API PyException CPPY_INT_init(const std::string& str, int base, int* const result);
+CPPY_API PyException CPPY_INT_init(int* const x, const std::string& str, int base=10);
 
 /* Number of bits necessary to represent self in binary.
 *

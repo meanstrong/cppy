@@ -12,11 +12,11 @@
 *  Build an unordered collection of unique elements.
 */
 template <typename T>
-PyException CPPY_SET_init(int n, const T* elements, std::set<T>* const result) {
-	result->clear();
+PyException CPPY_SET_init(std::set<T>* const this_set, int n, const T* elements) {
+	this_set->clear();
 	for (int i = 0; i < n; i++)
 	{
-		result->insert(elements[i]);
+		this_set->insert(elements[i]);
 	}
 	return PyException::Ok;
 }
@@ -32,16 +32,16 @@ PyException CPPY_SET_contains(const std::set<T>& this_set, const T& element, boo
 *  This has no effect if the element is already present.
 */
 template <typename T>
-PyException CPPY_SET_add(std::set<T>* const result, const T& element) {
-	result->insert(element);
+PyException CPPY_SET_add(std::set<T>* const this_set, const T& element) {
+	this_set->insert(element);
 	return PyException::Ok;
 }
 
 /* Remove all elements from this set.
 */
 template <typename T>
-PyException CPPY_SET_clear(std::set<T>* const result) {
-	result->clear();
+PyException CPPY_SET_clear(std::set<T>* const this_set) {
+	this_set->clear();
 	return PyException::Ok;
 }
 
@@ -156,8 +156,7 @@ PyException CPPY_SET_pop(std::set<T>* this_set, T* element) {
 	{
 		return PyException::KeyError;
 	}
-	*element = *this_set->begin();
-	this_set->erase(this_set->begin());
+	*element = this_set->extract(this_set->begin()).value();
 	return PyException::Ok;
 }
 
@@ -253,6 +252,16 @@ PyException CPPY_SET_equal(const std::set<T>& this_set, const std::set<T>& other
 		}
 	}
 	*result = true;
+	return PyException::Ok;
+}
+
+template <typename T>
+PyException CPPY_SET_iterator(const std::set<T>& this_set, T result[]) {
+	int i = 0;
+	for (auto it = this_set.begin(); it != this_set.end(); it++)
+	{
+		result[i++] = *it;
+	}
 	return PyException::Ok;
 }
 
