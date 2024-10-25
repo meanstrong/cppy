@@ -13,7 +13,7 @@
 */
 CPPY_API PyException CPPY_STR_init(std::string* const str, const char* chars);
 CPPY_API PyException CPPY_STR_init(std::string* const str, int i);
-CPPY_API PyException CPPY_STR_init(std::string* const str, double d, int precision=15);
+CPPY_API PyException CPPY_STR_init(std::string* const str, double d, int precision = 15);
 
 CPPY_API PyException CPPY_STR_length(const std::string& str, int* result);
 
@@ -23,7 +23,7 @@ CPPY_API PyException CPPY_STR_length(const std::string& str, int* result);
 *  string S[start:end].  Optional arguments start and end are
 *  interpreted as in slice notation.
 */
-CPPY_API PyException CPPY_STR_count(const std::string& str, const std::string& sub, int* const result, int start=0, int end=INT_MAX);
+CPPY_API PyException CPPY_STR_count(const std::string& str, const std::string& sub, int* const result, int start = 0, int end = INT_MAX);
 
 /* Partition the string into three parts using the given separator.
 *
@@ -72,7 +72,7 @@ CPPY_API PyException CPPY_STR_endswith(const std::string& str, const std::string
 *
 *  Return -1 on failure.
 */
-CPPY_API PyException CPPY_STR_find(const std::string& str, const std::string& sub, int* const result, int start=0, int end=INT_MAX);
+CPPY_API PyException CPPY_STR_find(const std::string& str, const std::string& sub, int* const result, int start = 0, int end = INT_MAX);
 
 /* S.index(sub[, start[, end]]) -> int
 *
@@ -82,7 +82,7 @@ CPPY_API PyException CPPY_STR_find(const std::string& str, const std::string& su
 *
 *  Return ValueError when the substring is not found.
 */
-CPPY_API PyException CPPY_STR_index(const std::string& str, const std::string& sub, int* const result, int start=0, int end=INT_MAX);
+CPPY_API PyException CPPY_STR_index(const std::string& str, const std::string& sub, int* const result, int start = 0, int end = INT_MAX);
 
 /* S.rfind(sub[, start[, end]]) -> int
 *
@@ -92,7 +92,7 @@ CPPY_API PyException CPPY_STR_index(const std::string& str, const std::string& s
 *
 *  Return -1 on failure.
 */
-CPPY_API PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int* const result, int start=0, int end=INT_MAX);
+CPPY_API PyException CPPY_STR_rfind(const std::string& str, const std::string& sub, int* const result, int start = 0, int end = INT_MAX);
 
 /* S.rindex(sub[, start[, end]]) -> int
 *
@@ -102,7 +102,7 @@ CPPY_API PyException CPPY_STR_rfind(const std::string& str, const std::string& s
 *
 *  Return ValueError when the substring is not found.
 */
-CPPY_API PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int* const result, int start=0, int end=INT_MAX);
+CPPY_API PyException CPPY_STR_rindex(const std::string& str, const std::string& sub, int* const result, int start = 0, int end = INT_MAX);
 
 /* Return a copy of the string with leading and trailing whitespace removed.
 *
@@ -115,7 +115,7 @@ CPPY_API PyException CPPY_STR_strip(const std::string& str, std::string* const r
 *
 *  sub-string from the given string by slicing it respectively from start to end.
 */
-CPPY_API PyException CPPY_STR_slice(const std::string& str, int start, std::string* const result, int stop, int step=1);
+CPPY_API PyException CPPY_STR_slice(const std::string& str, int start, std::string* const result, int stop, int step = 1);
 
 /* Concatenate any number of strings.
 *
@@ -142,8 +142,8 @@ CPPY_API PyException CPPY_STR_join(const std::string& str, int n_iterables, cons
 *  delimited.  With natural text that includes punctuation, consider using
 *  the regular expression module.
 */
-CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, int maxsplit=INT_MAX);
-CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, const std::string& sep, int maxsplit=INT_MAX);
+CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, int maxsplit = INT_MAX);
+CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, const std::string& sep, int maxsplit = INT_MAX);
 
 /* Return a copy with all occurrences of substring old replaced by new.
 *
@@ -152,7 +152,7 @@ CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::str
 *
 *  If the optional argument count is given, only the first count occurrences are replaced.
 */
-CPPY_API PyException CPPY_STR_replace(const std::string& str, const std::string& old_str, const std::string& new_str, std::string* const result, int count=INT_MAX);
+CPPY_API PyException CPPY_STR_replace(const std::string& str, const std::string& old_str, const std::string& new_str, std::string* const result, int count = INT_MAX);
 
 /* Return a copy of the string converted to lowercase.
 */
@@ -177,14 +177,14 @@ CPPY_API PyException CPPY_STR_title(const std::string& str, std::string* const r
 *
 *  If tabsize is not given, a tab size of 8 characters is assumed.
 */
-CPPY_API PyException CPPY_STR_expandtabs(const std::string& str, std::string* const result, int tabsize=8);
+CPPY_API PyException CPPY_STR_expandtabs(const std::string& str, std::string* const result, int tabsize = 8);
 
 /* Return a list of the lines in the string, breaking at line boundaries.
 *
 *  Line breaks are not included in the resulting list unless keepends is given and
 *  true
 */
-CPPY_API PyException CPPY_STR_splitlines(const std::string& str, std::vector<std::string>* const result, bool keepends=false);
+CPPY_API PyException CPPY_STR_splitlines(const std::string& str, std::vector<std::string>* const result, bool keepends = false);
 
 /* Return a str with the given prefix string removed if present.
 *
@@ -211,19 +211,19 @@ CPPY_API PyException CPPY_STR_zfill(const std::string& str, int width, std::stri
 *
 *  Padding is done using the specified fill character (default is a space).
 */
-CPPY_API PyException CPPY_STR_ljust(const std::string& str, int width, std::string* const result, char fillchar=' ');
+CPPY_API PyException CPPY_STR_ljust(const std::string& str, int width, std::string* const result, char fillchar = ' ');
 
 /* Return a right-justified string of length width.
 *
 *  Padding is done using the specified fill character (default is a space).
 */
-CPPY_API PyException CPPY_STR_rjust(const std::string& str, int width, std::string* const result, char fillchar=' ');
+CPPY_API PyException CPPY_STR_rjust(const std::string& str, int width, std::string* const result, char fillchar = ' ');
 
 /* Return a centered string of length width.
 *
 *  Padding is done using the specified fill character (default is a space).
 */
-CPPY_API PyException CPPY_STR_center(const std::string& str, int width, std::string* const result, char fillchar=' ');
+CPPY_API PyException CPPY_STR_center(const std::string& str, int width, std::string* const result, char fillchar = ' ');
 
 /* Return a capitalized version of the string.
 *
@@ -296,12 +296,12 @@ PyException CPPY_STR_format(const std::string& str, std::string* result, const A
 	return PyException::Ok;
 }
 
-CPPY_API PyException CPPY_STR_contains(const std::string& str, const std::string& other, bool* const result);
+CPPY_API PyException CPPY_STR_iscontain(const std::string& str, const std::string& other, bool* const result);
 
 CPPY_API PyException CPPY_STR_at(const std::string& str, int index, char* const result);
 // char operator[](int index) const;
 
-CPPY_API PyException CPPY_STR_equal(const std::string& str, const std::string& other, bool* const result);
+CPPY_API PyException CPPY_STR_isequal(const std::string& str, const std::string& other, bool* const result);
 //bool operator==(const std::string& other) const;
 
 CPPY_API PyException CPPY_STR_mul(const std::string& str, int n, std::string* const result);

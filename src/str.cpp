@@ -163,7 +163,7 @@ CPPY_API PyException CPPY_STR_find(const std::string& str, const std::string& su
 }
 
 CPPY_API PyException CPPY_STR_index(const std::string& str, const std::string& sub, int* const result, int start, int end) {
-	CPPY_STR_find(str, sub, result,start, end);
+	CPPY_STR_find(str, sub, result, start, end);
 	if (*result < 0) return PyException::ValueError;
 	return PyException::Ok;
 }
@@ -814,7 +814,7 @@ CPPY_API PyException CPPY_STR_istitle(const std::string& str, bool* const result
 	return PyException::Ok;
 }
 
-CPPY_API PyException CPPY_STR_contains(const std::string& str, const std::string& other, bool* const result) {
+CPPY_API PyException CPPY_STR_iscontain(const std::string& str, const std::string& other, bool* const result) {
 	*result = str.find(other) != std::string::npos;
 	return PyException::Ok;
 }
@@ -829,7 +829,7 @@ CPPY_API PyException CPPY_STR_at(const std::string& str, int index, char* const 
 	return PyException::Ok;
 }
 
-CPPY_API PyException CPPY_STR_equal(const std::string& str, const std::string& other, bool* const result) {
+CPPY_API PyException CPPY_STR_isequal(const std::string& str, const std::string& other, bool* const result) {
 	*result = str == other;
 	return PyException::Ok;
 }

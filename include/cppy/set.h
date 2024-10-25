@@ -21,8 +21,15 @@ PyException CPPY_SET_init(std::set<T>* const this_set, int n, const T* elements)
 	return PyException::Ok;
 }
 
+template <typename T, class Iteratable>
+PyException CPPY_SET_init(std::set<T>* const this_set, Iteratable begin, Iteratable end) {
+	this_set->clear();
+	std::copy(begin, end, std::inserter(*this_set, this_set->begin()));
+	return PyException::Ok;
+}
+
 template <typename T>
-PyException CPPY_SET_contains(const std::set<T>& this_set, const T& element, bool* const result) {
+PyException CPPY_SET_iscontain(const std::set<T>& this_set, const T& element, bool* const result) {
 	*result = this_set.find(element) != this_set.end();
 	return PyException::Ok;
 }
@@ -237,7 +244,7 @@ PyException CPPY_SET_issuperset(const std::set<T>& this_set, const std::set<T>& 
 }
 
 template <typename T>
-PyException CPPY_SET_equal(const std::set<T>& this_set, const std::set<T>& other_set, bool* const result) {
+PyException CPPY_SET_isequal(const std::set<T>& this_set, const std::set<T>& other_set, bool* const result) {
 	if (this_set.size() != other_set.size())
 	{
 		*result = false;

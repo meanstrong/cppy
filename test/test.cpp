@@ -10,7 +10,7 @@ TEST(TEST_CPPY_STR, count) {
 	EXPECT_EQ(count, 2);
 	EXPECT_EQ(CPPY_STR_count(s, "AAA", &count), PyException::Ok);
 	EXPECT_EQ(count, 1);
-	EXPECT_EQ(CPPY_STR_count(s, "AA", &count,4), PyException::Ok);
+	EXPECT_EQ(CPPY_STR_count(s, "AA", &count, 4), PyException::Ok);
 	EXPECT_EQ(count, 0);
 }
 
@@ -210,6 +210,12 @@ TEST(TEST_CPPY_SET, init) {
 		EXPECT_EQ(CPPY_SET_init(&result, 10, elements), PyException::Ok);
 		EXPECT_EQ(result.size(), 6);
 	}
+	{
+		std::vector<int> input{1, 2, 3, 4, 5};
+		std::set<int> result;
+		EXPECT_EQ(CPPY_SET_init(&result, input.begin(), input.end()), PyException::Ok);
+		EXPECT_EQ(result.size(), 5);
+	}
 }
 
 TEST(TEST_CPPY_SET, add) {
@@ -266,9 +272,9 @@ TEST(TEST_CPPY_SET, difference) {
 		EXPECT_EQ(CPPY_SET_difference(a, b, &result), PyException::Ok);
 		EXPECT_EQ(result.size(), 2);
 		bool is_contain;
-		EXPECT_EQ(CPPY_SET_contains(result, 1, &is_contain), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_iscontain(result, 1, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
-		EXPECT_EQ(CPPY_SET_contains(result, 2, &is_contain), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_iscontain(result, 2, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
 	}
 	{
@@ -294,9 +300,9 @@ TEST(TEST_CPPY_SET, difference_update) {
 		EXPECT_EQ(CPPY_SET_difference_update(&a, b), PyException::Ok);
 		EXPECT_EQ(a.size(), 2);
 		bool is_contain;
-		EXPECT_EQ(CPPY_SET_contains(a, 1, &is_contain), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_iscontain(a, 1, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
-		EXPECT_EQ(CPPY_SET_contains(a, 2, &is_contain), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_iscontain(a, 2, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
 	}
 	{
@@ -344,7 +350,7 @@ TEST(TEST_CPPY_SET, intersection_update) {
 		EXPECT_EQ(CPPY_SET_intersection_update(&a, b), PyException::Ok);
 		EXPECT_EQ(a.size(), 1);
 		bool is_contain;
-		EXPECT_EQ(CPPY_SET_contains(a, 3, &is_contain), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_iscontain(a, 3, &is_contain), PyException::Ok);
 		EXPECT_TRUE(is_contain);
 	}
 	{
@@ -534,21 +540,21 @@ TEST(TEST_CPPY_SET, equal) {
 		std::set<int> a{1, 2, 3};
 		std::set<int> b{1, 2};
 		bool result;
-		EXPECT_EQ(CPPY_SET_equal(a, b, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_isequal(a, b, &result), PyException::Ok);
 		EXPECT_FALSE(result);
 	}
 	{
 		std::set<int> a{1, 2, 3};
 		std::set<int> b{3, 4, 5};
 		bool result;
-		EXPECT_EQ(CPPY_SET_equal(a, b, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_isequal(a, b, &result), PyException::Ok);
 		EXPECT_FALSE(result);
 	}
 	{
 		std::set<int> a{1, 2, 3};
 		std::set<int> b{3, 2, 1};
 		bool result;
-		EXPECT_EQ(CPPY_SET_equal(a, b, &result), PyException::Ok);
+		EXPECT_EQ(CPPY_SET_isequal(a, b, &result), PyException::Ok);
 		EXPECT_TRUE(result);
 	}
 }
