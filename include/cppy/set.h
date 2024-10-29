@@ -24,7 +24,7 @@ PyException CPPY_SET_init(std::set<T>* const this_set, int n, const T* elements)
 template <typename T, class Iteratable>
 PyException CPPY_SET_init(std::set<T>* const this_set, Iteratable begin, Iteratable end) {
 	this_set->clear();
-	std::copy(begin, end, std::inserter(*this_set, this_set->begin()));
+	this_set->insert(begin, end);
 	return PyException::Ok;
 }
 
@@ -52,14 +52,12 @@ PyException CPPY_SET_clear(std::set<T>* const this_set) {
 	return PyException::Ok;
 }
 
-/* Add an element to a set.
-*
-*  This has no effect if the element is already present.
+/* Return a shallow copy of a set.
 */
 template <typename T>
 PyException CPPY_SET_copy(const std::set<T>& this_set, std::set<T>* const result) {
 	result->clear();
-	std::copy(this_set.begin(), this_set.end(), std::inserter(*result, result->begin()));
+	result->insert(this_set.begin(), this_set.end());
 	return PyException::Ok;
 }
 

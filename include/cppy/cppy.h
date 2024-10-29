@@ -4,6 +4,7 @@
 #include "cppy/int.h"
 #include "cppy/str.h"
 #include "cppy/set.h"
+#include "cppy/vector.h"
 
 
 #endif // CPPY_CPPY_H

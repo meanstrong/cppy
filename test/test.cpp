@@ -571,3 +571,212 @@ TEST(TEST_CPPY_SET, iterator) {
 		EXPECT_EQ(CPPY_SET_iterator(a, result), PyException::Ok);
 	}
 }
+
+TEST(TEST_CPPY_VECTOR, init) {
+	{
+		std::vector<int> this_vector;
+		int data[3]{ 1, 2, 3 };
+		EXPECT_EQ(CPPY_VECTOR_init(&this_vector, 3, data), PyException::Ok);
+		EXPECT_EQ(this_vector.size(), 3);
+		EXPECT_EQ(this_vector[0], 1);
+		EXPECT_EQ(this_vector[1], 2);
+		EXPECT_EQ(this_vector[2], 3);
+	}
+	{
+		std::vector<int> this_vector;
+		std::vector<int> data{ 1, 2, 3 };
+		EXPECT_EQ(CPPY_VECTOR_init(&this_vector, data.begin(), data.end()), PyException::Ok);
+		EXPECT_EQ(this_vector.size(), 3);
+		EXPECT_EQ(this_vector[0], 1);
+		EXPECT_EQ(this_vector[1], 2);
+		EXPECT_EQ(this_vector[2], 3);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, copy) {
+	std::vector<int> this_vector;
+	std::vector<int> data{ 1, 2, 3 };
+	EXPECT_EQ(CPPY_VECTOR_copy(data, &this_vector), PyException::Ok);
+	EXPECT_EQ(this_vector.size(), 3);
+	EXPECT_EQ(this_vector[0], 1);
+	EXPECT_EQ(this_vector[1], 2);
+	EXPECT_EQ(this_vector[2], 3);
+}
+
+TEST(TEST_CPPY_VECTOR, clear) {
+	std::vector<int> this_vector{1, 2, 3};
+	EXPECT_EQ(CPPY_VECTOR_clear(&this_vector), PyException::Ok);
+	EXPECT_EQ(this_vector.size(), 0);
+}
+
+TEST(TEST_CPPY_VECTOR, append) {
+	std::vector<int> this_vector{1, 2, 3};
+	EXPECT_EQ(CPPY_VECTOR_append(&this_vector, 4), PyException::Ok);
+	EXPECT_EQ(this_vector.size(), 4);
+	EXPECT_EQ(this_vector[3], 4);
+}
+
+TEST(TEST_CPPY_VECTOR, iscontain) {
+	{
+		std::vector<int> this_vector{1, 2, 3};
+		bool is_contain;
+		EXPECT_EQ(CPPY_VECTOR_iscontain(this_vector, 0, &is_contain), PyException::Ok);
+		EXPECT_FALSE(is_contain);
+	}
+	{
+		std::vector<int> this_vector{1, 2, 3};
+		bool is_contain;
+		EXPECT_EQ(CPPY_VECTOR_iscontain(this_vector, 2, &is_contain), PyException::Ok);
+		EXPECT_TRUE(is_contain);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, count) {
+	std::vector<int> this_vector{1, 2, 3};
+	int count;
+	EXPECT_EQ(CPPY_VECTOR_count(this_vector, &count), PyException::Ok);
+	EXPECT_EQ(count, 3);
+}
+
+TEST(TEST_CPPY_VECTOR, extend) {
+	std::vector<int> this_vector{1, 2, 3};
+	std::vector<int> data{ 4, 5, 6 };
+	EXPECT_EQ(CPPY_VECTOR_extend(&this_vector, data.begin(), data.end()), PyException::Ok);
+	EXPECT_EQ(this_vector.size(), 6);
+	EXPECT_EQ(this_vector[0], 1);
+	EXPECT_EQ(this_vector[1], 2);
+	EXPECT_EQ(this_vector[2], 3);
+	EXPECT_EQ(this_vector[3], 4);
+	EXPECT_EQ(this_vector[4], 5);
+	EXPECT_EQ(this_vector[5], 6);
+}
+
+TEST(TEST_CPPY_VECTOR, index) {
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		int index = -1;
+		EXPECT_EQ(CPPY_VECTOR_index(this_vector, 3, &index), PyException::Ok);
+		EXPECT_EQ(index, 2);
+	}
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		int index = -1;
+		EXPECT_EQ(CPPY_VECTOR_index(this_vector, 9, &index), PyException::ValueError);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, insert) {
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		EXPECT_EQ(CPPY_VECTOR_insert(&this_vector, 0, 10), PyException::Ok);
+		EXPECT_EQ(this_vector.size(), 7);
+		EXPECT_EQ(this_vector[0], 10);
+	}
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		EXPECT_EQ(CPPY_VECTOR_insert(&this_vector, 10, 10), PyException::Ok);
+		EXPECT_EQ(this_vector.size(), 7);
+		EXPECT_EQ(this_vector[6], 10);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, pop) {
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		int data;
+		EXPECT_EQ(CPPY_VECTOR_pop(&this_vector, &data, 10), PyException::IndexError);
+		EXPECT_EQ(this_vector.size(), 6);
+	}
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		int data;
+		EXPECT_EQ(CPPY_VECTOR_pop(&this_vector, &data), PyException::Ok);
+		EXPECT_EQ(this_vector.size(), 5);
+		EXPECT_EQ(data, 6);
+	}
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		int data;
+		EXPECT_EQ(CPPY_VECTOR_pop(&this_vector, &data, -2), PyException::Ok);
+		EXPECT_EQ(this_vector.size(), 5);
+		EXPECT_EQ(data, 5);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, remove) {
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		EXPECT_EQ(CPPY_VECTOR_remove(&this_vector, 10), PyException::ValueError);
+		EXPECT_EQ(this_vector.size(), 6);
+	}
+	{
+		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		EXPECT_EQ(CPPY_VECTOR_remove(&this_vector, 3), PyException::Ok);
+		EXPECT_EQ(this_vector.size(), 5);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, mul) {
+	{
+		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> result;
+		EXPECT_EQ(CPPY_VECTOR_mul(this_vector, 3, &result), PyException::Ok);
+		EXPECT_EQ(result.size(), 9);
+	}
+	{
+		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> result;
+		EXPECT_EQ(CPPY_VECTOR_mul(this_vector, 0, &result), PyException::Ok);
+		EXPECT_EQ(result.size(), 0);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, isequal) {
+	{
+		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> other_vector{ 1, 2, 3};
+		bool isequal;
+		EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector, &isequal), PyException::Ok);
+		EXPECT_TRUE(isequal);
+	}
+	{
+		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> other_vector{ 1, 2, 4};
+		bool isequal;
+		EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector, &isequal), PyException::Ok);
+		EXPECT_FALSE(isequal);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, iterator) {
+	{
+		std::vector<int> this_vector{ 1, 2, 3};
+		int data[3];
+		EXPECT_EQ(CPPY_VECTOR_iterator(this_vector, data), PyException::Ok);
+		EXPECT_EQ(data[0], 1);
+		EXPECT_EQ(data[1], 2);
+		EXPECT_EQ(data[2], 3);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, reverse) {
+	{
+		std::vector<int> this_vector{ 1, 2, 3};
+		EXPECT_EQ(CPPY_VECTOR_reverse(&this_vector), PyException::Ok);
+		EXPECT_EQ(this_vector[0], 3);
+		EXPECT_EQ(this_vector[1], 2);
+		EXPECT_EQ(this_vector[2], 1);
+	}
+}
+
+TEST(TEST_CPPY_VECTOR, sort) {
+	{
+		std::vector<int> this_vector{ 1, 2, 3, 2, 1};
+		EXPECT_EQ(CPPY_VECTOR_sort(&this_vector), PyException::Ok);
+		EXPECT_EQ(this_vector[0], 1);
+		EXPECT_EQ(this_vector[1], 1);
+		EXPECT_EQ(this_vector[2], 2);
+		EXPECT_EQ(this_vector[3], 2);
+		EXPECT_EQ(this_vector[4], 3);
+	}
+}
