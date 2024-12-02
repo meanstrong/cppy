@@ -1,7 +1,6 @@
 #ifndef CPPY_SET_H
 #define CPPY_SET_H
 
-#include <set>
 #include <algorithm>
 
 #include "cppy/internal/declare.h"
@@ -11,25 +10,23 @@
 *
 *  Build an unordered collection of unique elements.
 */
-template <typename T>
-PyException CPPY_SET_init(std::set<T>* const this_set, int n, const T* elements) {
+template <typename Set, typename Element>
+PyException CPPY_SET_init(Set* const this_set, int n, const Element* elements) {
 	this_set->clear();
 	for (int i = 0; i < n; i++)
-	{
 		this_set->insert(elements[i]);
-	}
 	return PyException::Ok;
 }
 
-template <typename T, class Iteratable>
-PyException CPPY_SET_init(std::set<T>* const this_set, Iteratable begin, Iteratable end) {
+template <typename Set, class Iteratable>
+PyException CPPY_SET_init(Set* const this_set, Iteratable begin, Iteratable end) {
 	this_set->clear();
 	this_set->insert(begin, end);
 	return PyException::Ok;
 }
 
-template <typename T>
-PyException CPPY_SET_iscontain(const std::set<T>& this_set, const T& element, bool* const result) {
+template <typename Set, typename Element>
+PyException CPPY_SET_iscontain(const Set& this_set, const Element& element, bool* const result) {
 	*result = this_set.find(element) != this_set.end();
 	return PyException::Ok;
 }
@@ -38,24 +35,24 @@ PyException CPPY_SET_iscontain(const std::set<T>& this_set, const T& element, bo
 *
 *  This has no effect if the element is already present.
 */
-template <typename T>
-PyException CPPY_SET_add(std::set<T>* const this_set, const T& element) {
+template <typename Set, typename Element>
+PyException CPPY_SET_add(Set* const this_set, const Element& element) {
 	this_set->insert(element);
 	return PyException::Ok;
 }
 
 /* Remove all elements from this set.
 */
-template <typename T>
-PyException CPPY_SET_clear(std::set<T>* const this_set) {
+template <typename Set>
+PyException CPPY_SET_clear(Set* const this_set) {
 	this_set->clear();
 	return PyException::Ok;
 }
 
 /* Return a shallow copy of a set.
 */
-template <typename T>
-PyException CPPY_SET_copy(const std::set<T>& this_set, std::set<T>* const result) {
+template <typename Set>
+PyException CPPY_SET_copy(const Set& this_set, Set* const result) {
 	result->clear();
 	result->insert(this_set.begin(), this_set.end());
 	return PyException::Ok;
@@ -65,8 +62,8 @@ PyException CPPY_SET_copy(const std::set<T>& this_set, std::set<T>* const result
 *
 *  (i.e. all elements that are in this set but not the others.)
 */
-template <typename T>
-PyException CPPY_SET_difference(const std::set<T>& this_set, const std::set<T>& other_set, std::set<T>* const result) {
+template <typename Set>
+PyException CPPY_SET_difference(const Set& this_set, const Set& other_set, Set* const result) {
 	result->clear();
 	std::set_difference(
 		this_set.begin(), this_set.end(), other_set.begin(), other_set.end(), std::inserter(*result, result->begin()));
@@ -75,8 +72,8 @@ PyException CPPY_SET_difference(const std::set<T>& this_set, const std::set<T>& 
 
 /* Remove all elements of another set from this set.
 */
-template <typename T>
-PyException CPPY_SET_difference_update(std::set<T>* const this_set, const std::set<T>& other_set) {
+template <typename Set>
+PyException CPPY_SET_difference_update(Set* const this_set, const Set& other_set) {
 	for (auto it = other_set.begin(); it != other_set.end(); ++it) this_set->erase(*it);
 	return PyException::Ok;
 }
@@ -85,8 +82,8 @@ PyException CPPY_SET_difference_update(std::set<T>* const this_set, const std::s
 *
 *  (i.e. all elements that are in both sets.)
 */
-template <typename T>
-PyException CPPY_SET_intersection(const std::set<T>& this_set, const std::set<T>& other_set, std::set<T>* const result) {
+template <typename Set>
+PyException CPPY_SET_intersection(const Set& this_set, const Set& other_set, Set* const result) {
 	result->clear();
 	std::set_intersection(
 		this_set.begin(), this_set.end(), other_set.begin(), other_set.end(), std::inserter(*result, result->begin()));
@@ -95,9 +92,9 @@ PyException CPPY_SET_intersection(const std::set<T>& this_set, const std::set<T>
 
 /* Update a set with the intersection of itself and another.
 */
-template <typename T>
-PyException CPPY_SET_intersection_update(std::set<T>* const this_set, const std::set<T>& other_set) {
-	std::set<T> difference;
+template <typename Set>
+PyException CPPY_SET_intersection_update(Set* const this_set, const Set& other_set) {
+	Set difference;
 	std::set_difference(
 		this_set->begin(), this_set->end(), other_set.begin(), other_set.end(), std::inserter(difference, difference.begin()));
 	for (auto it = difference.begin(); it != difference.end(); ++it) this_set->erase(*it);
@@ -108,8 +105,8 @@ PyException CPPY_SET_intersection_update(std::set<T>* const this_set, const std:
 *
 *  (i.e. all elements that are in exactly one of the sets.)
 */
-template <typename T>
-PyException CPPY_SET_symmetric_difference(const std::set<T>& this_set, const std::set<T>& other_set, std::set<T>* const result) {
+template <typename Set>
+PyException CPPY_SET_symmetric_difference(const Set& this_set, const Set& other_set, Set* const result) {
 	result->clear();
 	std::set_symmetric_difference(this_set.begin(), this_set.end(), other_set.begin(), other_set.end(),
 		std::inserter(*result, result->begin()));
@@ -118,9 +115,9 @@ PyException CPPY_SET_symmetric_difference(const std::set<T>& this_set, const std
 
 /* Update a set with the symmetric difference of itself and another.
 */
-template <typename T>
-PyException CPPY_SET_symmetric_difference_update(std::set<T>* const this_set, const std::set<T>& other_set) {
-	std::set<T> intersection_result;
+template <typename Set>
+PyException CPPY_SET_symmetric_difference_update(Set* const this_set, const Set& other_set) {
+	Set intersection_result;
 	std::set_intersection(
 		this_set->begin(), this_set->end(), other_set.begin(), other_set.end(), std::inserter(intersection_result, intersection_result.begin()));
 	for (auto it = intersection_result.begin(); it != intersection_result.end(); ++it) this_set->erase(*it);
@@ -137,8 +134,8 @@ PyException CPPY_SET_symmetric_difference_update(std::set<T>* const this_set, co
 *
 *  (i.e. all elements that are in either set.)
 */
-template <typename T>
-PyException CPPY_SET_union(const std::set<T>& this_set, const std::set<T>& other_set, std::set<T>* const result) {
+template <typename Set>
+PyException CPPY_SET_union(const Set& this_set, const Set& other_set, Set* const result) {
 	result->clear();
 	std::set_union(this_set.begin(), this_set.end(), other_set.begin(), other_set.end(), std::inserter(*result, result->begin()));
 	return PyException::Ok;
@@ -146,8 +143,8 @@ PyException CPPY_SET_union(const std::set<T>& this_set, const std::set<T>& other
 
 /* Update a set with the union of itself and others.
 */
-template <typename T>
-PyException CPPY_SET_update(std::set<T>* this_set, const std::set<T>& other_set) {
+template <typename Set>
+PyException CPPY_SET_update(Set* this_set, const Set& other_set) {
 	this_set->insert(other_set.begin(), other_set.end());
 	return PyException::Ok;
 }
@@ -155,8 +152,8 @@ PyException CPPY_SET_update(std::set<T>* this_set, const std::set<T>& other_set)
 /* Remove and return an arbitrary set element.
 *  Raises KeyError if the set is empty.
 */
-template <typename T>
-PyException CPPY_SET_pop(std::set<T>* this_set, T* element) {
+template <typename Set, typename Element>
+PyException CPPY_SET_pop(Set* this_set, Element* element) {
 	if (this_set->empty())
 	{
 		return PyException::KeyError;
@@ -169,8 +166,8 @@ PyException CPPY_SET_pop(std::set<T>* this_set, T* element) {
 *
 *  If the element is not a member, raise a KeyError.
 */
-template <typename T>
-PyException CPPY_SET_remove(std::set<T>* this_set, const T& element) {
+template <typename Set, typename Element>
+PyException CPPY_SET_remove(Set* this_set, const Element& element) {
 	auto size = this_set->erase(element);
 	if (size == 0)
 	{
@@ -184,16 +181,16 @@ PyException CPPY_SET_remove(std::set<T>* this_set, const T& element) {
 *  Unlike set.remove(), the discard() method does not raise
 *  an exception when an element is missing from the set.
 */
-template <typename T>
-PyException CPPY_SET_discard(std::set<T>* this_set, const T& element) {
+template <typename Set, typename Element>
+PyException CPPY_SET_discard(Set* this_set, const Element& element) {
 	this_set->erase(element);
 	return PyException::Ok;
 }
 
 /* Return True if two sets have a null intersection.
 */
-template <typename T>
-PyException CPPY_SET_isdisjoint(const std::set<T>& this_set, const std::set<T>& other_set, bool* const result) {
+template <typename Set>
+PyException CPPY_SET_isdisjoint(const Set& this_set, const Set& other_set, bool* const result) {
 	for (auto it = this_set.begin(); it != this_set.end(); ++it) {
 		if (other_set.find(*it) != other_set.end()) {
 			*result = false;
@@ -205,8 +202,8 @@ PyException CPPY_SET_isdisjoint(const std::set<T>& this_set, const std::set<T>& 
 
 /* Report whether another set contains this set.
 */
-template <typename T>
-PyException CPPY_SET_issubset(const std::set<T>& this_set, const std::set<T>& other_set, bool* const result) {
+template <typename Set>
+PyException CPPY_SET_issubset(const Set& this_set, const Set& other_set, bool* const result) {
 	if (this_set.size() > other_set.size())
 	{
 		*result = false;
@@ -224,8 +221,8 @@ PyException CPPY_SET_issubset(const std::set<T>& this_set, const std::set<T>& ot
 
 /* Report whether this set contains another set.
 */
-template <typename T>
-PyException CPPY_SET_issuperset(const std::set<T>& this_set, const std::set<T>& other_set, bool* const result) {
+template <typename Set>
+PyException CPPY_SET_issuperset(const Set& this_set, const Set& other_set, bool* const result) {
 	if (this_set.size() < other_set.size())
 	{
 		*result = false;
@@ -241,8 +238,8 @@ PyException CPPY_SET_issuperset(const std::set<T>& this_set, const std::set<T>& 
 	return PyException::Ok;
 }
 
-template <typename T>
-PyException CPPY_SET_isequal(const std::set<T>& this_set, const std::set<T>& other_set, bool* const result) {
+template <typename Set>
+PyException CPPY_SET_isequal(const Set& this_set, const Set& other_set, bool* const result) {
 	if (this_set.size() != other_set.size())
 	{
 		*result = false;
@@ -260,8 +257,8 @@ PyException CPPY_SET_isequal(const std::set<T>& this_set, const std::set<T>& oth
 	return PyException::Ok;
 }
 
-template <typename T>
-PyException CPPY_SET_iterator(const std::set<T>& this_set, T result[]) {
+template <typename Set, typename Element>
+PyException CPPY_SET_iterator(const Set& this_set, Element result[]) {
 	int i = 0;
 	for (auto it = this_set.begin(); it != this_set.end(); it++)
 	{

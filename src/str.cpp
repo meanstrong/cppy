@@ -300,70 +300,6 @@ CPPY_API PyException CPPY_STR_join(const std::string& str, int n_iterables, cons
 	return PyException::Ok;
 }
 
-CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, int maxsplit) {
-	if (maxsplit < 0) maxsplit = INT_MAX;
-	std::string::size_type i, j, len = str.size();
-	for (i = j = 0; i < len; )
-	{
-
-		while (i < len && ::isspace(str[i])) i++;
-		j = i;
-
-		while (i < len && !::isspace(str[i])) i++;
-
-
-
-		if (j < i)
-		{
-			if (maxsplit-- <= 0) break;
-
-			result->push_back(str.substr(j, i - j));
-
-			while (i < len && ::isspace(str[i])) i++;
-			j = i;
-		}
-	}
-	if (j < len)
-	{
-		result->push_back(str.substr(j, len - j));
-	}
-	return PyException::Ok;
-}
-
-CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, const std::string& sep, int maxsplit)
-{
-	if (maxsplit < 0) maxsplit = INT_MAX;
-
-	// split on any whitespace character
-	if (sep.size() == 0)
-	{
-		CPPY_STR_split(str, result, maxsplit);
-	}
-	else {
-		std::string::size_type i, j, len = str.size(), n = sep.size();
-
-		i = j = 0;
-
-		while (i + n <= len)
-		{
-			if (str[i] == sep[0] && str.substr(i, n) == sep)
-			{
-				if (maxsplit-- <= 0) break;
-
-				result->push_back(str.substr(j, i - j));
-				i = j = i + n;
-			}
-			else
-			{
-				i++;
-			}
-		}
-		result->push_back(str.substr(j, len - j));
-	}
-
-	return PyException::Ok;
-}
-
 CPPY_API PyException CPPY_STR_replace(const std::string& str, const std::string& old_str, const std::string& new_str, std::string* const result, int count) {
 	*result = str;
 	std::string::size_type start_pos = 0;
@@ -481,41 +417,6 @@ CPPY_API PyException CPPY_STR_expandtabs(const std::string& str, std::string* co
 		}
 	}
 
-	return PyException::Ok;
-}
-
-CPPY_API PyException CPPY_STR_splitlines(const std::string& str, std::vector<std::string>* const result, bool keepends) {
-	std::string::size_type len = str.size(), i, j, eol;
-
-	for (i = j = 0; i < len; )
-	{
-		while (i < len && str[i] != '\n' && str[i] != '\r') i++;
-
-		eol = i;
-		if (i < len)
-		{
-			if (str[i] == '\r' && i + 1 < len && str[i + 1] == '\n')
-			{
-				i += 2;
-			}
-			else
-			{
-				i++;
-			}
-			if (keepends)
-				eol = i;
-
-		}
-
-		result->push_back(str.substr(j, eol - j));
-		j = i;
-
-	}
-
-	if (j < len)
-	{
-		result->push_back(str.substr(j, len - j));
-	}
 	return PyException::Ok;
 }
 

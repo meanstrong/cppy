@@ -2,7 +2,6 @@
 #define CPPY_STR_H
 #include <iostream>
 #include <sstream> 
-#include <vector>
 #include <string>
 
 #include "cppy/internal/declare.h"
@@ -142,8 +141,70 @@ CPPY_API PyException CPPY_STR_join(const std::string& str, int n_iterables, cons
 *  delimited.  With natural text that includes punctuation, consider using
 *  the regular expression module.
 */
-CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, int maxsplit = INT_MAX);
-CPPY_API PyException CPPY_STR_split(const std::string& str, std::vector<std::string>* const result, const std::string& sep, int maxsplit = INT_MAX);
+template <typename StringList>
+CPPY_API PyException CPPY_STR_split(const std::string& str, StringList* const result, int maxsplit = INT_MAX) {
+	if (maxsplit < 0) maxsplit = INT_MAX;
+	std::string::size_type i, j, len = str.size();
+	for (i = j = 0; i < len; )
+	{
+
+		while (i < len && ::isspace(str[i])) i++;
+		j = i;
+
+		while (i < len && !::isspace(str[i])) i++;
+
+
+
+		if (j < i)
+		{
+			if (maxsplit-- <= 0) break;
+
+			result->push_back(str.substr(j, i - j));
+
+			while (i < len && ::isspace(str[i])) i++;
+			j = i;
+		}
+	}
+	if (j < len)
+	{
+		result->push_back(str.substr(j, len - j));
+	}
+	return PyException::Ok;
+};
+
+template <typename StringList>
+CPPY_API PyException CPPY_STR_split(const std::string& str, StringList* const result, const std::string& sep, int maxsplit = INT_MAX) {
+	if (maxsplit < 0) maxsplit = INT_MAX;
+
+	// split on any whitespace character
+	if (sep.size() == 0)
+	{
+		CPPY_STR_split(str, result, maxsplit);
+	}
+	else {
+		std::string::size_type i, j, len = str.size(), n = sep.size();
+
+		i = j = 0;
+
+		while (i + n <= len)
+		{
+			if (str[i] == sep[0] && str.substr(i, n) == sep)
+			{
+				if (maxsplit-- <= 0) break;
+
+				result->push_back(str.substr(j, i - j));
+				i = j = i + n;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		result->push_back(str.substr(j, len - j));
+	}
+
+	return PyException::Ok;
+};
 
 /* Return a copy with all occurrences of substring old replaced by new.
 *
@@ -184,7 +245,41 @@ CPPY_API PyException CPPY_STR_expandtabs(const std::string& str, std::string* co
 *  Line breaks are not included in the resulting list unless keepends is given and
 *  true
 */
-CPPY_API PyException CPPY_STR_splitlines(const std::string& str, std::vector<std::string>* const result, bool keepends = false);
+template <typename StringList>
+CPPY_API PyException CPPY_STR_splitlines(const std::string& str, StringList* const result, bool keepends = false) {
+	std::string::size_type len = str.size(), i, j, eol;
+
+	for (i = j = 0; i < len; )
+	{
+		while (i < len && str[i] != '\n' && str[i] != '\r') i++;
+
+		eol = i;
+		if (i < len)
+		{
+			if (str[i] == '\r' && i + 1 < len && str[i + 1] == '\n')
+			{
+				i += 2;
+			}
+			else
+			{
+				i++;
+			}
+			if (keepends)
+				eol = i;
+
+		}
+
+		result->push_back(str.substr(j, eol - j));
+		j = i;
+
+	}
+
+	if (j < len)
+	{
+		result->push_back(str.substr(j, len - j));
+	}
+	return PyException::Ok;
+};
 
 /* Return a str with the given prefix string removed if present.
 *
