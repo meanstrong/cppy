@@ -6,17 +6,12 @@
 #include "cppy/str.h"
 
 
-CPPY_API PyException CPPY_STR_init(std::string* const str, const char* chars) {
+CPPY_API PyException CPPY_STR_init(const char* chars, std::string* const str) {
 	*str = chars;
 	return PyException::Ok;
 }
 
-CPPY_API PyException CPPY_STR_init(std::string* const str, int i) {
-	*str = std::to_string(i);
-	return PyException::Ok;
-}
-
-CPPY_API PyException CPPY_STR_init(std::string* const str, double d, int precision) {
+CPPY_API PyException CPPY_STR_init(double d, std::string* const str, int precision) {
 	std::ostringstream ss;
 	std::string nstr{""}, estr{ "" };
 	if ((d > -1.0e15 && d < -1.0e-5) || (d > 1.0e-5 && d < 1.0e15))

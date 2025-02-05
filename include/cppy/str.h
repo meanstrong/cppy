@@ -10,9 +10,10 @@
 
 /* Create a new string object from the given object.
 */
-CPPY_API PyException CPPY_STR_init(std::string* const str, const char* chars);
-CPPY_API PyException CPPY_STR_init(std::string* const str, int i);
-CPPY_API PyException CPPY_STR_init(std::string* const str, double d, int precision = 15);
+CPPY_API PyException CPPY_STR_init(const char* chars, std::string* const str);
+CPPY_API PyException CPPY_STR_init(double d, std::string* const str, int precision = 15);
+template <typename T>
+CPPY_API PyException CPPY_STR_init(T v, std::string* const str) { *str = std::to_string(v); return PyException::Ok; };
 
 CPPY_API PyException CPPY_STR_length(const std::string& str, int* result);
 
@@ -114,7 +115,7 @@ CPPY_API PyException CPPY_STR_strip(const std::string& str, std::string* const r
 *
 *  sub-string from the given string by slicing it respectively from start to end.
 */
-CPPY_API PyException CPPY_STR_slice(const std::string& str, int start, std::string* const result, int stop, int step = 1);
+CPPY_API PyException CPPY_STR_slice(const std::string& str, std::string* const result, int start=0, int stop=INT_MAX, int step = 1);
 
 /* Concatenate any number of strings.
 *
