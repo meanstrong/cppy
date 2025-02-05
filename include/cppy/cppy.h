@@ -3,8 +3,8 @@
 
 #include "cppy/int.h"
 #include "cppy/str.h"
-#include "cppy/set.h"
-#include "cppy/list.h"
+#include "cppy/set.hpp"
+#include "cppy/list.hpp"
 
 
 #endif // CPPY_CPPY_H
