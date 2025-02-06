@@ -1,5 +1,5 @@
-#include "cppy/exception.h"
-#include "cppy/internal/declare.h"
+#ifndef CPPY_PLATFORM_H
+#define CPPY_PLATFORM_H
 
 #if defined(WIN32) | defined(_WIN64)
 
@@ -17,66 +17,51 @@
 #error "process info doesn't support this platform"
 #endif
 
-#if defined(WIN32) | defined(_WIN64)
-#elif __linux__
-PyException CPPY_PLATFORM_os_info(std::string *const result) {
-  FILE *fp = fopen("/proc/version", "r");
-  if (NULL == fp)
-    return PyException::FileNotFoundError;
-  char szTest[1000] = {0};
-  while (!feof(fp)) {
-    memset(szTest, 0, sizeof(szTest));
-    fgets(szTest, sizeof(szTest) - 1, fp);
-    *result += szTest;
-  }
-  fclose(fp);
-  return PyException::Ok;
+#include <string>
+
+#include "cppy/exception.h"
+#include "cppy/internal/declare.h"
+
+CPPY_API PyException CPPY_PLATFORM_os_info(std::string* const result);
+
+CPPY_API PyException CPPY_PLATFORM_cpu_percent(double* const percent, int interval = -1);
+
+CPPY_API PyException CPPY_PLATFORM_memory(DWORDLONG* total, DWORDLONG* available);
+
+namespace cppy {
+	namespace internal {
+		double get_cpu_usage() {
+			static FILETIME prevIdleTime, prevKernelTime, prevUserTime;
+			FILETIME idleTime, kernelTime, userTime;
+
+			// 获取当前系统的空闲时间、内核态时间和用户态时间
+			if (!GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
+				return -1;
+			}
+
+			ULONGLONG prevIdle = ((ULONGLONG)prevIdleTime.dwHighDateTime << 32) | prevIdleTime.dwLowDateTime;
+			ULONGLONG idle = ((ULONGLONG)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+			ULONGLONG prevKernel = ((ULONGLONG)prevKernelTime.dwHighDateTime << 32) | prevKernelTime.dwLowDateTime;
+			ULONGLONG kernel = ((ULONGLONG)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+			ULONGLONG prevUser = ((ULONGLONG)prevUserTime.dwHighDateTime << 32) | prevUserTime.dwLowDateTime;
+			ULONGLONG user = ((ULONGLONG)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+			ULONGLONG totalPrev = prevIdle + prevKernel + prevUser;
+			ULONGLONG total = idle + kernel + user;
+
+			ULONGLONG totalDelta = total - totalPrev;
+			ULONGLONG idleDelta = idle - prevIdle;
+
+			double cpuUsage = 100.0 * (totalDelta - idleDelta) / totalDelta;
+
+			// 更新上一次的时间
+			prevIdleTime = idleTime;
+			prevKernelTime = kernelTime;
+			prevUserTime = userTime;
+
+			return cpuUsage;
+		}
+	}
 }
-#else /*not support*/
-#error "process info doesn't support this platform"
-#endif
 
-PyException CPPY_PLATFORM_cpu_info(std::string* const result) {
-#if defined(WIN32) | defined(_WIN64)
-    MEMORYSTATUSEX memInfo;
-    memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-    GlobalMemoryStatusEx(&memInfo);
-    DWORDLONG totalPhysMem = memInfo.ullTotalPhys;
-
-    return totalPhysMem;
-#elif __linux__
-
-  FILE *fp = fopen("/proc/cpuinfo", "r");
-  if (NULL == fp)
-    return PyException::FileNotFoundError;
-  char szTest[1000] = {0};
-  while (!feof(fp)) {
-    memset(szTest, 0, sizeof(szTest));
-    fgets(szTest, sizeof(szTest) - 1, fp);
-    *result += szTest;
-  }
-  fclose(fp);
-  return PyException::Ok;
-#else /*not support*/
-#error "process info doesn't support this platform"
-#endif
-}
-
-#if defined(WIN32) | defined(_WIN64)
-#elif __linux__
-PyException CPPY_PLATFORM_memory_info(std::string *const result) {
-  FILE *fp = fopen("/proc/meminfo", "r");
-  if (NULL == fp)
-    return PyException::FileNotFoundError;
-  char szTest[1000] = {0};
-  while (!feof(fp)) {
-    memset(szTest, 0, sizeof(szTest));
-    fgets(szTest, sizeof(szTest) - 1, fp);
-    *result += szTest;
-  }
-  fclose(fp);
-  return PyException::Ok;
-}
-#else /*not support*/
-#error "process info doesn't support this platform"
-#endif
+#endif // CPPY_PLATFORM_H

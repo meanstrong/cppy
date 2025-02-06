@@ -1,3 +1,6 @@
+#include <iostream>
+#include <fstream>
+
 #include "cppy/cppy.h"
 #include <gtest/gtest.h>
 
@@ -805,4 +808,33 @@ TEST(TEST_CPPY_LIST_vector, sort) {
 		EXPECT_EQ(this_vector[3], 2);
 		EXPECT_EQ(this_vector[4], 3);
 	}
+}
+
+TEST(TEST_CPPY_PLATFORM, memory) {
+	DWORDLONG total, available;
+	CPPY_PLATFORM_memory(&total, &available);
+}
+
+TEST(TEST_CPPY_PLATFORM, memory_info) {
+	double percent = 0.;
+	CPPY_PLATFORM_cpu_percent(&percent, 1);
+}
+
+
+TEST(TEST_CPPY_IO, text_file) {
+	{
+		std::ofstream stream;
+		CPPY_IO_open("D:\\1.txt", &stream, "w");
+		CPPY_IO_write(stream, "12345\n67890\n\n0000");
+		CPPY_IO_close(stream);
+	}
+	{
+		std::ifstream stream;
+		CPPY_IO_open("D:\\1.txt", &stream);
+		std::string content;
+		while (CPPY_IO_readline(stream, &content) == PyException::Ok)
+			std::cout << content << std::endl;
+		CPPY_IO_close(stream);
+	}
+
 }
