@@ -2,6 +2,7 @@
 #include <iomanip>
 #include<sstream>
 #include <algorithm>
+#include <Windows.h>
 
 #include "cppy/str.h"
 
@@ -749,3 +750,13 @@ CPPY_API PyException CPPY_STR_mul(const std::string& str, int n, std::string* co
 	return PyException::Ok;
 }
 
+CPPY_API PyException CPPY_STR_encode(const std::wstring& wstr, std::string* const result) {
+	int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	if (len == 0) {
+		return PyException::ValueError;
+	}
+	result->resize(len);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &(*result)[0], len, nullptr, nullptr);
+	result->resize(len - 1);
+	return PyException::Ok;
+}

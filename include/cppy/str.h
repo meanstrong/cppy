@@ -402,6 +402,8 @@ CPPY_API PyException CPPY_STR_isequal(const std::string& str, const std::string&
 
 CPPY_API PyException CPPY_STR_mul(const std::string& str, int n, std::string* const result);
 
+CPPY_API PyException CPPY_STR_encode(const std::wstring& wstr, std::string* const result);
+
 namespace cppy {
 	namespace internal {
 		// https://codereview.stackexchange.com/questions/269425/implementing-stdformat

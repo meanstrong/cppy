@@ -139,6 +139,18 @@ TEST(TEST_CPPY_STR, at) {
 	EXPECT_EQ(CPPY_STR_at(s, -4, &result), PyException::IndexError);
 }
 
+TEST(TEST_CPPY_STR, encode) {
+	std::string result;
+	EXPECT_EQ(CPPY_STR_encode(L"жпнд", &result), PyException::Ok);
+	char c;
+	char expect[6]{ 0xe4, 0xb8, 0xad, 0xe6, 0x96, 0x87 };
+	for (int i = 0; i < 6; i++)
+	{
+		EXPECT_EQ(CPPY_STR_at(result, i, &c), PyException::Ok);
+		EXPECT_EQ(c, expect[i]);
+	}
+}
+
 TEST(TEST_CPPY_INT, init) {
 	{
 		std::string s = "+123";
