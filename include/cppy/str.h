@@ -178,31 +178,94 @@ CPPY_API PyException CPPY_STR_split(const std::string& str, StringList* const re
 	if (maxsplit < 0) maxsplit = INT_MAX;
 
 	// split on any whitespace character
-	if (sep.size() == 0)
+	if (sep.empty())
+		return CPPY_STR_split(str, result, maxsplit);
+
+	std::string::size_type i, j, len = str.size(), n = sep.size();
+
+	i = j = 0;
+
+	while (i + n <= len)
 	{
-		CPPY_STR_split(str, result, maxsplit);
-	}
-	else {
-		std::string::size_type i, j, len = str.size(), n = sep.size();
-
-		i = j = 0;
-
-		while (i + n <= len)
+		if (str[i] == sep[0] && str.substr(i, n) == sep)
 		{
-			if (str[i] == sep[0] && str.substr(i, n) == sep)
-			{
-				if (maxsplit-- <= 0) break;
+			if (maxsplit-- <= 0) break;
 
-				result->push_back(str.substr(j, i - j));
-				i = j = i + n;
-			}
-			else
-			{
-				i++;
-			}
+			result->push_back(str.substr(j, i - j));
+			i = j = i + n;
 		}
-		result->push_back(str.substr(j, len - j));
+		else
+		{
+			i++;
+		}
 	}
+	result->push_back(str.substr(j, len - j));
+
+	return PyException::Ok;
+};
+
+template <typename StringList>
+CPPY_API PyException CPPY_STR_rsplit(const std::string& str, StringList* const result, int maxsplit = INT_MAX) {
+	if (maxsplit < 0)
+		return CPPY_STR_split(str, result, maxsplit);
+
+	std::string::size_type len = str.size();
+	std::string::size_type i, j;
+	for (i = j = len; i > 0; )
+	{
+		while (i > 0 && ::isspace(str[i - 1])) i--;
+		j = i;
+
+		while (i > 0 && !::isspace(str[i - 1])) i--;
+
+		if (j > i)
+		{
+			if (maxsplit-- <= 0) break;
+
+			result->push_back(str.substr(i, j - i));
+
+			while (i > 0 && ::isspace(str[i - 1])) i--;
+			j = i;
+		}
+	}
+	if (j > 0)
+		result->push_back(str.substr(0, j));
+
+	std::reverse(result->begin(), result->end() );
+
+	return PyException::Ok;
+};
+
+template <typename StringList>
+CPPY_API PyException CPPY_STR_rsplit(const std::string& str, StringList* const result, const std::string& sep, int maxsplit = INT_MAX) {
+	if (maxsplit < 0)
+		return CPPY_STR_split(str, result, sep, maxsplit);
+
+	// split on any whitespace character
+	if (sep.empty())
+		return CPPY_STR_rsplit(str, result, maxsplit);
+
+	int i, j, len = (int)str.size(), n = (int)sep.size();
+
+	i = j = len;
+
+	while (i >= n)
+	{
+		if (str[i - 1] == sep[n - 1] && str.substr(i - n, n) == sep)
+		{
+			if (maxsplit-- <= 0) break;
+
+			result->push_back(str.substr(i, j - i));
+			i = j = i - n;
+		}
+		else
+		{
+			i--;
+		}
+	}
+
+	result->push_back(str.substr(0, j));
+	std::reverse(result->begin(), result->end());
 
 	return PyException::Ok;
 };

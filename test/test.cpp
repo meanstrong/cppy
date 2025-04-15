@@ -64,6 +64,26 @@ TEST(TEST_CPPY_STR, split) {
 	}
 }
 
+TEST(TEST_CPPY_STR, rsplit) {
+	std::string s = "A B\tC\nD E   F";
+	{
+		std::vector<std::string> result;
+		EXPECT_EQ(CPPY_STR_rsplit(s, &result, 2), PyException::Ok);
+		EXPECT_EQ(result.size(), 3);
+		EXPECT_EQ(result[0], "A B\tC\nD");
+		EXPECT_EQ(result[1], "E");
+		EXPECT_EQ(result[2], "F");
+	}
+	{
+		std::vector<std::string> result;
+		EXPECT_EQ(CPPY_STR_rsplit(s, &result, " ", 2), PyException::Ok);
+		EXPECT_EQ(result.size(), 3);
+		EXPECT_EQ(result[0], "A B\tC\nD E ");
+		EXPECT_EQ(result[1], "");
+		EXPECT_EQ(result[2], "F");
+	}
+}
+
 TEST(TEST_CPPY_STR, find) {
 	std::string s = "ABCD";
 	{
@@ -827,7 +847,7 @@ TEST(TEST_CPPY_PLATFORM, memory) {
 	CPPY_PLATFORM_memory(&total, &available);
 }
 
-TEST(TEST_CPPY_PLATFORM, memory_info) {
+TEST(TEST_CPPY_PLATFORM, cpu_percent) {
 	double percent = 0.;
 	CPPY_PLATFORM_cpu_percent(&percent, 1);
 }
