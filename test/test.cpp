@@ -852,7 +852,6 @@ TEST(TEST_CPPY_PLATFORM, cpu_percent) {
 	CPPY_PLATFORM_cpu_percent(&percent, 1);
 }
 
-
 TEST(TEST_CPPY_IO, text_file) {
 	{
 		std::ofstream stream;
@@ -869,4 +868,29 @@ TEST(TEST_CPPY_IO, text_file) {
 		CPPY_IO_close(stream);
 	}
 
+}
+
+TEST(TEST_CPPY_BUILTINS, linspace) {
+	{
+		double result[5];
+		CPPY_BUILTINS_linspace(0.0, 1.0, 5, result);
+		EXPECT_NEAR(result[0], 0.0, 1.0e-16);
+		EXPECT_NEAR(result[4], 1.0, 1.0e-16);
+	}
+	{
+		double result[5];
+		CPPY_BUILTINS_linspace(0.0, 1.0, 5, result, false);
+		EXPECT_NEAR(result[0], 0.0, 1.0e-16);
+		EXPECT_NEAR(result[4], 0.8, 1.0e-16);
+	}
+}
+
+TEST(TEST_CPPY_DATETIME, duration) {
+	std::chrono::steady_clock::time_point start, end;
+	CPPY_DATETIME_now(&start);
+	CPPY_DATETIME_now(&end);
+
+	std::chrono::nanoseconds::rep duration;
+	CPPY_DATETIME_duration<std::chrono::nanoseconds>(start, end, &duration);
+	EXPECT_GT(duration, 0);
 }
