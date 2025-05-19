@@ -1,5 +1,4 @@
-#ifndef CPPY_INTERNAL_DECLARE_H
-#define CPPY_INTERNAL_DECLARE_H
+#pragma once
 
 #ifndef CPPY_API
 
@@ -18,5 +17,3 @@
 #ifndef CPPY_API
 #define CPPY_API
 #endif  // CPPY_API
-
-#endif // CPPY_INTERNAL_DECLARE_H

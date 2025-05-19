@@ -1,5 +1,4 @@
-#ifndef CPPY_LIST_H
-#define CPPY_LIST_H
+#pragma once
 
 #include "cppy/internal/declare.h"
 #include "cppy/exception.h"
@@ -185,5 +184,3 @@ CPPY_ERROR_t CPPY_LIST_mul(const List& this_list, int n, List* result) {
 	}
 	return CPPY_ERROR_t::Ok;
 }
-
-#endif // CPPY_LIST_H

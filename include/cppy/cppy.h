@@ -1,5 +1,4 @@
-#ifndef CPPY_CPPY_H
-#define CPPY_CPPY_H
+#pragma once
 
 #include "cppy/int.h"
 #include "cppy/str.h"
@@ -9,6 +8,3 @@
 #include "cppy/io.hpp"
 #include "cppy/builtins.h"
 #include "cppy/datetime.h"
-
-
-#endif // CPPY_CPPY_H

@@ -1,5 +1,4 @@
-#ifndef CPPY_IO_H
-#define CPPY_IO_H
+#pragma once
 
 #include "cppy/internal/declare.h"
 #include "cppy/exception.h"
@@ -40,5 +39,3 @@ CPPY_API CPPY_ERROR_t CPPY_IO_close(IOStream& iostream) {
 	iostream.close();
 	return CPPY_ERROR_t::Ok;
 };
-
-#endif // CPPY_IO_H

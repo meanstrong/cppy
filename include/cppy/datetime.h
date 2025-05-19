@@ -1,5 +1,4 @@
-#ifndef CPPY_DATETIME_H
-#define CPPY_DATETIME_H
+#pragma once
 
 #include <chrono>
 
@@ -15,5 +14,3 @@ CPPY_API CPPY_ERROR_t CPPY_DATETIME_duration(const std::chrono::steady_clock::ti
 	*result = std::chrono::duration_cast<duration>(end - start).count();
 	return CPPY_ERROR_t::Ok;
 }
-
-#endif // CPPY_DATETIME_H

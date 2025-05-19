@@ -1,5 +1,4 @@
-#ifndef CPPY_EXCEPTION_H
-#define CPPY_EXCEPTION_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -76,5 +75,3 @@ public:
         ;         \
     else          \
         CPPY_Assertion_result() = CPPY_Assertion_message() << "AssertionError: " << #v << " " << __FILE__ << ":" << __LINE__ << ". "
-
-#endif // CPPY_EXCEPTION_H

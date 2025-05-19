@@ -1,5 +1,4 @@
-#ifndef CPPY_PLATFORM_H
-#define CPPY_PLATFORM_H
+#pragma once
 
 #if defined(WIN32) | defined(_WIN64)
 
@@ -63,5 +62,3 @@ namespace cppy {
 		}
 	}
 }
-
-#endif // CPPY_PLATFORM_H

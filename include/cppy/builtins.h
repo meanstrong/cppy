@@ -1,5 +1,4 @@
-#ifndef CPPY_BUILTINS_H
-#define CPPY_BUILTINS_H
+#pragma once
 
 #include "cppy/internal/declare.h"
 #include "cppy/exception.h"
@@ -25,5 +24,3 @@
 *  array([2. ,  2.2,  2.4,  2.6,  2.8])
 */
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_linspace(double start, double end, int num, double result[], bool endpoint = true);
-
-#endif // CPPY_BUILTINS_H

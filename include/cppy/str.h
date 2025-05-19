@@ -1,5 +1,5 @@
-#ifndef CPPY_STR_H
-#define CPPY_STR_H
+#pragma once
+
 #include <iostream>
 #include <sstream> 
 #include <string>
@@ -484,4 +484,3 @@ namespace cppy {
 		}
 	}
 }
-#endif // CPPY_STR_H

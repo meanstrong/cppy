@@ -1,5 +1,4 @@
-#ifndef CPPY_INT_H
-#define CPPY_INT_H
+#pragma once
 
 #include <string>
 
@@ -35,6 +34,3 @@ CPPY_API CPPY_ERROR_t CPPY_INT_bit_length(int x, int* const result);
 *  3
 */
 CPPY_API CPPY_ERROR_t CPPY_INT_bit_count(int x, int* const result);
-
-
-#endif // CPPY_INT_H

@@ -1,5 +1,4 @@
-#ifndef CPPY_SET_H
-#define CPPY_SET_H
+#pragma once
 
 #include <algorithm>
 
@@ -266,5 +265,3 @@ CPPY_ERROR_t CPPY_SET_iterator(const Set& this_set, Element result[]) {
 	}
 	return CPPY_ERROR_t::Ok;
 }
-
-#endif // CPPY_SET_H
