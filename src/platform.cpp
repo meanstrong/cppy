@@ -1,8 +1,8 @@
 #include "cppy/platform.h"
 
-CPPY_API PyException CPPY_PLATFORM_os_info(std::string* const result) {
+CPPY_API CPPY_ERROR_t CPPY_PLATFORM_os_info(std::string* const result) {
 #if defined(WIN32) | defined(_WIN64)
-	return PyException::NotImplementedError;
+	return CPPY_ERROR_t::NotImplementedError;
 #elif __linux__
 	FILE* fp = fopen("/proc/version", "r");
 	if (NULL == fp)
@@ -20,7 +20,7 @@ CPPY_API PyException CPPY_PLATFORM_os_info(std::string* const result) {
 #endif
 }
 
-CPPY_API PyException CPPY_PLATFORM_cpu_percent(double* const percent, int interval) {
+CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int interval) {
 #if defined(WIN32) | defined(_WIN64)
 	*percent = cppy::internal::get_cpu_usage();
 	if (interval > 0)
@@ -28,7 +28,7 @@ CPPY_API PyException CPPY_PLATFORM_cpu_percent(double* const percent, int interv
 		Sleep(interval * 1000);
 		*percent = cppy::internal::get_cpu_usage();
 	}
-	return PyException::Ok;
+	return CPPY_ERROR_t::Ok;
 #elif __linux__
 
 	FILE* fp = fopen("/proc/cpuinfo", "r");
@@ -47,14 +47,14 @@ CPPY_API PyException CPPY_PLATFORM_cpu_percent(double* const percent, int interv
 #endif
 }
 
-CPPY_API PyException CPPY_PLATFORM_memory(DWORDLONG* total, DWORDLONG* available) {
+CPPY_API CPPY_ERROR_t CPPY_PLATFORM_memory(DWORDLONG* total, DWORDLONG* available) {
 #if defined(WIN32) | defined(_WIN64)
 	MEMORYSTATUSEX memInfo;
 	memInfo.dwLength = sizeof(MEMORYSTATUSEX);
 	GlobalMemoryStatusEx(&memInfo);
 	*total = memInfo.ullTotalPhys;
 	*available = memInfo.ullAvailPhys;
-	return PyException::Ok;
+	return CPPY_ERROR_t::Ok;
 #elif __linux__
 	FILE* fp = fopen("/proc/meminfo", "r");
 	if (NULL == fp)

@@ -3,23 +3,23 @@
 #include "cppy/int.h"
 
 
-CPPY_API PyException CPPY_INT_init(int* const x, const std::string& str, int base) {
+CPPY_API CPPY_ERROR_t CPPY_INT_init(int* const x, const std::string& str, int base) {
 	try
 	{
 		*x = std::stoi(str, nullptr, base);
 	}
 	catch (const std::invalid_argument&)
 	{
-		return PyException::ValueError;
+		return CPPY_ERROR_t::ValueError;
 	}
 	catch (const std::out_of_range&)
 	{
-		return PyException::OverflowError;
+		return CPPY_ERROR_t::OverflowError;
 	}
-	return PyException::Ok;
+	return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API PyException CPPY_INT_bit_length(int x, int* const result) {
+CPPY_API CPPY_ERROR_t CPPY_INT_bit_length(int x, int* const result) {
 	if (x < 0) x = -x;
 	*result = 0;
 
@@ -44,10 +44,10 @@ CPPY_API PyException CPPY_INT_bit_length(int x, int* const result) {
 		x >>= 2;
 	}
 	*result += x;
-	return PyException::Ok;
+	return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API PyException CPPY_INT_bit_count(int x, int* const result) {
+CPPY_API CPPY_ERROR_t CPPY_INT_bit_count(int x, int* const result) {
 	if (x < 0) x = -x;
 	*result = 0;
 
@@ -56,6 +56,6 @@ CPPY_API PyException CPPY_INT_bit_count(int x, int* const result) {
 		if (x & i)
 			++(*result);
 
-	return PyException::Ok;
+	return CPPY_ERROR_t::Ok;
 }
 

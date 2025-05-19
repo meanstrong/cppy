@@ -22,11 +22,11 @@
 #include "cppy/exception.h"
 #include "cppy/internal/declare.h"
 
-CPPY_API PyException CPPY_PLATFORM_os_info(std::string* const result);
+CPPY_API CPPY_ERROR_t CPPY_PLATFORM_os_info(std::string* const result);
 
-CPPY_API PyException CPPY_PLATFORM_cpu_percent(double* const percent, int interval = -1);
+CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int interval = -1);
 
-CPPY_API PyException CPPY_PLATFORM_memory(DWORDLONG* total, DWORDLONG* available);
+CPPY_API CPPY_ERROR_t CPPY_PLATFORM_memory(DWORDLONG* total, DWORDLONG* available);
 
 namespace cppy {
 	namespace internal {

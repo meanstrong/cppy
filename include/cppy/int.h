@@ -14,7 +14,7 @@
 *  by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
 *  Base 0 means to interpret the base from the string as an integer literal.
 */
-CPPY_API PyException CPPY_INT_init(int* const x, const std::string& str, int base=10);
+CPPY_API CPPY_ERROR_t CPPY_INT_init(int* const x, const std::string& str, int base=10);
 
 /* Number of bits necessary to represent self in binary.
 *
@@ -23,7 +23,7 @@ CPPY_API PyException CPPY_INT_init(int* const x, const std::string& str, int bas
 *  >>> (37).bit_length()
 *  6
 */
-CPPY_API PyException CPPY_INT_bit_length(int x, int* const result);
+CPPY_API CPPY_ERROR_t CPPY_INT_bit_length(int x, int* const result);
 
 /* Number of ones in the binary representation of the absolute value of self.
 *
@@ -34,7 +34,7 @@ CPPY_API PyException CPPY_INT_bit_length(int x, int* const result);
 *  >>> (13).bit_count()
 *  3
 */
-CPPY_API PyException CPPY_INT_bit_count(int x, int* const result);
+CPPY_API CPPY_ERROR_t CPPY_INT_bit_count(int x, int* const result);
 
 
 #endif // CPPY_INT_H

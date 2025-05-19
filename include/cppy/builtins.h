@@ -24,6 +24,6 @@
 *  >>> np.linspace(2.0, 3.0, 5, endpoint=False)
 *  array([2. ,  2.2,  2.4,  2.6,  2.8])
 */
-CPPY_API PyException CPPY_BUILTINS_linspace(double start, double end, int num, double result[], bool endpoint = true);
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_linspace(double start, double end, int num, double result[], bool endpoint = true);
 
 #endif // CPPY_BUILTINS_H

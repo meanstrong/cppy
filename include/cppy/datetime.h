@@ -8,12 +8,12 @@
 
 /* Construct a datetime
 */
-CPPY_API PyException CPPY_DATETIME_now(std::chrono::steady_clock::time_point* const time_point);
+CPPY_API CPPY_ERROR_t CPPY_DATETIME_now(std::chrono::steady_clock::time_point* const time_point);
 
 template <typename duration>
-CPPY_API PyException CPPY_DATETIME_duration(const std::chrono::steady_clock::time_point& start, const std::chrono::steady_clock::time_point& end, typename duration::rep* const result) {
+CPPY_API CPPY_ERROR_t CPPY_DATETIME_duration(const std::chrono::steady_clock::time_point& start, const std::chrono::steady_clock::time_point& end, typename duration::rep* const result) {
 	*result = std::chrono::duration_cast<duration>(end - start).count();
-	return PyException::Ok;
+	return CPPY_ERROR_t::Ok;
 }
 
 #endif // CPPY_DATETIME_H
