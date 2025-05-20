@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include <vector>
 
 #include "cppy/internal/declare.h"
 #include "cppy/typing.hpp"
@@ -9,40 +9,40 @@
 /* Built-in mutable sequence.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, int n, const T* elements) {
+CPPY_ERROR_t CPPY_VECTOR_init(std::vector<T>* const self, int n, const T* elements) {
 	CPPY_MutableSequence_clear(self);
 	return CPPY_MutableSequence_extend(self, elements, elements + n);
 }
 
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iteratable begin, Iteratable end) {
+CPPY_ERROR_t CPPY_VECTOR_init(std::vector<T>* const self, Iteratable begin, Iteratable end) {
 	CPPY_MutableSequence_clear(self);
 	return CPPY_MutableSequence_extend(self, begin, end);;
 }
 
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_contains(const std::list<T>& self, const T& element, bool* const result) {
+CPPY_ERROR_t CPPY_VECTOR_contains(const std::vector<T>& self, const T& element, bool* const result) {
 	return CPPY_Sequence_contains(self, element, result);
 }
 
 /* Append object to the end of the list
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_append(std::list<T>* const self, const T& element) {
+CPPY_ERROR_t CPPY_VECTOR_append(std::vector<T>* const self, const T& element) {
 	return CPPY_MutableSequence_append(self, element);
 }
 
 /* Remove all items from list.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_clear(std::list<T>* const self) {
+CPPY_ERROR_t CPPY_VECTOR_clear(std::vector<T>* const self) {
 	return CPPY_MutableSequence_clear(self);
 }
 
 /* Return a shallow copy of the list.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_copy(const std::list<T>& self, std::list<T>* const result) {
+CPPY_ERROR_t CPPY_VECTOR_copy(const std::vector<T>& self, std::vector<T>* const result) {
 	CPPY_MutableSequence_clear(result);
 	return CPPY_MutableSequence_extend(result, self.begin(), self.end());
 }
@@ -50,14 +50,14 @@ CPPY_ERROR_t CPPY_LIST_copy(const std::list<T>& self, std::list<T>* const result
 /* Return number of occurrences of value.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_count(const std::list<T>& self, const T& element, int* const count) {
+CPPY_ERROR_t CPPY_VECTOR_count(const std::vector<T>& self, const T& element, int* const count) {
 	return CPPY_Sequence_count(self, element, count);
 }
 
 /* Extend list by appending elements from the iterable.
 */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_LIST_extend(std::list<T>* const self, Iteratable begin, Iteratable end) {
+CPPY_ERROR_t CPPY_VECTOR_extend(std::vector<T>* const self, Iteratable begin, Iteratable end) {
 	return CPPY_MutableSequence_extend(self, begin, end);
 }
 
@@ -66,7 +66,7 @@ CPPY_ERROR_t CPPY_LIST_extend(std::list<T>* const self, Iteratable begin, Iterat
 *  Raises ValueError if the value is not present.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_index(const std::list<T>& self, const T& element, int* const index, int start = 0, int end = INT_MAX) {
+CPPY_ERROR_t CPPY_VECTOR_index(const std::vector<T>& self, const T& element, int* const index, int start = 0, int end = INT_MAX) {
 	return CPPY_Sequence_index(self, element, index, start, end);
 
 }
@@ -74,7 +74,7 @@ CPPY_ERROR_t CPPY_LIST_index(const std::list<T>& self, const T& element, int* co
 /* Insert object before index.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_insert(std::list<T>* const self, int index, const T& element) {
+CPPY_ERROR_t CPPY_VECTOR_insert(std::vector<T>* const self, int index, const T& element) {
 	return CPPY_MutableSequence_insert(self, index, element);
 }
 
@@ -83,7 +83,7 @@ CPPY_ERROR_t CPPY_LIST_insert(std::list<T>* const self, int index, const T& elem
 *  Raises IndexError if list is empty or index is out of range.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_pop(std::list<T>* self, T* element, int index = -1) {
+CPPY_ERROR_t CPPY_VECTOR_pop(std::vector<T>* const self, T* const element, int index = -1) {
 	return CPPY_MutableSequence_pop(self, element, index);
 }
 
@@ -92,27 +92,27 @@ CPPY_ERROR_t CPPY_LIST_pop(std::list<T>* self, T* element, int index = -1) {
 *  Raises ValueError if the value is not present.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_remove(std::list<T>* self, const T& element) {
+CPPY_ERROR_t CPPY_VECTOR_remove(std::vector<T>* self, const T& element) {
 	return CPPY_MutableSequence_remove(self, element);
 }
 
 /* Reverse *IN PLACE*.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_reverse(std::list<T>* self) {
+CPPY_ERROR_t CPPY_VECTOR_reverse(std::vector<T>* self) {
 	return CPPY_MutableSequence_reverse(self);
 }
 
 /* Sort the list in ascending order and return None.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_sort(std::list<T>* self) {
+CPPY_ERROR_t CPPY_VECTOR_sort(std::vector<T>* self) {
 	std::sort(self->begin(), self->end());
 	return CPPY_ERROR_t::Ok;
 }
 
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_eq(const std::list<T>& self, const std::list<T>& other, bool* const result) {
+CPPY_ERROR_t CPPY_VECTOR_eq(const std::vector<T>& self, const std::vector<T>& other, bool* const result) {
 	if (self.size() != other.size())
 	{
 		*result = false;
@@ -131,12 +131,12 @@ CPPY_ERROR_t CPPY_LIST_eq(const std::list<T>& self, const std::list<T>& other, b
 }
 
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_iter(const std::list<T>& self, T result[]) {
+CPPY_ERROR_t CPPY_VECTOR_iter(const std::vector<T>& self, T result[]) {
 	return CPPY_Iterable_iter(self, result);
 }
 
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_mul(const std::list<T>& self, int n, std::list<T>* result) {
+CPPY_ERROR_t CPPY_VECTOR_mul(const std::vector<T>& self, int n, std::vector<T>* result) {
 	CPPY_MutableSequence_clear(result);
 	if (n <= 0) return CPPY_ERROR_t::Ok;
 	if (n == 1)
