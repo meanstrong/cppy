@@ -23,4 +23,20 @@
 *  >>> np.linspace(2.0, 3.0, 5, endpoint=False)
 *  array([2. ,  2.2,  2.4,  2.6,  2.8])
 */
-CPPY_API CPPY_ERROR_t CPPY_BUILTINS_linspace(double start, double end, int num, double result[], bool endpoint = true);
+CPPY_API CPPY_ERROR_t CPPY_RANDOM_randint(double start, double end, int num, double result[], bool endpoint = true);
+
+/*
+* max(iterable, *[, default=obj, key=func]) -> value
+* max(arg1, arg2, *args, *[, key=func]) -> value
+*
+* With a single iterable argument, return its biggest item. The
+* default keyword-only argument specifies an object to return if
+* the provided iterable is empty.
+* With two or more arguments, return the largest argument.
+*/
+template <class Iterable>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_max(Iterable begin, Iterable end, Iterable& result)
+{
+	result = std::max_element(begin, end);
+	return CPPY_ERROR_t::Ok;
+};
