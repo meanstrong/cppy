@@ -9,3 +9,4 @@
 #include "cppy/io.hpp"
 #include "cppy/builtins.h"
 #include "cppy/datetime.h"
+#include "cppy/random.h"

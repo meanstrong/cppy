@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #include "cppy/internal/declare.h"
 #include "cppy/exception.h"
 
@@ -23,7 +25,7 @@
 *  >>> np.linspace(2.0, 3.0, 5, endpoint=False)
 *  array([2. ,  2.2,  2.4,  2.6,  2.8])
 */
-CPPY_API CPPY_ERROR_t CPPY_RANDOM_randint(double start, double end, int num, double result[], bool endpoint = true);
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_linspace(double start, double end, int num, double result[], bool endpoint = true);
 
 /*
 * max(iterable, *[, default=obj, key=func]) -> value
@@ -34,9 +36,61 @@ CPPY_API CPPY_ERROR_t CPPY_RANDOM_randint(double start, double end, int num, dou
 * the provided iterable is empty.
 * With two or more arguments, return the largest argument.
 */
-template <class Iterable>
-CPPY_API CPPY_ERROR_t CPPY_BUILTINS_max(Iterable begin, Iterable end, Iterable& result)
+template <class Iterable, class T>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_max(Iterable begin, Iterable end, T* const result)
 {
-	result = std::max_element(begin, end);
+	*result = *std::max_element(begin, end);
+	return CPPY_ERROR_t::Ok;
+};
+
+template <class Iterable, class T>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_max(Iterable iter, T* const result)
+{
+	return CPPY_BUILTINS_max(iter.begin(), iter.end(), result);
+};
+
+/*
+* min(iterable, *[, default=obj, key=func]) -> value
+* min(arg1, arg2, *args, *[, key=func]) -> value
+*
+* With a single iterable argument, return its smallest item. The
+* default keyword-only argument specifies an object to return if
+* the provided iterable is empty.
+* With two or more arguments, return the smallest argument.
+*/
+template <class Iterable, class T>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_min(Iterable begin, Iterable end, T* const result)
+{
+	*result = *std::min_element(begin, end);
+	return CPPY_ERROR_t::Ok;
+};
+
+template <class Iterable, class T>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_min(Iterable iter, T* const result)
+{
+	return CPPY_BUILTINS_min(iter.begin(), iter.end(), result);
+};
+
+/*
+* Return True if bool(x) is True for all values x in the iterable.
+*
+* If the iterable is empty, return True.
+*/
+template <class Iterable, class Pred>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_all(Iterable begin, Iterable end, Pred func, bool* const result)
+{
+	*result = std::all_of(begin, end, func);
+	return CPPY_ERROR_t::Ok;
+};
+
+/*
+* Return True if bool(x) is True for any x in the iterable.
+*
+* If the iterable is empty, return False.
+*/
+template <class Iterable, class Pred>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_any(Iterable begin, Iterable end, Pred func, bool* const result)
+{
+	*result = std::any_of(begin, end, func);
 	return CPPY_ERROR_t::Ok;
 };

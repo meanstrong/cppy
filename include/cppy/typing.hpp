@@ -77,7 +77,7 @@ CPPY_ERROR_t CPPY_Sequence_index(const Sequence& self, const Element& element, i
 
 template <typename Sequence, typename Element>
 CPPY_ERROR_t CPPY_Sequence_count(const Sequence& self, const Element& element, int* const count) {
-	*count = std::count(self.begin(), self.end(), element);
+	*count = (int)std::count(self.begin(), self.end(), element);
 	return CPPY_ERROR_t::Ok;
 }
 

@@ -885,6 +885,76 @@ TEST(TEST_CPPY_BUILTINS, linspace) {
 	}
 }
 
+TEST(TEST_CPPY_BUILTINS, _max) {
+	{
+		double data[5]{ 0., 2., 5., 3., 4. };
+		double result;
+		CPPY_BUILTINS_max(data, data + 5, &result);
+		EXPECT_NEAR(result, 5., 1.0e-16);
+	}
+	{
+		double result;
+		CPPY_BUILTINS_max(std::initializer_list{ 0., 2., 5., 3., 4. }, & result);
+		EXPECT_NEAR(result, 5., 1.0e-16);
+	}
+}
+
+TEST(TEST_CPPY_BUILTINS, _min) {
+	{
+		double data[5]{ 0., 2., 5., 3., 4. };
+		double result;
+		CPPY_BUILTINS_min(data, data + 5, &result);
+		EXPECT_NEAR(result, 0., 1.0e-16);
+	}
+	{
+		double result;
+		CPPY_BUILTINS_min(std::initializer_list{ 0., 2., 5., 3., 4. }, & result);
+		EXPECT_NEAR(result, 0., 1.0e-16);
+	}
+}
+
+TEST(TEST_CPPY_BUILTINS, all) {
+	{
+		std::vector<int> data{ 2, 1, 3, 4 };
+		bool result;
+		CPPY_BUILTINS_all(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+		EXPECT_TRUE(result);
+	}
+	{
+		std::vector<int> data{ 2, 1, 3, 4 };
+		bool result;
+		CPPY_BUILTINS_all(data.begin(), data.end(), [](int x) { return x > 1; }, &result);
+		EXPECT_FALSE(result);
+	}
+	{
+		std::vector<int> data;
+		bool result;
+		CPPY_BUILTINS_all(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+		EXPECT_TRUE(result);
+	}
+}
+
+TEST(TEST_CPPY_BUILTINS, any) {
+	{
+		std::vector<int> data{ 2, 1, 3, 4 };
+		bool result;
+		CPPY_BUILTINS_any(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+		EXPECT_TRUE(result);
+	}
+	{
+		std::vector<int> data{ 2, 1, 3, 4 };
+		bool result;
+		CPPY_BUILTINS_any(data.begin(), data.end(), [](int x) { return x > 4; }, &result);
+		EXPECT_FALSE(result);
+	}
+	{
+		std::vector<int> data;
+		bool result;
+		CPPY_BUILTINS_any(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+		EXPECT_FALSE(result);
+	}
+}
+
 TEST(TEST_CPPY_DATETIME, duration) {
 	std::chrono::steady_clock::time_point start, end;
 	CPPY_DATETIME_now(&start);
@@ -909,4 +979,22 @@ TEST(TEST_CPPY_ASSERT, assert) {
 		std::cout << result.message() << std::endl;
 	}
 
+}
+
+TEST(TEST_CPPY_RANDOM, random) {
+	{
+		double x;
+		CPPY_RANDOM_random(1.0, 10.0, &x);
+		EXPECT_GE(x, 1.0);
+		EXPECT_LT(x, 10.0);
+	}
+}
+
+TEST(TEST_CPPY_RANDOM, randint) {
+	{
+		int x;
+		CPPY_RANDOM_randint(1, 10, &x);
+		EXPECT_GE(x, 1);
+		EXPECT_LE(x, 10);
+	}
 }
