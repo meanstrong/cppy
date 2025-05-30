@@ -998,3 +998,18 @@ TEST(TEST_CPPY_RANDOM, randint) {
 		EXPECT_LE(x, 10);
 	}
 }
+
+TEST(TEST_CPPY_thread, thread_pool) {
+	ThreadPoolExecutor pool(static_cast<size_t>(4));
+	std::vector<int> args{ 1, 2, 3, 4 };
+	std::vector<std::future<int>> futures;
+
+	for (const int& x : args) {
+		futures.push_back(pool.submit([](const int x) { return x * 2; }, x));
+	}
+
+	for (size_t i = 0; i < args.size(); i++)
+	{
+		EXPECT_EQ(futures[i].get(), args[i] * 2);
+	}
+}
