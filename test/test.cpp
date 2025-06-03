@@ -854,18 +854,14 @@ TEST(TEST_CPPY_PLATFORM, cpu_percent) {
 
 TEST(TEST_CPPY_IO, text_file) {
 	{
-		std::ofstream stream;
-		CPPY_IO_open("D:\\1.txt", &stream, "w");
-		CPPY_IO_write(stream, "12345\n67890\n\n0000");
-		CPPY_IO_close(stream);
+		CPPY_IO_FileIO file = CPPY_IO_FileIO("D:\\1.txt", "w");
+		file.write("12345\n67890\n\n0000");
 	}
 	{
-		std::ifstream stream;
-		CPPY_IO_open("D:\\1.txt", &stream);
+		CPPY_IO_FileIO file = CPPY_IO_FileIO("D:\\1.txt");
 		std::string content;
-		while (CPPY_IO_readline(stream, &content) == CPPY_ERROR_t::Ok)
-			std::cout << content << std::endl;
-		CPPY_IO_close(stream);
+		file.readline(&content);
+		std::cout << content.c_str() << std::endl;
 	}
 
 }
