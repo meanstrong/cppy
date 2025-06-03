@@ -856,6 +856,7 @@ TEST(TEST_CPPY_IO, text_file) {
 	{
 		CPPY_IO_FileIO file = CPPY_IO_FileIO("D:\\1.txt", "w");
 		file.write("12345\n67890\n\n0000");
+		file.flush();
 	}
 	{
 		CPPY_IO_FileIO file = CPPY_IO_FileIO("D:\\1.txt");
