@@ -126,6 +126,23 @@ CPPY_API CPPY_ERROR_t CPPY_STR_slice(const std::string& str, std::string* const 
 */
 CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str, int n_iterables, const std::string iterable[], std::string* const result);
 
+template <class Iteratable, class Callable>
+CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str, Iteratable begin, Iteratable end, std::string* const result, Callable toString)
+{
+	if (begin == end)
+	{
+		*result = "";
+		return CPPY_ERROR_t::Ok;
+	}
+		
+	*result = toString(*begin);
+	while (++begin != end) {
+		*result += sep;
+		*result += toString(*begin);
+	}
+	return CPPY_ERROR_t::Ok;
+};
+
 /* Return a list of the substrings in the string, using sep as the separator string.
 *
 *  sep

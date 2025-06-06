@@ -105,7 +105,7 @@ std::string CPPY_IO_StringIO::getvalue() const { return _stream.str(); }
 CPPY_IO_FileIO::CPPY_IO_FileIO(const std::string& filename,
 	const std::string& mode)
 	: _mode(mode) {
-	std::ios_base::openmode open_mode = std::ios_base::binary;
+	std::ios_base::openmode open_mode = 0;
 
 	if (mode.find('r') != std::string::npos) {
 		open_mode |= std::ios_base::in;
@@ -118,6 +118,9 @@ CPPY_IO_FileIO::CPPY_IO_FileIO(const std::string& filename,
 	}
 	if (mode.find('+') != std::string::npos) {
 		open_mode |= std::ios_base::in | std::ios_base::out;
+	}
+	if (mode.find('b') != std::string::npos) {
+		open_mode |= std::ios_base::binary;
 	}
 
 	_file.open(filename, open_mode);
