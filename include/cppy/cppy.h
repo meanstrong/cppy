@@ -10,4 +10,4 @@
 #include "cppy/builtins.h"
 #include "cppy/datetime.h"
 #include "cppy/random.h"
-#include "cppy/thread.hpp"
+#include "cppy/thread.h"

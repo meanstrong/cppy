@@ -8,19 +8,22 @@
 #include <type_traits>        //invoke_result, enable_if, is_invocable
 #include <vector>             //vector
 
-CPPY_API class ThreadPoolExecutor {
-public:
-	CPPY_API ThreadPoolExecutor(size_t max_workers = std::thread::hardware_concurrency());
-	CPPY_API ~ThreadPoolExecutor();
+#include "cppy/internal/declare.h"
+#include "cppy/exception.h"
 
-	ThreadPoolExecutor(const ThreadPoolExecutor& other) = delete;
-	ThreadPoolExecutor& operator=(const ThreadPoolExecutor&) = delete;
+class CPPY_API CPPY_CONCURRENT_ThreadPoolExecutor {
+public:
+	CPPY_CONCURRENT_ThreadPoolExecutor(size_t max_workers = std::thread::hardware_concurrency());
+	~CPPY_CONCURRENT_ThreadPoolExecutor();
+
+	CPPY_CONCURRENT_ThreadPoolExecutor(const CPPY_CONCURRENT_ThreadPoolExecutor& other) = delete;
+	CPPY_CONCURRENT_ThreadPoolExecutor& operator=(const CPPY_CONCURRENT_ThreadPoolExecutor&) = delete;
 
 	template <typename F, typename... Args,
 		std::enable_if_t<std::is_invocable_v<F&&, Args &&...>, int> = 0>
 	auto submit(F&&, Args &&...);
 
-	CPPY_API void shutdown();
+	void shutdown();
 
 private:
 	//_task_container_base and _task_container exist simply as a wrapper around a
@@ -71,7 +74,7 @@ private:
 
 template <typename F, typename... Args,
 	std::enable_if_t<std::is_invocable_v<F&&, Args &&...>, int>>
-	auto ThreadPoolExecutor::submit(F&& function, Args &&...args) {
+	auto CPPY_CONCURRENT_ThreadPoolExecutor::submit(F&& function, Args &&...args) {
 	std::unique_lock<std::mutex> queue_lock(_task_mutex, std::defer_lock);
 	std::packaged_task<std::invoke_result_t<F, Args...>()> task_pkg(
 		// in C++20, this could be:
@@ -95,54 +98,4 @@ template <typename F, typename... Args,
 	_task_cv.notify_one();
 
 	return std::move(future);
-}
-
-CPPY_API ThreadPoolExecutor::ThreadPoolExecutor(size_t max_workers) {
-	for (size_t i = 0; i < max_workers; ++i) {
-		// start waiting threads. Workers listen for changes through
-		//  the thread_pool member condition_variable
-		_threads.emplace_back(std::thread([&]() {
-			std::unique_lock<std::mutex> queue_lock(_task_mutex, std::defer_lock);
-
-			while (true) {
-				queue_lock.lock();
-				_task_cv.wait(queue_lock, [&]() -> bool {
-					return !_tasks.empty() || _stop_threads;
-					});
-
-				// used by dtor to stop all threads without having to
-				//  unceremoniously stop tasks. The tasks must all be
-				//  finished, lest we break a promise and risk a `future`
-				//  object throwing an exception.
-				if (_stop_threads && _tasks.empty())
-					return;
-
-				// to initialize temp_task, we must move the unique_ptr
-				//  from the queue to the local stack. Since a unique_ptr
-				//  cannot be copied (obviously), it must be explicitly
-				//  moved. This transfers ownership of the pointed-to
-				//  object to *this, as specified in 20.11.1.2.1
-				//  [unique.ptr.single.ctor].
-				auto temp_task = std::move(_tasks.front());
-
-				_tasks.pop();
-				queue_lock.unlock();
-
-				(*temp_task)();
-			}
-			}));
-	}
-}
-
-CPPY_API void ThreadPoolExecutor::shutdown() {
-	_stop_threads = true;
-	_task_cv.notify_all();
-
-	for (std::thread& thread : _threads) {
-		thread.join();
-	}
-}
-
-CPPY_API ThreadPoolExecutor::~ThreadPoolExecutor() {
-	shutdown();
 }

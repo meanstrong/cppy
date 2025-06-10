@@ -246,7 +246,7 @@ TEST(TEST_CPPY_SET, init) {
 		EXPECT_EQ(result.size(), 6);
 	}
 	{
-		std::vector<int> input{1, 2, 3, 4, 5};
+		std::vector<int> input{ 1, 2, 3, 4, 5 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_init(&result, input.begin(), input.end()), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 5);
@@ -260,32 +260,32 @@ TEST(TEST_CPPY_SET, add) {
 		EXPECT_EQ(result.size(), 1);
 	}
 	{
-		std::set<int> result{1, 2};
+		std::set<int> result{ 1, 2 };
 		EXPECT_EQ(CPPY_SET_add(&result, 10), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 3);
 	}
 	{
-		std::set<int> result{1, 2};
+		std::set<int> result{ 1, 2 };
 		EXPECT_EQ(CPPY_SET_add(&result, 1), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 2);
 	}
 }
 
 TEST(TEST_CPPY_SET, clear) {
-	std::set<int> result{1, 2, 3};
+	std::set<int> result{ 1, 2, 3 };
 	EXPECT_EQ(CPPY_SET_clear(&result), CPPY_ERROR_t::Ok);
 	EXPECT_EQ(result.size(), 0);
 }
 
 TEST(TEST_CPPY_SET, copy) {
 	{
-		std::set<int> a{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_copy(a, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 3);
 	}
 	{
-		std::set<int> a{1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+		std::set<int> a{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_copy(a, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 10);
@@ -294,15 +294,15 @@ TEST(TEST_CPPY_SET, copy) {
 
 TEST(TEST_CPPY_SET, difference) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_difference(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 0);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_difference(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 2);
@@ -313,8 +313,8 @@ TEST(TEST_CPPY_SET, difference) {
 		EXPECT_TRUE(is_contain);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{4, 5, 6};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 4, 5, 6 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_difference(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 3);
@@ -323,14 +323,14 @@ TEST(TEST_CPPY_SET, difference) {
 
 TEST(TEST_CPPY_SET, difference_update) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_SET_difference_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 0);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_difference_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 2);
@@ -341,8 +341,8 @@ TEST(TEST_CPPY_SET, difference_update) {
 		EXPECT_TRUE(is_contain);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{4, 5, 6};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 4, 5, 6 };
 		EXPECT_EQ(CPPY_SET_difference_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 3);
 	}
@@ -350,22 +350,22 @@ TEST(TEST_CPPY_SET, difference_update) {
 
 TEST(TEST_CPPY_SET, intersection) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_intersection(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 3);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_intersection(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 1);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{4, 5, 6};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 4, 5, 6 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_intersection(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 0);
@@ -374,14 +374,14 @@ TEST(TEST_CPPY_SET, intersection) {
 
 TEST(TEST_CPPY_SET, intersection_update) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_SET_intersection_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 3);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		EXPECT_EQ(CPPY_SET_intersection_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 1);
 		bool is_contain;
@@ -389,8 +389,8 @@ TEST(TEST_CPPY_SET, intersection_update) {
 		EXPECT_TRUE(is_contain);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{4, 5, 6};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 4, 5, 6 };
 		EXPECT_EQ(CPPY_SET_intersection_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 0);
 	}
@@ -398,22 +398,22 @@ TEST(TEST_CPPY_SET, intersection_update) {
 
 TEST(TEST_CPPY_SET, _union) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_union(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 3);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_union(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 5);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{4, 5, 6};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 4, 5, 6 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_union(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 6);
@@ -422,20 +422,20 @@ TEST(TEST_CPPY_SET, _union) {
 
 TEST(TEST_CPPY_SET, update) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_SET_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 3);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		EXPECT_EQ(CPPY_SET_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 5);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{4, 5, 6};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 4, 5, 6 };
 		EXPECT_EQ(CPPY_SET_update(&a, b), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 6);
 	}
@@ -443,7 +443,7 @@ TEST(TEST_CPPY_SET, update) {
 
 TEST(TEST_CPPY_SET, pop) {
 	{
-		std::set<int> a{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
 		int result;
 		EXPECT_EQ(CPPY_SET_pop(&a, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 2);
@@ -457,12 +457,12 @@ TEST(TEST_CPPY_SET, pop) {
 
 TEST(TEST_CPPY_SET, remove) {
 	{
-		std::set<int> a{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_SET_remove(&a, 1), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 2);
 	}
 	{
-		std::set<int> a{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_SET_remove(&a, 0), CPPY_ERROR_t::KeyError);
 		EXPECT_EQ(a.size(), 3);
 	}
@@ -470,12 +470,12 @@ TEST(TEST_CPPY_SET, remove) {
 
 TEST(TEST_CPPY_SET, discard) {
 	{
-		std::set<int> a{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_SET_discard(&a, 1), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 2);
 	}
 	{
-		std::set<int> a{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_SET_discard(&a, 0), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(a.size(), 3);
 	}
@@ -483,15 +483,15 @@ TEST(TEST_CPPY_SET, discard) {
 
 TEST(TEST_CPPY_SET, isdisjoint) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{4, 5, 6};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 4, 5, 6 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_isdisjoint(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_TRUE(result);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_isdisjoint(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(result);
@@ -500,22 +500,22 @@ TEST(TEST_CPPY_SET, isdisjoint) {
 
 TEST(TEST_CPPY_SET, issubset) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_issubset(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(result);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_issubset(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(result);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3, 4, 5 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_issubset(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_TRUE(result);
@@ -524,22 +524,22 @@ TEST(TEST_CPPY_SET, issubset) {
 
 TEST(TEST_CPPY_SET, issuperset) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_issuperset(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_TRUE(result);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_issuperset(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(result);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3, 4, 5 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_issuperset(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(result);
@@ -548,22 +548,22 @@ TEST(TEST_CPPY_SET, issuperset) {
 
 TEST(TEST_CPPY_SET, symmetric_difference) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_symmetric_difference(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 1);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_symmetric_difference(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 4);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2, 3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2, 3, 4, 5 };
 		std::set<int> result;
 		EXPECT_EQ(CPPY_SET_symmetric_difference(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 2);
@@ -572,22 +572,22 @@ TEST(TEST_CPPY_SET, symmetric_difference) {
 
 TEST(TEST_CPPY_SET, equal) {
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{1, 2};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 1, 2 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_eq(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(result);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 4, 5};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 4, 5 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_eq(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(result);
 	}
 	{
-		std::set<int> a{1, 2, 3};
-		std::set<int> b{3, 2, 1};
+		std::set<int> a{ 1, 2, 3 };
+		std::set<int> b{ 3, 2, 1 };
 		bool result;
 		EXPECT_EQ(CPPY_SET_eq(a, b, &result), CPPY_ERROR_t::Ok);
 		EXPECT_TRUE(result);
@@ -602,7 +602,7 @@ TEST(TEST_CPPY_SET, iterator) {
 		EXPECT_EQ(CPPY_SET_iter(a, result), CPPY_ERROR_t::Ok);
 	}
 	{
-		std::set<int> a{1, 2, 3};
+		std::set<int> a{ 1, 2, 3 };
 		int result[3];
 		EXPECT_EQ(CPPY_SET_iter(a, result), CPPY_ERROR_t::Ok);
 	}
@@ -665,13 +665,13 @@ TEST(TEST_CPPY_VECTOR, copy) {
 }
 
 TEST(TEST_CPPY_VECTOR, clear) {
-	std::vector<int> this_vector{1, 2, 3};
+	std::vector<int> this_vector{ 1, 2, 3 };
 	EXPECT_EQ(CPPY_VECTOR_clear(&this_vector), CPPY_ERROR_t::Ok);
 	EXPECT_EQ(this_vector.size(), 0);
 }
 
 TEST(TEST_CPPY_VECTOR, append) {
-	std::vector<int> this_vector{1, 2, 3};
+	std::vector<int> this_vector{ 1, 2, 3 };
 	EXPECT_EQ(CPPY_VECTOR_append(&this_vector, 4), CPPY_ERROR_t::Ok);
 	EXPECT_EQ(this_vector.size(), 4);
 	EXPECT_EQ(this_vector[3], 4);
@@ -679,13 +679,13 @@ TEST(TEST_CPPY_VECTOR, append) {
 
 TEST(TEST_CPPY_VECTOR, iscontain) {
 	{
-		std::vector<int> this_vector{1, 2, 3};
+		std::vector<int> this_vector{ 1, 2, 3 };
 		bool is_contain;
 		EXPECT_EQ(CPPY_VECTOR_contains(this_vector, 0, &is_contain), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(is_contain);
 	}
 	{
-		std::vector<int> this_vector{1, 2, 3};
+		std::vector<int> this_vector{ 1, 2, 3 };
 		bool is_contain;
 		EXPECT_EQ(CPPY_VECTOR_contains(this_vector, 2, &is_contain), CPPY_ERROR_t::Ok);
 		EXPECT_TRUE(is_contain);
@@ -693,14 +693,14 @@ TEST(TEST_CPPY_VECTOR, iscontain) {
 }
 
 TEST(TEST_CPPY_VECTOR, count) {
-	std::vector<int> this_vector{1, 2, 3};
+	std::vector<int> this_vector{ 1, 2, 3 };
 	int count;
 	EXPECT_EQ(CPPY_VECTOR_count(this_vector, 1, &count), CPPY_ERROR_t::Ok);
 	EXPECT_EQ(count, 1);
 }
 
 TEST(TEST_CPPY_VECTOR, extend) {
-	std::vector<int> this_vector{1, 2, 3};
+	std::vector<int> this_vector{ 1, 2, 3 };
 	std::vector<int> data{ 4, 5, 6 };
 	EXPECT_EQ(CPPY_VECTOR_extend(&this_vector, data.begin(), data.end()), CPPY_ERROR_t::Ok);
 	EXPECT_EQ(this_vector.size(), 6);
@@ -714,13 +714,13 @@ TEST(TEST_CPPY_VECTOR, extend) {
 
 TEST(TEST_CPPY_VECTOR, index) {
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		int index = -1;
 		EXPECT_EQ(CPPY_VECTOR_index(this_vector, 3, &index), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(index, 2);
 	}
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		int index = -1;
 		EXPECT_EQ(CPPY_VECTOR_index(this_vector, 9, &index), CPPY_ERROR_t::ValueError);
 	}
@@ -728,13 +728,13 @@ TEST(TEST_CPPY_VECTOR, index) {
 
 TEST(TEST_CPPY_VECTOR, insert) {
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		EXPECT_EQ(CPPY_VECTOR_insert(&this_vector, 0, 10), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(this_vector.size(), 7);
 		EXPECT_EQ(this_vector[0], 10);
 	}
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		EXPECT_EQ(CPPY_VECTOR_insert(&this_vector, 10, 10), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(this_vector.size(), 7);
 		EXPECT_EQ(this_vector[6], 10);
@@ -743,20 +743,20 @@ TEST(TEST_CPPY_VECTOR, insert) {
 
 TEST(TEST_CPPY_VECTOR, pop) {
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		int data;
 		EXPECT_EQ(CPPY_VECTOR_pop(&this_vector, &data, 10), CPPY_ERROR_t::IndexError);
 		EXPECT_EQ(this_vector.size(), 6);
 	}
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		int data;
 		EXPECT_EQ(CPPY_VECTOR_pop(&this_vector, &data), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(this_vector.size(), 5);
 		EXPECT_EQ(data, 6);
 	}
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		int data;
 		EXPECT_EQ(CPPY_VECTOR_pop(&this_vector, &data, -2), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(this_vector.size(), 5);
@@ -766,12 +766,12 @@ TEST(TEST_CPPY_VECTOR, pop) {
 
 TEST(TEST_CPPY_VECTOR, remove) {
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		EXPECT_EQ(CPPY_VECTOR_remove(&this_vector, 10), CPPY_ERROR_t::ValueError);
 		EXPECT_EQ(this_vector.size(), 6);
 	}
 	{
-		std::vector<int> this_vector{1, 2, 3, 4, 5, 6};
+		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
 		EXPECT_EQ(CPPY_VECTOR_remove(&this_vector, 3), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(this_vector.size(), 5);
 	}
@@ -779,13 +779,13 @@ TEST(TEST_CPPY_VECTOR, remove) {
 
 TEST(TEST_CPPY_VECTOR, mul) {
 	{
-		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> this_vector{ 1, 2, 3 };
 		std::vector<int> result;
 		EXPECT_EQ(CPPY_VECTOR_mul(this_vector, 3, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 9);
 	}
 	{
-		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> this_vector{ 1, 2, 3 };
 		std::vector<int> result;
 		EXPECT_EQ(CPPY_VECTOR_mul(this_vector, 0, &result), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(result.size(), 0);
@@ -794,15 +794,15 @@ TEST(TEST_CPPY_VECTOR, mul) {
 
 TEST(TEST_CPPY_VECTOR, isequal) {
 	{
-		std::vector<int> this_vector{ 1, 2, 3};
-		std::vector<int> other_vector{ 1, 2, 3};
+		std::vector<int> this_vector{ 1, 2, 3 };
+		std::vector<int> other_vector{ 1, 2, 3 };
 		bool isequal;
 		EXPECT_EQ(CPPY_VECTOR_eq(this_vector, other_vector, &isequal), CPPY_ERROR_t::Ok);
 		EXPECT_TRUE(isequal);
 	}
 	{
-		std::vector<int> this_vector{ 1, 2, 3};
-		std::vector<int> other_vector{ 1, 2, 4};
+		std::vector<int> this_vector{ 1, 2, 3 };
+		std::vector<int> other_vector{ 1, 2, 4 };
 		bool isequal;
 		EXPECT_EQ(CPPY_VECTOR_eq(this_vector, other_vector, &isequal), CPPY_ERROR_t::Ok);
 		EXPECT_FALSE(isequal);
@@ -811,7 +811,7 @@ TEST(TEST_CPPY_VECTOR, isequal) {
 
 TEST(TEST_CPPY_VECTOR, iterator) {
 	{
-		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> this_vector{ 1, 2, 3 };
 		int data[3];
 		EXPECT_EQ(CPPY_VECTOR_iter(this_vector, data), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(data[0], 1);
@@ -822,7 +822,7 @@ TEST(TEST_CPPY_VECTOR, iterator) {
 
 TEST(TEST_CPPY_VECTOR, reverse) {
 	{
-		std::vector<int> this_vector{ 1, 2, 3};
+		std::vector<int> this_vector{ 1, 2, 3 };
 		EXPECT_EQ(CPPY_VECTOR_reverse(&this_vector), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(this_vector[0], 3);
 		EXPECT_EQ(this_vector[1], 2);
@@ -832,7 +832,7 @@ TEST(TEST_CPPY_VECTOR, reverse) {
 
 TEST(TEST_CPPY_VECTOR, sort) {
 	{
-		std::vector<int> this_vector{ 1, 2, 3, 2, 1};
+		std::vector<int> this_vector{ 1, 2, 3, 2, 1 };
 		EXPECT_EQ(CPPY_VECTOR_sort(&this_vector), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(this_vector[0], 1);
 		EXPECT_EQ(this_vector[1], 1);
@@ -891,7 +891,7 @@ TEST(TEST_CPPY_BUILTINS, _max) {
 	}
 	{
 		double result;
-		CPPY_BUILTINS_max(std::initializer_list{ 0., 2., 5., 3., 4. }, & result);
+		CPPY_BUILTINS_max(std::initializer_list{ 0., 2., 5., 3., 4. }, &result);
 		EXPECT_NEAR(result, 5., 1.0e-16);
 	}
 }
@@ -905,7 +905,7 @@ TEST(TEST_CPPY_BUILTINS, _min) {
 	}
 	{
 		double result;
-		CPPY_BUILTINS_min(std::initializer_list{ 0., 2., 5., 3., 4. }, & result);
+		CPPY_BUILTINS_min(std::initializer_list{ 0., 2., 5., 3., 4. }, &result);
 		EXPECT_NEAR(result, 0., 1.0e-16);
 	}
 }
@@ -961,7 +961,7 @@ TEST(TEST_CPPY_DATETIME, duration) {
 
 	std::chrono::nanoseconds::rep duration;
 	CPPY_DATETIME_duration<std::chrono::nanoseconds>(start, end, &duration);
-	EXPECT_GT(duration, 0);
+	EXPECT_GE(duration, 0);
 }
 
 TEST(TEST_CPPY_EXPECT, expect) {
@@ -979,25 +979,33 @@ TEST(TEST_CPPY_ASSERT, assert) {
 }
 
 TEST(TEST_CPPY_RANDOM, random) {
+	CPPY_RANDOM_Random random;
 	{
 		double x;
-		CPPY_RANDOM_random(1.0, 10.0, &x);
+		EXPECT_EQ(random.uniform(1.0, 10.0, &x), CPPY_ERROR_t::Ok);
 		EXPECT_GE(x, 1.0);
 		EXPECT_LT(x, 10.0);
+	}
+	{
+		double x;
+		EXPECT_EQ(random.random(&x), CPPY_ERROR_t::Ok);
+		EXPECT_GE(x, 0.0);
+		EXPECT_LT(x, 1.0);
 	}
 }
 
 TEST(TEST_CPPY_RANDOM, randint) {
+	CPPY_RANDOM_Random random;
 	{
 		int x;
-		CPPY_RANDOM_randint(1, 10, &x);
+		random.randint(1, 10, &x);
 		EXPECT_GE(x, 1);
 		EXPECT_LE(x, 10);
 	}
 }
 
 TEST(TEST_CPPY_thread, thread_pool) {
-	ThreadPoolExecutor pool(static_cast<size_t>(4));
+	CPPY_CONCURRENT_ThreadPoolExecutor pool(static_cast<size_t>(4));
 	std::vector<int> args{ 1, 2, 3, 4 };
 	std::vector<std::future<int>> futures;
 

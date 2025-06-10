@@ -189,6 +189,7 @@ CPPY_ERROR_t CPPY_SET_discard(std::set<T>* self, const T& element) {
 */
 template <typename T>
 CPPY_ERROR_t CPPY_SET_isdisjoint(const std::set<T>& self, const std::set<T>& other, bool* const result) {
+	*result = true;
 	for (auto it = self.begin(); it != self.end(); ++it) {
 		if (other.find(*it) != other.end()) {
 			*result = false;
@@ -208,6 +209,7 @@ CPPY_ERROR_t CPPY_SET_issubset(const std::set<T>& self, const std::set<T>& other
 		return CPPY_ERROR_t::Ok;
 	}
 
+	*result = true;
 	for (auto it = self.begin(); it != self.end(); ++it) {
 		if (other.find(*it) == other.end()) {
 			*result = false;
@@ -227,6 +229,7 @@ CPPY_ERROR_t CPPY_SET_issuperset(const std::set<T>& self, const std::set<T>& oth
 		return CPPY_ERROR_t::Ok;
 	}
 
+	*result = true;
 	for (auto it = other.begin(); it != other.end(); ++it) {
 		if (self.find(*it) == self.end()) {
 			*result = false;
@@ -243,15 +246,16 @@ CPPY_ERROR_t CPPY_SET_eq(const std::set<T>& self, const std::set<T>& other, bool
 		*result = false;
 		return CPPY_ERROR_t::Ok;
 	}
+
+	*result = true;
 	for (auto it = self.begin(); it != self.end(); it++)
 	{
 		if (other.count(*it) == 0)
 		{
 			*result = false;
-			return CPPY_ERROR_t::Ok;
+			break;
 		}
 	}
-	*result = true;
 	return CPPY_ERROR_t::Ok;
 }
 
