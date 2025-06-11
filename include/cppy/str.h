@@ -137,7 +137,7 @@ CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str, Iteratable begin, It
 		
 	*result = toString(*begin);
 	while (++begin != end) {
-		*result += sep;
+		*result += str;
 		*result += toString(*begin);
 	}
 	return CPPY_ERROR_t::Ok;
@@ -159,8 +159,8 @@ CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str, Iteratable begin, It
 *  delimited.  With natural text that includes punctuation, consider using
 *  the regular expression module.
 */
-template <typename StringList>
-CPPY_API CPPY_ERROR_t CPPY_STR_split(const std::string& str, StringList* const result, int maxsplit = INT_MAX) {
+template <typename AppendableStringSequence>
+CPPY_API CPPY_ERROR_t CPPY_STR_split(const std::string& str, AppendableStringSequence* const result, int maxsplit = INT_MAX) {
 	if (maxsplit < 0) maxsplit = INT_MAX;
 	std::string::size_type i, j, len = str.size();
 	for (i = j = 0; i < len; )
@@ -190,8 +190,8 @@ CPPY_API CPPY_ERROR_t CPPY_STR_split(const std::string& str, StringList* const r
 	return CPPY_ERROR_t::Ok;
 };
 
-template <typename StringList>
-CPPY_API CPPY_ERROR_t CPPY_STR_split(const std::string& str, StringList* const result, const std::string& sep, int maxsplit = INT_MAX) {
+template <typename AppendableStringSequence>
+CPPY_API CPPY_ERROR_t CPPY_STR_split(const std::string& str, AppendableStringSequence* const result, const std::string& sep, int maxsplit = INT_MAX) {
 	if (maxsplit < 0) maxsplit = INT_MAX;
 
 	// split on any whitespace character
@@ -221,8 +221,8 @@ CPPY_API CPPY_ERROR_t CPPY_STR_split(const std::string& str, StringList* const r
 	return CPPY_ERROR_t::Ok;
 };
 
-template <typename StringList>
-CPPY_API CPPY_ERROR_t CPPY_STR_rsplit(const std::string& str, StringList* const result, int maxsplit = INT_MAX) {
+template <typename AppendableStringSequence>
+CPPY_API CPPY_ERROR_t CPPY_STR_rsplit(const std::string& str, AppendableStringSequence* const result, int maxsplit = INT_MAX) {
 	if (maxsplit < 0)
 		return CPPY_STR_split(str, result, maxsplit);
 
@@ -253,8 +253,8 @@ CPPY_API CPPY_ERROR_t CPPY_STR_rsplit(const std::string& str, StringList* const 
 	return CPPY_ERROR_t::Ok;
 };
 
-template <typename StringList>
-CPPY_API CPPY_ERROR_t CPPY_STR_rsplit(const std::string& str, StringList* const result, const std::string& sep, int maxsplit = INT_MAX) {
+template <typename AppendableStringSequence>
+CPPY_API CPPY_ERROR_t CPPY_STR_rsplit(const std::string& str, AppendableStringSequence* const result, const std::string& sep, int maxsplit = INT_MAX) {
 	if (maxsplit < 0)
 		return CPPY_STR_split(str, result, sep, maxsplit);
 
@@ -326,8 +326,8 @@ CPPY_API CPPY_ERROR_t CPPY_STR_expandtabs(const std::string& str, std::string* c
 *  Line breaks are not included in the resulting list unless keepends is given and
 *  true
 */
-template <typename StringList>
-CPPY_API CPPY_ERROR_t CPPY_STR_splitlines(const std::string& str, StringList* const result, bool keepends = false) {
+template <typename AppendableStringSequence>
+CPPY_API CPPY_ERROR_t CPPY_STR_splitlines(const std::string& str, AppendableStringSequence* const result, bool keepends = false) {
 	std::string::size_type len = str.size(), i, j, eol;
 
 	for (i = j = 0; i < len; )
