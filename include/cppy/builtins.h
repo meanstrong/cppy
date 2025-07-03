@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <numeric>  // accumulate
 
 #include "cppy/internal/declare.h"
 #include "cppy/exception.h"
@@ -43,12 +44,6 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_max(Iterable begin, Iterable end, T* const r
 	return CPPY_ERROR_t::Ok;
 };
 
-template <class Iterable, class T>
-CPPY_API CPPY_ERROR_t CPPY_BUILTINS_max(Iterable iter, T* const result)
-{
-	return CPPY_BUILTINS_max(iter.begin(), iter.end(), result);
-};
-
 /*
 * min(iterable, *[, default=obj, key=func]) -> value
 * min(arg1, arg2, *args, *[, key=func]) -> value
@@ -63,12 +58,6 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_min(Iterable begin, Iterable end, T* const r
 {
 	*result = *std::min_element(begin, end);
 	return CPPY_ERROR_t::Ok;
-};
-
-template <class Iterable, class T>
-CPPY_API CPPY_ERROR_t CPPY_BUILTINS_min(Iterable iter, T* const result)
-{
-	return CPPY_BUILTINS_min(iter.begin(), iter.end(), result);
 };
 
 /*
@@ -92,5 +81,19 @@ template <class Iterable, class Pred>
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_any(Iterable begin, Iterable end, Pred func, bool* const result)
 {
 	*result = std::any_of(begin, end, func);
+	return CPPY_ERROR_t::Ok;
+};
+
+/*
+* Return the sum of a 'start' value (default: 0) plus an iterable of numbers
+* 
+* When the iterable is empty, return the start value.
+* This function is intended specifically for use with numeric values and may
+* reject non-numeric types.
+*/
+template <class Iterable, typename AddableT>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sum(Iterable begin, Iterable end, AddableT start, AddableT* const result)
+{
+	*result = std::accumulate(begin, end, start);
 	return CPPY_ERROR_t::Ok;
 };
