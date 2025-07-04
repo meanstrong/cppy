@@ -97,3 +97,14 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sum(Iterable begin, Iterable end, AddableT s
 	*result = std::accumulate(begin, end, start);
 	return CPPY_ERROR_t::Ok;
 };
+
+/*
+* Return the tuple (x//y, x%y).  Invariant: div*y + mod == x.
+*/
+template <typename T>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_divmod(T x, T y, T* const div, T* const mod)
+{
+	*div = x / y;
+	*mod = x % y
+	return CPPY_ERROR_t::Ok;
+};

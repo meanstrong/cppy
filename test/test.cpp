@@ -981,6 +981,19 @@ TEST(TEST_CPPY_DATETIME, duration) {
 	EXPECT_GE(duration, 0);
 }
 
+TEST(TEST_CPPY_DATETIME, strftime) {
+	{
+		std::string strftime;
+		CPPY_DATETIME_strftime(std::time(nullptr), &strftime);
+		EXPECT_EQ(strftime.size(), 19);
+	}
+	{
+		std::string strftime;
+		CPPY_DATETIME_strftime(std::time(nullptr), &strftime, "%Y");
+		EXPECT_EQ(strftime.size(), 4);
+	}
+}
+
 TEST(TEST_CPPY_EXPECT, expect) {
 	CPPY_EXPECT(true) << "this is true";
 	CPPY_EXPECT(false) << "this is false";
