@@ -115,7 +115,7 @@ CPPY_API CPPY_ERROR_t CPPY_STR_strip(const std::string& str, std::string* const 
 *
 *  sub-string from the given string by slicing it respectively from start to end.
 */
-CPPY_API CPPY_ERROR_t CPPY_STR_slice(const std::string& str, std::string* const result, int start=0, int stop=INT_MAX, int step = 1);
+CPPY_API CPPY_ERROR_t CPPY_STR_slice(const std::string& str, std::string* const result, int start = 0, int stop = INT_MAX, int step = 1);
 
 /* Concatenate any number of strings.
 *
@@ -134,7 +134,7 @@ CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str, Iteratable begin, It
 		*result = "";
 		return CPPY_ERROR_t::Ok;
 	}
-		
+
 	*result = toString(*begin);
 	while (++begin != end) {
 		*result += str;
@@ -248,7 +248,7 @@ CPPY_API CPPY_ERROR_t CPPY_STR_rsplit(const std::string& str, AppendableStringSe
 	if (j > 0)
 		result->push_back(str.substr(0, j));
 
-	std::reverse(result->begin(), result->end() );
+	std::reverse(result->begin(), result->end());
 
 	return CPPY_ERROR_t::Ok;
 };
@@ -482,7 +482,28 @@ CPPY_API CPPY_ERROR_t CPPY_STR_isequal(const std::string& str, const std::string
 
 CPPY_API CPPY_ERROR_t CPPY_STR_mul(const std::string& str, int n, std::string* const result);
 
-CPPY_API CPPY_ERROR_t CPPY_STR_encode(const std::wstring& wstr, std::string* const result);
+
+#ifdef _WIN32
+/* Encode the string using the codec registered for encoding.
+*
+* encoding
+* 	The encoding in which to encode the string. like CP_UTF8
+* errors
+*   The error handling scheme to use for encoding errors.
+* 	The default is 'strict' meaning that encoding errors raise a
+* 	UnicodeEncodeError.  Other possible values are 'ignore', 'replace' and
+* 	'xmlcharrefreplace' as well as any other name registered with
+* 	codecs.register_error that can handle UnicodeEncodeErrors.
+*/
+CPPY_API CPPY_ERROR_t CPPY_STR_encode(const std::wstring& wstr, std::string* const result, unsigned int encoding);
+CPPY_API CPPY_ERROR_t CPPY_STR_decode(const std::string& str, std::wstring* const result, unsigned int encoding);
+
+#else
+
+CPPY_API CPPY_ERROR_t CPPY_STR_encode(const std::wstring& wstr, std::string* const result, const char* encoding);
+CPPY_API CPPY_ERROR_t CPPY_STR_decode(const std::string& str, std::wstring* const result, const char* encoding);
+
+#endif
 
 namespace cppy {
 	namespace internal {

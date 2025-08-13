@@ -161,7 +161,7 @@ TEST(TEST_CPPY_STR, at) {
 
 TEST(TEST_CPPY_STR, encode) {
 	std::string result;
-	EXPECT_EQ(CPPY_STR_encode(L"中文", &result), CPPY_ERROR_t::Ok);
+	EXPECT_EQ(CPPY_STR_encode(L"中文", &result, CP_UTF8), CPPY_ERROR_t::Ok);
 	char c;
 	char expect[6]{ 0xe4, 0xb8, 0xad, 0xe6, 0x96, 0x87 };
 	for (int i = 0; i < 6; i++)

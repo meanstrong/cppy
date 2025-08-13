@@ -2,7 +2,11 @@
 #include <iomanip>
 #include<sstream>
 #include <algorithm>
-#include <Windows.h>
+#ifdef _WIN32
+#    include <windows.h>
+#else
+#    include <iconv.h>
+#endif
 
 #include "cppy/str.h"
 
@@ -14,7 +18,7 @@ CPPY_API CPPY_ERROR_t CPPY_STR_init(const char* chars, std::string* const str) {
 
 CPPY_API CPPY_ERROR_t CPPY_STR_init(double d, std::string* const str, int precision) {
 	std::ostringstream ss;
-	std::string nstr{""}, estr{ "" };
+	std::string nstr{ "" }, estr{ "" };
 	if ((d > -1.0e15 && d < -1.0e-5) || (d > 1.0e-5 && d < 1.0e15))
 	{
 		ss << std::fixed << std::setprecision(precision) << d;
@@ -750,13 +754,74 @@ CPPY_API CPPY_ERROR_t CPPY_STR_mul(const std::string& str, int n, std::string* c
 	return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API CPPY_ERROR_t CPPY_STR_encode(const std::wstring& wstr, std::string* const result) {
-	int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
-	if (len == 0) {
+#ifdef _WIN32
+
+CPPY_API CPPY_ERROR_t CPPY_STR_encode(const std::wstring& wstr, std::string* const result, unsigned int encoding) {
+	int len = WideCharToMultiByte(encoding, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	if (len == 0)
 		return CPPY_ERROR_t::ValueError;
-	}
+
 	result->resize(len);
-	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &(*result)[0], len, nullptr, nullptr);
-	result->resize(len - 1);
+	WideCharToMultiByte(encoding, 0, wstr.c_str(), -1, &result->front(), len, nullptr, nullptr);
 	return CPPY_ERROR_t::Ok;
 }
+
+CPPY_API CPPY_ERROR_t CPPY_STR_decode(const std::string& str, std::wstring* const result, unsigned int encoding) {
+	int len = MultiByteToWideChar(encoding, 0, str.c_str(), -1, nullptr, 0);
+	if (len == 0)
+		return CPPY_ERROR_t::ValueError;
+
+	result->resize(len);
+	MultiByteToWideChar(encoding, 0, str.c_str(), -1, &result->front(), len);
+	return CPPY_ERROR_t::Ok;
+}
+
+#else
+
+CPPY_API CPPY_ERROR_t CPPY_STR_encode(const std::wstring& wstr, std::string* const result, const char* encoding) {
+	iconv_t convert = iconv_open(encoding, "WCHAR_T");
+	if (convert == (iconv_t)-1)
+		return CPPY_ERROR_t::ValueError;
+
+	size_t n_in_size = wstr.size() * sizeof(wchar_t);
+	size_t n_out_size = n_in_size * 4;
+	result->resize(n_out_size);
+
+	char* in_buffer = reinterpret_cast<char*>(const_cast<wchar_t*>(wstr.c_str()));
+	char* out_buffer = &result->front();
+
+	if (iconv(convert, &in_buffer, &n_in_size, &out_buffer, &n_out_size) == (size_t)-1)
+	{
+		result->clear();
+		return CPPY_ERROR_t::ValueError;
+	}
+
+	iconv_close(convert);
+
+	return CPPY_ERROR_t::Ok;
+}
+
+CPPY_API CPPY_ERROR_t CPPY_STR_decode(const std::string& str, std::wstring* const result, const char* encoding) {
+	iconv_t convert = iconv_open("WCHAR_T", encoding);
+	if (convert == (iconv_t)-1)
+		return CPPY_ERROR_t::ValueError;
+
+	size_t n_in_size = str.length();
+	size_t n_out_size = n_in_size * sizeof(wchar_t);
+	result->resize(n_out_size);
+
+	char* in_buffer = const_cast<char*>(str.c_str());
+	char* out_buffer = reinterpret_cast<char*>(&result->front());
+
+	if (iconv(convert, &in_buffer, &n_in_size, &out_buffer, &n_out_size) == (size_t)-1)
+	{
+		result->clear();
+		return CPPY_ERROR_t::ValueError;
+	}
+
+	iconv_close(convert);
+
+	return CPPY_ERROR_t::Ok;
+}
+
+#endif
