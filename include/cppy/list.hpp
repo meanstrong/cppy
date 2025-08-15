@@ -6,14 +6,8 @@
 #include "cppy/typing.hpp"
 #include "cppy/exception.h"
 
-/* Built-in mutable sequence.
+/* Built-in list.
 */
-template <typename T>
-CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, int n, const T* elements) {
-	CPPY_MutableSequence_clear(self);
-	return CPPY_MutableSequence_extend(self, elements, elements + n);
-}
-
 template <typename T, class Iteratable>
 CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iteratable begin, Iteratable end) {
 	CPPY_MutableSequence_clear(self);
@@ -21,8 +15,8 @@ CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iteratable begin, Iteratab
 }
 
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_contains(const std::list<T>& self, const T& element, bool* const result) {
-	return CPPY_Sequence_contains(self, element, result);
+CPPY_ERROR_t CPPY_LIST_iscontain(const std::list<T>& self, const T& element, bool* const result) {
+	return CPPY_Sequence_iscontain(self, element, result);
 }
 
 /* Append object to the end of the list
@@ -112,27 +106,13 @@ CPPY_ERROR_t CPPY_LIST_sort(std::list<T>* self) {
 }
 
 template <typename T>
-CPPY_ERROR_t CPPY_LIST_eq(const std::list<T>& self, const std::list<T>& other, bool* const result) {
-	if (self.size() != other.size())
-	{
-		*result = false;
-		return CPPY_ERROR_t::Ok;
-	}
-	for (size_t i = 0; i < self.size(); i++)
-	{
-		if (self[i] != other[i])
-		{
-			*result = false;
-			return CPPY_ERROR_t::Ok;
-		}
-	}
-	*result = true;
-	return CPPY_ERROR_t::Ok;
+CPPY_ERROR_t CPPY_LIST_isequal(const std::list<T>& self, const std::list<T>& other, bool* const result) {
+	return CPPY_Sequence_isequal(self, other, result);
 }
 
-template <typename T>
-CPPY_ERROR_t CPPY_LIST_iter(const std::list<T>& self, T result[]) {
-	return CPPY_Iterable_iter(self, result);
+template <typename T, class Callable>
+CPPY_ERROR_t CPPY_LIST_iter(const std::list<T>& self, Callable call) {
+	return CPPY_Iterable_iter(self, call);
 }
 
 template <typename T>

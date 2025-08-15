@@ -6,21 +6,20 @@
 #include "cppy/exception.h"
 
 template <typename Container, typename Element>
-CPPY_ERROR_t CPPY_Container_contains(const Container& self, const Element& element, bool* const result) {
+CPPY_ERROR_t CPPY_Container_iscontain(const Container& self, const Element& element, bool* const result) {
 	*result = self.find(element) != self.end();
 	return CPPY_ERROR_t::Ok;
 }
 
-template <typename Iterable, typename Element>
-CPPY_ERROR_t CPPY_Iterable_iter(const Iterable& self, Element result[]) {
-	int i = 0;
-	for (const auto& x : self) result[i++] = x;
+template <typename Iterable, class Callable>
+CPPY_ERROR_t CPPY_Iterable_iter(const Iterable& self, Callable call) {
+	for (const auto& x : self) call(x);
 	return CPPY_ERROR_t::Ok;
 }
 
 template <typename Sized>
-CPPY_ERROR_t CPPY_Sized_len(const Sized& self, int* const len) {
-	*len = (int)self.size();
+CPPY_ERROR_t CPPY_Sized_len(const Sized& self, typename Sized::size_type* const len) {
+	*len = self.size();
 	return CPPY_ERROR_t::Ok;
 }
 
@@ -39,24 +38,50 @@ CPPY_ERROR_t CPPY_Sequence_at(const Sequence& self, int index, Element* const el
 }
 
 template <typename Sequence, typename Element>
-CPPY_ERROR_t CPPY_Sequence_contains(const Sequence& self, const Element& element, bool* const result) {
+CPPY_ERROR_t CPPY_Sequence_iscontain(const Sequence& self, const Element& element, bool* const result) {
 	*result = std::find(self.begin(), self.end(), element) != self.end();
 	return CPPY_ERROR_t::Ok;
 }
 
+template <typename Sequence>
+CPPY_ERROR_t CPPY_Sequence_isequal(const Sequence& self, const Sequence& other, bool* const result) {
+	using SizeType = typename Sequence::size_type;
+	using ValueType = typename Sequence::value_type;
+	SizeType n_self = self.size();
+	SizeType n_other = other.size();
+	if (n_self != n_other)
+	{
+		*result = false;
+		return CPPY_ERROR_t::Ok;
+	}
+	ValueType v_self, v_other;
+	for (int i = 0; i < static_cast<int>(n_self); i++)
+	{
+		CPPY_Sequence_at(self, i, &v_self);
+		CPPY_Sequence_at(other, i, &v_other);
+		if (v_self != v_other)
+		{
+			*result = false;
+			return CPPY_ERROR_t::Ok;
+		}
+	}
+	*result = true;
+	return CPPY_ERROR_t::Ok;
+}
+
 template <typename Sequence, typename Element>
-CPPY_ERROR_t CPPY_Sequence_index(const Sequence& self, const Element& element, int* const index, int start = 0, int end = INT_MAX) {
-	int len;
+CPPY_ERROR_t CPPY_Sequence_index(const Sequence& self, const Element& element, typename Sequence::size_type* const index, int start = 0, int end = INT_MAX) {
+	Sequence::size_type len;
 	CPPY_Sized_len(self, &len);
 
-	if (end > len) end = len;
+	if (end > len) end = static_cast<int>(len);
 	else if (end < 0) {
-		end += len;
+		end += static_cast<int>(len);
 		if (end < 0) end = 0;
 	}
 	if (start < 0)
 	{
-		start += len;
+		start += static_cast<int>(len);
 		if (start < 0) start = 0;
 	}
 
@@ -77,7 +102,7 @@ CPPY_ERROR_t CPPY_Sequence_index(const Sequence& self, const Element& element, i
 
 template <typename Sequence, typename Element>
 CPPY_ERROR_t CPPY_Sequence_count(const Sequence& self, const Element& element, int* const count) {
-	*count = (int)std::count(self.begin(), self.end(), element);
+	*count = static_cast<int>(std::count(self.begin(), self.end(), element));
 	return CPPY_ERROR_t::Ok;
 }
 
@@ -87,12 +112,12 @@ CPPY_ERROR_t CPPY_Sequence_count(const Sequence& self, const Element& element, i
 */
 template <typename MutableSequence, typename Element>
 CPPY_ERROR_t CPPY_MutableSequence_insert(MutableSequence* const self, int index, const Element& element) {
-	int len;
+	MutableSequence::size_type len;
 	CPPY_Sized_len(*self, &len);
 
-	if (index > len) index = len;
+	if (index > len) index = static_cast<int>(len);
 	else if (index < 0) {
-		index += len;
+		index += static_cast<int>(len);
 		if (index < 0) index = 0;
 	}
 	self->insert(self->begin() + index, element);
@@ -140,11 +165,11 @@ template <typename MutableSequence, typename Element>
 CPPY_ERROR_t CPPY_MutableSequence_pop(MutableSequence* self, Element* const element, int index = -1) {
 	if (self->empty()) return CPPY_ERROR_t::IndexError;
 
-	int len;
+	MutableSequence::size_type len;
 	CPPY_Sized_len(*self, &len);
-	if (index >= len || index < -len) return CPPY_ERROR_t::IndexError;
+	if (index >= static_cast<int>(len) || index < -static_cast<int>(len)) return CPPY_ERROR_t::IndexError;
 
-	index = index >= 0 ? index : index + len;
+	index = index >= 0 ? index : index + static_cast<int>(len);
 	CPPY_Sequence_at(*self, index, element);
 	self->erase(self->begin() + index);
 	return CPPY_ERROR_t::Ok;
