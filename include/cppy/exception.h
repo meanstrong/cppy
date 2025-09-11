@@ -13,6 +13,7 @@ enum class CPPY_ERROR_t : unsigned int
 	OverflowError = 3,
 	KeyError = 4,
 	EOFError,
+	MemoryError,
 	NotImplementedError,
 };
 

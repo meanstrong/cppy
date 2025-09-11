@@ -11,3 +11,4 @@
 #include "cppy/datetime.h"
 #include "cppy/random.h"
 #include "cppy/thread.h"
+#include "cppy/malloc.h"

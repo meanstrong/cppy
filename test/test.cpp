@@ -1051,3 +1051,28 @@ TEST(TEST_CPPY_thread, thread_pool) {
 		EXPECT_EQ(futures[i].get(), args[i] * 2);
 	}
 }
+
+TEST(TEST_CPPY_MEMORY, handler) {
+	{
+		CPPY_MEMORY_handler<int> number;
+		EXPECT_EQ(number.alloc(5), CPPY_ERROR_t::Ok);
+		number[0] = 1;
+		number[1] = 2;
+		number.free();
+		EXPECT_EQ(number.get_size(), 0);
+		EXPECT_EQ(number.get_pointer(), nullptr);
+	}
+	{
+		CPPY_MEMORY_handler<int> number;
+		const std::size_t n = 5;
+		auto p_size = number.address_of_size();
+		auto p_pointer = number.address_of_pointer();
+		*p_size = n;
+		*p_pointer = static_cast<int*>(std::malloc(n * sizeof(int)));
+		number[0] = 1;
+		number[1] = 2;
+		number.free();
+		EXPECT_EQ(number.get_size(), 0);
+		EXPECT_EQ(number.get_pointer(), nullptr);
+	}
+}
