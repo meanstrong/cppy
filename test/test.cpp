@@ -1080,7 +1080,7 @@ TEST(TEST_CPPY_MEMORY_handler, _int) {
 TEST(TEST_CPPY_MEMORY_array_handler, _int_double) {
 	{
 		CPPY_MEMORY_array_handler<int, double> number;
-		number.alloc(5);
+		EXPECT_EQ(number.alloc(5), CPPY_ERROR_t::Ok);
 		number.get_pointer<0>()[0] = 1;
 		number.get_pointer<1>()[0] = 2.;
 		number.free();

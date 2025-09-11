@@ -85,21 +85,24 @@ public:
 
 	static constexpr std::size_t NumTypes = sizeof...(Types);
 
-	void alloc(const size_type n)
+	CPPY_ERROR_t alloc(const size_type n)
 	{
-		alloc_recursive<0>(n);
 		m_size = n;
+		return alloc_recursive<0>(n);
 	}
 
 	template <std::size_t Index>
-	void alloc_recursive(const size_type n)
+	CPPY_ERROR_t alloc_recursive(const size_type n)
 	{
 		if constexpr (Index < NumTypes)
 		{
 			auto size = n * sizeof(value_type_at<Index>);
 			m_pointers[Index] = std::malloc(size);
-			alloc_recursive<Index + 1>(n);
+			if (!m_pointers[Index])
+				return CPPY_ERROR_t::MemoryError;
+			return alloc_recursive<Index + 1>(n);
 		}
+		return CPPY_ERROR_t::Ok;
 	}
 
 	void free()
