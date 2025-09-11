@@ -1052,7 +1052,7 @@ TEST(TEST_CPPY_thread, thread_pool) {
 	}
 }
 
-TEST(TEST_CPPY_MEMORY, handler) {
+TEST(TEST_CPPY_MEMORY_handler, _int) {
 	{
 		CPPY_MEMORY_handler<int> number;
 		EXPECT_EQ(number.alloc(5), CPPY_ERROR_t::Ok);
@@ -1074,5 +1074,34 @@ TEST(TEST_CPPY_MEMORY, handler) {
 		number.free();
 		EXPECT_EQ(number.get_size(), 0);
 		EXPECT_EQ(number.get_pointer(), nullptr);
+	}
+}
+
+TEST(TEST_CPPY_MEMORY_array_handler, _int_double) {
+	{
+		CPPY_MEMORY_array_handler<int, double> number;
+		number.alloc(5);
+		number.get_pointer<0>()[0] = 1;
+		number.get_pointer<1>()[0] = 2.;
+		number.free();
+		EXPECT_EQ(number.get_size(), 0);
+		EXPECT_EQ(number.get_pointer<0>(), nullptr);
+		EXPECT_EQ(number.get_pointer<1>(), nullptr);
+	}
+	{
+		CPPY_MEMORY_array_handler<int, double> number;
+		const int n = 5;
+		auto p_size = number.address_of_size();
+		auto p_pointer_0 = number.address_of_pointer<0>();
+		auto p_pointer_1 = number.address_of_pointer<1>();
+		*p_size = n;
+		*p_pointer_0 = static_cast<int*>(std::malloc(n * sizeof(int)));
+		*p_pointer_1 = static_cast<double*>(std::malloc(n * sizeof(double)));
+		number.get_pointer<0>()[0] = 1;
+		number.get_pointer<1>()[1] = 2.;
+		number.free();
+		EXPECT_EQ(number.get_size(), 0);
+		EXPECT_EQ(number.get_pointer<0>(), nullptr);
+		EXPECT_EQ(number.get_pointer<1>(), nullptr);
 	}
 }

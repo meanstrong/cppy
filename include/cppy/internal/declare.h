@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma warning(disable: 4251)
+
 #ifndef CPPY_API
 
 #ifdef _MSC_VER
