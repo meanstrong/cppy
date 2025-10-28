@@ -163,7 +163,13 @@ TEST(TEST_CPPY_STR, encode) {
 	std::string result;
 	EXPECT_EQ(CPPY_STR_encode(L"ÖÐÎÄ", &result, CP_UTF8), CPPY_ERROR_t::Ok);
 	char c;
-	char expect[6]{ 0xe4, 0xb8, 0xad, 0xe6, 0x96, 0x87 };
+	char expect[6]/*{0xe4, 0xb8, 0xad, 0xe6, 0x96, 0x87}*/;
+	expect[0] = static_cast<char>(0xe4);
+	expect[1] = static_cast<char>(0xb8);
+	expect[2] = static_cast<char>(0xad);
+	expect[3] = static_cast<char>(0xe6);
+	expect[4] = static_cast<char>(0x96);
+	expect[5] = static_cast<char>(0x87);
 	for (int i = 0; i < 6; i++)
 	{
 		EXPECT_EQ(CPPY_STR_at(result, i, &c), CPPY_ERROR_t::Ok);
@@ -717,13 +723,13 @@ TEST(TEST_CPPY_VECTOR, extend) {
 TEST(TEST_CPPY_VECTOR, index) {
 	{
 		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
-		std::vector<int>::size_type index = -1;
+		int index = -1;
 		EXPECT_EQ(CPPY_VECTOR_index(this_vector, 3, &index), CPPY_ERROR_t::Ok);
 		EXPECT_EQ(index, 2);
 	}
 	{
 		std::vector<int> this_vector{ 1, 2, 3, 4, 5, 6 };
-		std::vector<int>::size_type index = -1;
+		int index = -1;
 		EXPECT_EQ(CPPY_VECTOR_index(this_vector, 9, &index), CPPY_ERROR_t::ValueError);
 	}
 }

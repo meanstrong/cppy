@@ -70,18 +70,18 @@ CPPY_ERROR_t CPPY_Sequence_isequal(const Sequence& self, const Sequence& other, 
 }
 
 template <typename Sequence, typename Element>
-CPPY_ERROR_t CPPY_Sequence_index(const Sequence& self, const Element& element, typename Sequence::size_type* const index, int start = 0, int end = INT_MAX) {
-	Sequence::size_type len;
-	CPPY_Sized_len(self, &len);
+CPPY_ERROR_t CPPY_Sequence_index(const Sequence& self, const Element& element, int* const index, int start = 0, int end = INT_MAX) {
+	int len = static_cast<int>(self.size());
 
-	if (end > len) end = static_cast<int>(len);
+	int int_len = len;
+	if (end > len) end = len;
 	else if (end < 0) {
-		end += static_cast<int>(len);
+		end += len;
 		if (end < 0) end = 0;
 	}
 	if (start < 0)
 	{
-		start += static_cast<int>(len);
+		start += len;
 		if (start < 0) start = 0;
 	}
 
@@ -112,12 +112,11 @@ CPPY_ERROR_t CPPY_Sequence_count(const Sequence& self, const Element& element, i
 */
 template <typename MutableSequence, typename Element>
 CPPY_ERROR_t CPPY_MutableSequence_insert(MutableSequence* const self, int index, const Element& element) {
-	MutableSequence::size_type len;
-	CPPY_Sized_len(*self, &len);
+	int len = static_cast<int>(self->size());
 
-	if (index > len) index = static_cast<int>(len);
+	if (index > len) index = len;
 	else if (index < 0) {
-		index += static_cast<int>(len);
+		index += len;
 		if (index < 0) index = 0;
 	}
 	self->insert(self->begin() + index, element);
@@ -165,11 +164,10 @@ template <typename MutableSequence, typename Element>
 CPPY_ERROR_t CPPY_MutableSequence_pop(MutableSequence* self, Element* const element, int index = -1) {
 	if (self->empty()) return CPPY_ERROR_t::IndexError;
 
-	MutableSequence::size_type len;
-	CPPY_Sized_len(*self, &len);
-	if (index >= static_cast<int>(len) || index < -static_cast<int>(len)) return CPPY_ERROR_t::IndexError;
+	int len = static_cast<int>(self->size());
+	if (index >= len || index < -len) return CPPY_ERROR_t::IndexError;
 
-	index = index >= 0 ? index : index + static_cast<int>(len);
+	index = index >= 0 ? index : index + len;
 	CPPY_Sequence_at(*self, index, element);
 	self->erase(self->begin() + index);
 	return CPPY_ERROR_t::Ok;

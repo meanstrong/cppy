@@ -60,7 +60,7 @@ CPPY_ERROR_t CPPY_VECTOR_extend(std::vector<T>* const self, Iteratable begin, It
 *  Raises ValueError if the value is not present.
 */
 template <typename T>
-CPPY_ERROR_t CPPY_VECTOR_index(const std::vector<T>& self, const T& element, typename std::vector<T>::size_type* const index, int start = 0, int end = INT_MAX) {
+CPPY_ERROR_t CPPY_VECTOR_index(const std::vector<T>& self, const T& element, int* const index, int start = 0, int end = INT_MAX) {
 	return CPPY_Sequence_index(self, element, index, start, end);
 
 }
