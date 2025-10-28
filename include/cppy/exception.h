@@ -69,10 +69,10 @@ public:
     if (v)             \
         ;              \
     else               \
-        CPPY_Expect_result() = CPPY_Assertion_message() << "ExpectFailure: " << #v << " " << __FILE__ << ":" << __LINE__ << ". "
+        CPPY_Expect_result() = CPPY_Assertion_message() << "ExpectFailure: " << #v << " " << __FILE__ << ":" << __LINE__ << "\n"
 
 #define CPPY_ASSERT(v) \
     if (v)        \
         ;         \
     else          \
-        CPPY_Assertion_result() = CPPY_Assertion_message() << "AssertionError: " << #v << " " << __FILE__ << ":" << __LINE__ << ". "
+        CPPY_Assertion_result() = CPPY_Assertion_message() << "AssertionError: " << #v << " " << __FILE__ << ":" << __LINE__ << "\n"
