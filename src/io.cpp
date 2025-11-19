@@ -8,10 +8,10 @@ bool CPPY_IO_IOBase::closed() const { return _closed; }
 
 void CPPY_IO_IOBase::close() { _closed = true; }
 
-void CPPY_IO_IOBase::flush() { }
+void CPPY_IO_IOBase::flush() {}
 
 void CPPY_IO_IOBase::_check_closed() const {
-	CPPY_ASSERT(!_closed) << "I/O operation on closed file.";
+	CPPY_ASSERT(!_closed) << "ValueError: I/O operation on closed file.";
 }
 
 CPPY_IO_StringIO::CPPY_IO_StringIO(const std::string& initial_value,
@@ -39,7 +39,7 @@ bool CPPY_IO_StringIO::writable() {
 
 CPPY_ERROR_t CPPY_IO_StringIO::read(std::string* const result, size_t size) {
 	_check_closed();
-	CPPY_ASSERT(readable()) << "Stream not readable";
+	CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
 
 	if (size == static_cast<size_t>(-1)) {
 		*result = _stream.str().substr(_stream.tellg());
@@ -57,7 +57,7 @@ CPPY_ERROR_t CPPY_IO_StringIO::read(std::string* const result, size_t size) {
 CPPY_ERROR_t CPPY_IO_StringIO::readline(std::string* const result,
 	size_t size) {
 	_check_closed();
-	CPPY_ASSERT(readable()) << "Stream not readable";
+	CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
 
 	if (size == static_cast<size_t>(-1)) {
 		if (!std::getline(_stream, *result))
@@ -75,7 +75,7 @@ CPPY_ERROR_t CPPY_IO_StringIO::readline(std::string* const result,
 CPPY_ERROR_t
 CPPY_IO_StringIO::readlines(std::vector<std::string>* const result) {
 	_check_closed();
-	CPPY_ASSERT(readable()) << "Stream not readable";
+	CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
 
 	std::string line;
 	while (std::getline(_stream, line)) {
@@ -86,14 +86,14 @@ CPPY_IO_StringIO::readlines(std::vector<std::string>* const result) {
 
 void CPPY_IO_StringIO::write(const std::string& s) {
 	_check_closed();
-	CPPY_ASSERT(writable()) << "Stream not writable";
+	CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
 
 	_stream << s;
 }
 
 void CPPY_IO_StringIO::writelines(const std::vector<std::string>& lines) {
 	_check_closed();
-	CPPY_ASSERT(writable()) << "Stream not writable";
+	CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
 
 	for (const auto& line : lines) {
 		_stream << line;
@@ -124,7 +124,7 @@ CPPY_IO_FileIO::CPPY_IO_FileIO(const std::string& filename,
 	}
 
 	_file.open(filename, open_mode);
-	CPPY_ASSERT(_file.is_open()) << "Failed to open file: " + filename;
+	CPPY_ASSERT(_file.is_open()) << "FileNotFoundError: No such file or directory: '" << filename << "'";
 }
 
 CPPY_IO_FileIO::~CPPY_IO_FileIO() {
@@ -156,8 +156,7 @@ bool CPPY_IO_FileIO::writable() {
 
 CPPY_ERROR_t CPPY_IO_FileIO::read(std::string* const result, size_t size) {
 	_check_closed();
-	CPPY_ASSERT(readable())
-		<< "File not open for reading";
+	CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
 
 	if (size == static_cast<size_t>(-1)) {
 		*result = std::string(std::istreambuf_iterator<char>(_file), {});
@@ -173,8 +172,7 @@ CPPY_ERROR_t CPPY_IO_FileIO::read(std::string* const result, size_t size) {
 
 CPPY_ERROR_t CPPY_IO_FileIO::readline(std::string* const result, size_t size) {
 	_check_closed();
-	CPPY_ASSERT(readable())
-		<< "File not open for reading";
+	CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
 
 	if (size == static_cast<size_t>(-1)) {
 		if (!std::getline(_file, *result))
@@ -191,8 +189,7 @@ CPPY_ERROR_t CPPY_IO_FileIO::readline(std::string* const result, size_t size) {
 
 CPPY_ERROR_t CPPY_IO_FileIO::readlines(std::vector<std::string>* const result) {
 	_check_closed();
-	CPPY_ASSERT(readable())
-		<< "File not open for reading";
+	CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
 
 	std::string line;
 	while (std::getline(_file, line)) {
@@ -203,16 +200,14 @@ CPPY_ERROR_t CPPY_IO_FileIO::readlines(std::vector<std::string>* const result) {
 
 void CPPY_IO_FileIO::write(const std::string& s) {
 	_check_closed();
-	CPPY_ASSERT(writable())
-		<< "File not open for writing";
+	CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
 
 	_file << s;
 }
 
 void CPPY_IO_FileIO::writelines(const std::vector<std::string>& lines) {
 	_check_closed();
-	CPPY_ASSERT(writable())
-		<< "File not open for writing";
+	CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
 
 	for (const auto& line : lines) {
 		_file << line;
@@ -222,7 +217,8 @@ void CPPY_IO_FileIO::writelines(const std::vector<std::string>& lines) {
 CPPY_IO_BytesIO::CPPY_IO_BytesIO(const std::vector<char>& initial_bytes,
 	bool readable, bool writable)
 	: _buffer(initial_bytes), _position(0), _readable(readable),
-	_writable(writable) {}
+	_writable(writable) {
+}
 
 bool CPPY_IO_BytesIO::readable() {
 	return _readable;
@@ -235,7 +231,7 @@ bool CPPY_IO_BytesIO::writable() {
 CPPY_ERROR_t CPPY_IO_BytesIO::read(std::vector<char>* const result,
 	size_t size) {
 	_check_closed();
-	CPPY_ASSERT(readable()) << "Stream not readable";
+	CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
 
 	if (size == static_cast<size_t>(-1) || _position + size > _buffer.size()) {
 		size = _buffer.size() - _position;
@@ -249,7 +245,7 @@ CPPY_ERROR_t CPPY_IO_BytesIO::read(std::vector<char>* const result,
 
 void CPPY_IO_BytesIO::write(const std::vector<char>& data) {
 	_check_closed();
-	CPPY_ASSERT(writable()) << "Stream not writable";
+	CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
 
 	if (_position > _buffer.size()) {
 		_buffer.resize(_position);

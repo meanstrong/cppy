@@ -71,6 +71,11 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_all(Iterable begin, Iterable end, Pred func,
 	*result = std::all_of(begin, end, func);
 	return CPPY_ERROR_t::Ok;
 };
+template <class Iterable>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_all(Iterable begin, Iterable end, bool* const result)
+{
+	return CPPY_BUILTINS_all(begin, end, [](typename Iterable::value_type v) { return v; }, result);
+};
 
 /*
 * Return True if bool(x) is True for any x in the iterable.
@@ -83,10 +88,15 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_any(Iterable begin, Iterable end, Pred func,
 	*result = std::any_of(begin, end, func);
 	return CPPY_ERROR_t::Ok;
 };
+template <class Iterable>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_any(Iterable begin, Iterable end, bool* const result)
+{
+	return CPPY_BUILTINS_any(begin, end, [](typename Iterable::value_type v) { return v; }, result);
+};
 
 /*
 * Return the sum of a 'start' value (default: 0) plus an iterable of numbers
-* 
+*
 * When the iterable is empty, return the start value.
 * This function is intended specifically for use with numeric values and may
 * reject non-numeric types.
@@ -105,6 +115,6 @@ template <typename T>
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_divmod(T x, T y, T* const div, T* const mod)
 {
 	*div = x / y;
-	*mod = x % y
+	*mod = x % y;
 	return CPPY_ERROR_t::Ok;
 };

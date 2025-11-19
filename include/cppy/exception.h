@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "cppy/internal/declare.h"
@@ -20,28 +21,36 @@ enum class CPPY_ERROR_t : unsigned int
 class CPPY_Assertion_message
 {
 public:
-	CPPY_Assertion_message() {};
+	using message_type = std::stringstream;
 
-	const char* message() const { return m_msg.c_str(); };
+	typedef std::ostream& (*BasicNarrowIoManip)(std::ostream&);
 
-	CPPY_Assertion_message& operator<<(const std::string& value) {
-		m_msg += value;
+	CPPY_Assertion_message() : m_msg(new message_type) {};
+
+	CPPY_Assertion_message(const CPPY_Assertion_message& msg) : m_msg(new message_type) {
+		*m_msg << msg.GetString();
+	}
+
+	std::string GetString() const { return m_msg->str(); };
+
+	template <typename T>
+	CPPY_Assertion_message& operator<<(const T& value) {
+		*m_msg << value;
 		return *this;
 	};
 
 	CPPY_Assertion_message& operator<<(const char* value) {
-		m_msg += value;
+		*m_msg << value;
 		return *this;
 	};
 
-	template<typename T>
-	CPPY_Assertion_message& operator<<(const T& value) {
-		m_msg += std::to_string(value);
+	CPPY_Assertion_message& operator<<(BasicNarrowIoManip val) {
+		*m_msg << val;
 		return *this;
-	};
+	}
 
 private:
-	std::string m_msg;
+	const std::unique_ptr<message_type> m_msg;
 };
 
 class CPPY_Expect_result
@@ -50,7 +59,7 @@ public:
 
 	CPPY_Expect_result() {};
 
-	void operator=(const CPPY_Assertion_message& result) const { std::cout << result.message() << std::endl; };
+	void operator=(const CPPY_Assertion_message& result) const { std::cout << result.GetString() << std::endl; };
 };
 
 class CPPY_Assertion_result
@@ -60,7 +69,7 @@ public:
 	CPPY_Assertion_result() {};
 
 	void operator=(const CPPY_Assertion_message& result) const {
-		std::cout << result.message() << std::endl;
+		std::cout << result.GetString() << std::endl;
 		throw result;
 	};
 };
@@ -69,10 +78,10 @@ public:
     if (v)             \
         ;              \
     else               \
-        CPPY_Expect_result() = CPPY_Assertion_message() << "ExpectFailure: " << #v << " " << __FILE__ << ":" << __LINE__ << "\n"
+        CPPY_Expect_result() = CPPY_Assertion_message() << "ExpectFailure: " << __FILE__ << ":" << __LINE__ << std::endl
 
 #define CPPY_ASSERT(v) \
     if (v)        \
         ;         \
     else          \
-        CPPY_Assertion_result() = CPPY_Assertion_message() << "AssertionError: " << #v << " " << __FILE__ << ":" << __LINE__ << "\n"
+        CPPY_Assertion_result() = CPPY_Assertion_message() << "AssertionError: " << __FILE__ << ":" << __LINE__ << std::endl

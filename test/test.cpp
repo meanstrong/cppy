@@ -940,6 +940,18 @@ TEST(TEST_CPPY_BUILTINS, all) {
 		CPPY_BUILTINS_all(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
 		EXPECT_TRUE(result);
 	}
+	{
+		std::vector<int> data{ 1,2,3,4 };
+		bool result;
+		CPPY_BUILTINS_all(data.begin(), data.end(), &result);
+		EXPECT_TRUE(result);
+	}
+	{
+		std::vector<int> data{ 1,2,3,0 };
+		bool result;
+		CPPY_BUILTINS_all(data.begin(), data.end(), &result);
+		EXPECT_FALSE(result);
+	}
 }
 
 TEST(TEST_CPPY_BUILTINS, any) {
@@ -959,6 +971,18 @@ TEST(TEST_CPPY_BUILTINS, any) {
 		std::vector<int> data;
 		bool result;
 		CPPY_BUILTINS_any(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+		EXPECT_FALSE(result);
+	}
+	{
+		std::vector<int> data{ 0,0,1,0,0 };
+		bool result;
+		CPPY_BUILTINS_any(data.begin(), data.end(), &result);
+		EXPECT_TRUE(result);
+	}
+	{
+		std::vector<int> data{ 0,0,0,0,0 };
+		bool result;
+		CPPY_BUILTINS_any(data.begin(), data.end(), &result);
 		EXPECT_FALSE(result);
 	}
 }
@@ -1012,7 +1036,7 @@ TEST(TEST_CPPY_ASSERT, assert) {
 	CPPY_ASSERT(true) << "this is true";
 	try { CPPY_ASSERT(false) << "this is false"; }
 	catch (const CPPY_Assertion_message& result) {
-		std::cout << result.message() << std::endl;
+		UNREFERENCED_PARAMETER(result);
 	}
 
 }
