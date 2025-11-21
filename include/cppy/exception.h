@@ -8,70 +8,58 @@
 
 enum class CPPY_ERROR_t : unsigned int
 {
-	Ok = 0,
-	ValueError = 1,
-	IndexError = 2,
-	OverflowError = 3,
-	KeyError = 4,
-	EOFError,
-	MemoryError,
-	NotImplementedError,
+    Ok = 0,
+    ValueError = 1,
+    IndexError = 2,
+    OverflowError = 3,
+    KeyError = 4,
+    EOFError,
+    MemoryError,
+    NotImplementedError,
 };
 
-class CPPY_Assertion_message
+class CPPY_API CPPY_Assertion_message
 {
 public:
-	using message_type = std::stringstream;
+    using message_type = std::stringstream;
 
-	typedef std::ostream& (*BasicNarrowIoManip)(std::ostream&);
+    typedef std::ostream& (*BasicNarrowIoManip)(std::ostream&);
 
-	CPPY_Assertion_message() : m_msg(new message_type) {};
+    CPPY_Assertion_message();
 
-	CPPY_Assertion_message(const CPPY_Assertion_message& msg) : m_msg(new message_type) {
-		*m_msg << msg.GetString();
-	}
+    CPPY_Assertion_message(const CPPY_Assertion_message& msg);
 
-	std::string GetString() const { return m_msg->str(); };
+    std::string GetString() const;
 
-	template <typename T>
-	CPPY_Assertion_message& operator<<(const T& value) {
-		*m_msg << value;
-		return *this;
-	};
+    template <typename T>
+    CPPY_Assertion_message& operator<<(const T& value)
+    {
+        *m_msg << value;
+        return *this;
+    };
 
-	CPPY_Assertion_message& operator<<(const char* value) {
-		*m_msg << value;
-		return *this;
-	};
+    CPPY_Assertion_message& operator<<(const char* value);
 
-	CPPY_Assertion_message& operator<<(BasicNarrowIoManip val) {
-		*m_msg << val;
-		return *this;
-	}
+    CPPY_Assertion_message& operator<<(BasicNarrowIoManip val);
 
 private:
-	const std::unique_ptr<message_type> m_msg;
+    const std::unique_ptr<message_type> m_msg;
 };
 
-class CPPY_Expect_result
+class CPPY_API CPPY_Expect_result
 {
 public:
+    CPPY_Expect_result();
 
-	CPPY_Expect_result() {};
-
-	void operator=(const CPPY_Assertion_message& result) const { std::cout << result.GetString() << std::endl; };
+    void operator=(const CPPY_Assertion_message& result) const;
 };
 
-class CPPY_Assertion_result
+class CPPY_API CPPY_Assertion_result
 {
 public:
+    CPPY_Assertion_result();
 
-	CPPY_Assertion_result() {};
-
-	void operator=(const CPPY_Assertion_message& result) const {
-		std::cout << result.GetString() << std::endl;
-		throw result;
-	};
+    void operator=(const CPPY_Assertion_message& result) const;
 };
 
 #define CPPY_EXPECT(v) \
@@ -80,8 +68,9 @@ public:
     else               \
         CPPY_Expect_result() = CPPY_Assertion_message() << "ExpectFailure: " << __FILE__ << ":" << __LINE__ << std::endl
 
-#define CPPY_ASSERT(v) \
-    if (v)        \
-        ;         \
-    else          \
-        CPPY_Assertion_result() = CPPY_Assertion_message() << "AssertionError: " << __FILE__ << ":" << __LINE__ << std::endl
+#define CPPY_ASSERT(v)                                     \
+    if (v)                                                 \
+        ;                                                  \
+    else                                                   \
+        CPPY_Assertion_result() = CPPY_Assertion_message() \
+            << "AssertionError: " << __FILE__ << ":" << __LINE__ << std::endl
