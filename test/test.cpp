@@ -632,16 +632,13 @@ TEST(TEST_CPPY_SET, isequal)
 TEST(TEST_CPPY_SET, iterator)
 {
     {
-        std::set<int> a{};
-        int* result{nullptr};
-        int i{0};
-        EXPECT_EQ(CPPY_SET_iter(a, [&result, &i](int x) { result[i++] = x; }), CPPY_ERROR_t::Ok);
+        std::set<int> a{1, 2, 3};
+        EXPECT_EQ(CPPY_Iterable_iter(a.begin(), a.end(), [](int x) { std::cout << x; }), CPPY_ERROR_t::Ok);
     }
     {
         std::set<int> a{1, 2, 3};
         int result[3];
-        int i{0};
-        EXPECT_EQ(CPPY_SET_iter(a, [&result, &i](int x) { result[i++] = x; }), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_Iterable_iter(a.begin(), a.end(), result, [](int x) { return x * x; }), CPPY_ERROR_t::Ok);
     }
 }
 
@@ -865,11 +862,11 @@ TEST(TEST_CPPY_VECTOR, iterator)
     {
         std::vector<int> this_vector{1, 2, 3};
         int data[3];
-        int i{0};
-        EXPECT_EQ(CPPY_VECTOR_iter(this_vector, [&data, &i](int x) { data[i++] = x; }), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_Iterable_iter(this_vector.begin(), this_vector.end(), data, [](int x) { return x * x; }),
+                  CPPY_ERROR_t::Ok);
         EXPECT_EQ(data[0], 1);
-        EXPECT_EQ(data[1], 2);
-        EXPECT_EQ(data[2], 3);
+        EXPECT_EQ(data[1], 4);
+        EXPECT_EQ(data[2], 9);
     }
 }
 
@@ -945,15 +942,15 @@ TEST(TEST_CPPY_BUILTINS, _max)
 {
     {
         double data[5]{0., 2., 5., 3., 4.};
-        double result;
+        double* result{nullptr};
         CPPY_BUILTINS_max(data, data + 5, &result);
-        EXPECT_NEAR(result, 5., 1.0e-16);
+        EXPECT_NEAR(*result, 5., 1.0e-16);
     }
     {
         auto data = std::initializer_list{0., 2., 5., 3., 4.};
-        double result;
+        const double* result{nullptr};
         CPPY_BUILTINS_max(data.begin(), data.end(), &result);
-        EXPECT_NEAR(result, 5., 1.0e-16);
+        EXPECT_NEAR(*result, 5., 1.0e-16);
     }
 }
 
@@ -961,15 +958,15 @@ TEST(TEST_CPPY_BUILTINS, _min)
 {
     {
         double data[5]{0., 2., 5., 3., 4.};
-        double result;
+        double* result{nullptr};
         CPPY_BUILTINS_min(data, data + 5, &result);
-        EXPECT_NEAR(result, 0., 1.0e-16);
+        EXPECT_NEAR(*result, 0., 1.0e-16);
     }
     {
         auto data = std::initializer_list{0., 2., 5., 3., 4.};
-        double result;
+        const double* result{nullptr};
         CPPY_BUILTINS_min(data.begin(), data.end(), &result);
-        EXPECT_NEAR(result, 0., 1.0e-16);
+        EXPECT_NEAR(*result, 0., 1.0e-16);
     }
 }
 
@@ -978,22 +975,19 @@ TEST(TEST_CPPY_BUILTINS, all)
     {
         std::vector<int> data{2, 1, 3, 4};
         bool result;
-        CPPY_BUILTINS_all(
-            data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+        CPPY_BUILTINS_all(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
         EXPECT_TRUE(result);
     }
     {
         std::vector<int> data{2, 1, 3, 4};
         bool result;
-        CPPY_BUILTINS_all(
-            data.begin(), data.end(), [](int x) { return x > 1; }, &result);
+        CPPY_BUILTINS_all(data.begin(), data.end(), [](int x) { return x > 1; }, &result);
         EXPECT_FALSE(result);
     }
     {
         std::vector<int> data;
         bool result;
-        CPPY_BUILTINS_all(
-            data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+        CPPY_BUILTINS_all(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
         EXPECT_TRUE(result);
     }
     {
@@ -1015,22 +1009,19 @@ TEST(TEST_CPPY_BUILTINS, any)
     {
         std::vector<int> data{2, 1, 3, 4};
         bool result;
-        CPPY_BUILTINS_any(
-            data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+        CPPY_BUILTINS_any(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
         EXPECT_TRUE(result);
     }
     {
         std::vector<int> data{2, 1, 3, 4};
         bool result;
-        CPPY_BUILTINS_any(
-            data.begin(), data.end(), [](int x) { return x > 4; }, &result);
+        CPPY_BUILTINS_any(data.begin(), data.end(), [](int x) { return x > 4; }, &result);
         EXPECT_FALSE(result);
     }
     {
         std::vector<int> data;
         bool result;
-        CPPY_BUILTINS_any(
-            data.begin(), data.end(), [](int x) { return x > 0; }, &result);
+        CPPY_BUILTINS_any(data.begin(), data.end(), [](int x) { return x > 0; }, &result);
         EXPECT_FALSE(result);
     }
     {
