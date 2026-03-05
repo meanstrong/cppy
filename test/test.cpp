@@ -152,6 +152,22 @@ TEST(TEST_CPPY_STR, lower)
     }
 }
 
+TEST(TEST_CPPY_STR, join)
+{
+    {
+        std::string s[]{"123", "456", "789"};
+        std::string result;
+        EXPECT_EQ(CPPY_STR_join("", s, s + 3, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "123456789");
+    }
+    {
+        std::vector<std::string> s{"123", "456", "789"};
+        std::string result;
+        EXPECT_EQ(CPPY_STR_join(",", s.begin(), s.end(), &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "123,456,789");
+    }
+}
+
 TEST(TEST_CPPY_STR, at)
 {
     std::string s = "123";

@@ -133,26 +133,20 @@ CPPY_STR_slice(const std::string& str, std::string* const result, int start = 0,
  *
  *  Example: '.'.join(['ab', 'pq', 'rs']) -> 'ab.pq.rs'
  */
-CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str,
-                                    int n_iterables,
-                                    const std::string iterable[],
-                                    std::string* const result);
-
-template <class Iterable, class Callable>
-CPPY_API CPPY_ERROR_t
-CPPY_STR_join(const std::string& str, Iterable first, Iterable last, std::string* const result, Callable toString)
+template <class Iterable>
+CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str, Iterable first, Iterable last, std::string* const result)
 {
     if (first == last)
     {
-        *result = "";
+        result->clear();
         return CPPY_ERROR_t::Ok;
     }
 
-    *result = toString(*first);
+    result->assign(*first);
     while (++first != last)
     {
-        *result += str;
-        *result += toString(*first);
+        result->append(str);
+        result->append(*first);
     }
     return CPPY_ERROR_t::Ok;
 };
