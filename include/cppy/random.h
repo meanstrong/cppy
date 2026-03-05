@@ -44,9 +44,10 @@ public:
 
     /* x in the interval [0, 1).
      */
-    CPPY_ERROR_t random(double* const result)
+    template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+    CPPY_ERROR_t random(T* const result)
     {
-        std::uniform_real_distribution<double> dist(0.0, 1.0);
+        std::uniform_real_distribution<T> dist(0.0, 1.0);
         *result = dist(engine);
         return CPPY_ERROR_t::Ok;
     }
@@ -70,17 +71,49 @@ public:
     template <typename T, std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
     CPPY_ERROR_t normalvariate(T mu, T sigma, T* const result)
     {
-        std::normal_distribution<double> dist(mu, sigma);
+        std::normal_distribution<T> dist(mu, sigma);
         *result = dist(engine);
         return CPPY_ERROR_t::Ok;
     }
 
     /* Shuffle list x in place, and return None.
      */
-    template <class Iteratable>
-    CPPY_ERROR_t shuffle(Iteratable first, Iteratable last)
+    template <class Iterable>
+    CPPY_ERROR_t shuffle(Iterable first, Iterable last)
     {
         std::shuffle(first, last, engine);
+        return CPPY_ERROR_t::Ok;
+    }
+
+    /* Choose a random element from a non-empty sequence.
+     */
+    template <class Iterable>
+    CPPY_ERROR_t choice(Iterable first, Iterable last, typename std::iterator_traits<Iterable>::value_type* result)
+    {
+        if (first == last)
+            return CPPY_ERROR_t::IndexError;
+
+        using iterator_category = typename std::iterator_traits<Iterable>::iterator_category;
+        if constexpr (std::is_base_of_v<std::random_access_iterator_tag, iterator_category>)
+        {
+            const size_t length = std::distance(first, last);
+            std::uniform_int_distribution<size_t> dist(0, length - 1);
+            const size_t random_idx = dist(engine);
+            *result = *(first + random_idx);
+        }
+        else
+        {
+            *result = *first;
+            size_t count = 1;
+            for (Iterable it = std::next(first); it != last; ++it, ++count)
+            {
+                std::uniform_int_distribution<size_t> dist(0, count);
+                if (dist(engine) == 0)
+                {
+                    *result = *it;
+                }
+            }
+        }
         return CPPY_ERROR_t::Ok;
     }
 };

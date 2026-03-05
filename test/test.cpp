@@ -1122,10 +1122,54 @@ TEST(TEST_CPPY_RANDOM, randint)
 {
     CPPY_RANDOM_Random random;
     {
-        int x;
+        int a{1}, b{10}, x;
         random.randint(1, 10, &x);
-        EXPECT_GE(x, 1);
-        EXPECT_LE(x, 10);
+        EXPECT_GE(x, a);
+        EXPECT_LE(x, b);
+    }
+    {
+        size_t a{1}, b{10}, x;
+        random.randint(a, b, &x);
+        EXPECT_GE(x, a);
+        EXPECT_LE(x, b);
+    }
+}
+
+TEST(TEST_CPPY_RANDOM, uniform)
+{
+    CPPY_RANDOM_Random random;
+    {
+        float a{1.}, b{10.}, x;
+        random.uniform(a, b, &x);
+        EXPECT_GE(x, a);
+        EXPECT_LE(x, b);
+    }
+    {
+        double a{1.}, b{10.}, x;
+        random.uniform(a, b, &x);
+        EXPECT_GE(x, a);
+        EXPECT_LE(x, b);
+    }
+}
+
+TEST(TEST_CPPY_RANDOM, choice)
+{
+    CPPY_RANDOM_Random random;
+    {
+        std::vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int x;
+        random.choice(a.begin(), a.end(), &x);
+        bool is_contain{false};
+        CPPY_VECTOR_iscontain(a, x, &is_contain);
+        EXPECT_TRUE(is_contain);
+    }
+    {
+        std::list<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int x;
+        random.choice(a.begin(), a.end(), &x);
+        bool is_contain{false};
+        CPPY_LIST_iscontain(a, x, &is_contain);
+        EXPECT_TRUE(is_contain);
     }
 }
 
