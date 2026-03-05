@@ -9,10 +9,10 @@
 /* Built-in list.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iteratable first, Iteratable last)
 {
     CPPY_MutableSequence_clear(self);
-    return CPPY_MutableSequence_extend(self, begin, end);
+    return CPPY_MutableSequence_extend(self, first, last);
     ;
 }
 
@@ -58,9 +58,9 @@ CPPY_ERROR_t CPPY_LIST_count(const std::list<T>& self, const T& element, int* co
 /* Extend list by appending elements from the iterable.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_LIST_extend(std::list<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_LIST_extend(std::list<T>* const self, Iteratable first, Iteratable last)
 {
-    return CPPY_MutableSequence_extend(self, begin, end);
+    return CPPY_MutableSequence_extend(self, first, name);
 }
 
 /* Return first index of value.

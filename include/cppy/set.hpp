@@ -11,10 +11,10 @@
  *  Build an unordered collection of unique elements.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_SET_init(std::set<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_SET_init(std::set<T>* const self, Iteratable first, Iteratable last)
 {
     self->clear();
-    self->insert(begin, end);
+    self->insert(first, last);
     return CPPY_ERROR_t::Ok;
 }
 
@@ -48,10 +48,10 @@ CPPY_ERROR_t CPPY_SET_clear(std::set<T>* const self)
 /* Return a shallow copy of a set.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_SET_copy(Iteratable begin, Iteratable end, std::set<T>* const result)
+CPPY_ERROR_t CPPY_SET_copy(Iteratable first, Iteratable last, std::set<T>* const result)
 {
     result->clear();
-    result->insert(begin, end);
+    result->insert(first, last);
     return CPPY_ERROR_t::Ok;
 }
 
@@ -60,25 +60,22 @@ CPPY_ERROR_t CPPY_SET_copy(Iteratable begin, Iteratable end, std::set<T>* const 
  *  (i.e. all elements that are in this set but not the others.)
  */
 template <typename T, class Iteratable1, class Iteratable2>
-CPPY_ERROR_t CPPY_SET_difference(Iteratable1 this_begin,
-                                 Iteratable1 this_end,
-                                 Iteratable2 other_begin,
-                                 Iteratable2 other_end,
-                                 std::set<T>* const result)
+CPPY_ERROR_t CPPY_SET_difference(
+    Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, std::set<T>* const result)
 {
     result->clear();
-    std::set_difference(this_begin, this_end, other_begin, other_end, std::inserter(*result, result->begin()));
+    std::set_difference(first_1, last_1, first_2, last_2, std::inserter(*result, result->begin()));
     return CPPY_ERROR_t::Ok;
 }
 
 /* Remove all elements of another set from this set.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_SET_difference_update(std::set<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_SET_difference_update(std::set<T>* const self, Iteratable first, Iteratable last)
 {
-    for (; begin != end; ++begin)
+    for (; first != last; ++first)
     {
-        self->erase(*begin);
+        self->erase(*first);
     }
     return CPPY_ERROR_t::Ok;
 }
@@ -88,24 +85,21 @@ CPPY_ERROR_t CPPY_SET_difference_update(std::set<T>* const self, Iteratable begi
  *  (i.e. all elements that are in both sets.)
  */
 template <typename T, class Iteratable1, class Iteratable2>
-CPPY_ERROR_t CPPY_SET_intersection(Iteratable1 this_begin,
-                                   Iteratable1 this_end,
-                                   Iteratable2 other_begin,
-                                   Iteratable2 other_end,
-                                   std::set<T>* const result)
+CPPY_ERROR_t CPPY_SET_intersection(
+    Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, std::set<T>* const result)
 {
     result->clear();
-    std::set_intersection(this_begin, this_end, other_begin, other_end, std::inserter(*result, result->begin()));
+    std::set_intersection(first_1, last_1, first_2, last_2, std::inserter(*result, result->begin()));
     return CPPY_ERROR_t::Ok;
 }
 
 /* Update a set with the intersection of itself and another.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_SET_intersection_update(std::set<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_SET_intersection_update(std::set<T>* const self, Iteratable first, Iteratable last)
 {
     std::set<T> result;
-    std::set_intersection(self->begin(), self->end(), begin, end, std::inserter(result, result.begin()));
+    std::set_intersection(self->begin(), self->end(), first, last, std::inserter(result, result.begin()));
     self->swap(result);
     return CPPY_ERROR_t::Ok;
 }
@@ -115,26 +109,22 @@ CPPY_ERROR_t CPPY_SET_intersection_update(std::set<T>* const self, Iteratable be
  *  (i.e. all elements that are in exactly one of the sets.)
  */
 template <typename T, class Iteratable1, class Iteratable2>
-CPPY_ERROR_t CPPY_SET_symmetric_difference(Iteratable1 this_begin,
-                                           Iteratable1 this_end,
-                                           Iteratable2 other_begin,
-                                           Iteratable2 other_end,
-                                           std::set<T>* const result)
+CPPY_ERROR_t CPPY_SET_symmetric_difference(
+    Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, std::set<T>* const result)
 {
     result->clear();
-    std::set_symmetric_difference(
-        this_begin, this_end, other_begin, other_end, std::inserter(*result, result->begin()));
+    std::set_symmetric_difference(first_1, last_1, first_2, last_2, std::inserter(*result, result->begin()));
     return CPPY_ERROR_t::Ok;
 }
 
 /* Update a set with the symmetric difference of itself and another.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_SET_symmetric_difference_update(std::set<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_SET_symmetric_difference_update(std::set<T>* const self, Iteratable first, Iteratable last)
 {
     std::set<T> result;
 
-    std::set_symmetric_difference(self->begin(), self->end(), begin, end, std::inserter(result, result.begin()));
+    std::set_symmetric_difference(self->begin(), self->end(), first, last, std::inserter(result, result.begin()));
 
     self->swap(result);
     return CPPY_ERROR_t::Ok;
@@ -145,23 +135,20 @@ CPPY_ERROR_t CPPY_SET_symmetric_difference_update(std::set<T>* const self, Itera
  *  (i.e. all elements that are in either set.)
  */
 template <typename T, class Iteratable1, class Iteratable2>
-CPPY_ERROR_t CPPY_SET_union(Iteratable1 this_begin,
-                            Iteratable1 this_end,
-                            Iteratable2 other_begin,
-                            Iteratable2 other_end,
-                            std::set<T>* const result)
+CPPY_ERROR_t CPPY_SET_union(
+    Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, std::set<T>* const result)
 {
     result->clear();
-    std::set_union(this_begin, this_end, other_begin, other_end, std::inserter(*result, result->begin()));
+    std::set_union(first_1, last_1, first_2, last_2, std::inserter(*result, result->begin()));
     return CPPY_ERROR_t::Ok;
 }
 
 /* Update a set with the union of itself and others.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_SET_update(std::set<T>* self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_SET_update(std::set<T>* self, Iteratable first, Iteratable last)
 {
-    self->insert(begin, end);
+    self->insert(first, last);
     return CPPY_ERROR_t::Ok;
 }
 
@@ -208,15 +195,15 @@ CPPY_ERROR_t CPPY_SET_discard(std::set<T>* self, const T& element)
  */
 template <class Iteratable1, class Iteratable2>
 CPPY_ERROR_t CPPY_SET_isdisjoint(
-    Iteratable1 this_begin, Iteratable1 this_end, Iteratable2 other_begin, Iteratable2 other_end, bool* const result)
+    Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, bool* const result)
 {
     *result = true;
-    if ((this_begin == this_end) || (other_begin == other_end))
+    if ((first_1 == last_1) || (first_2 == last_2))
         return CPPY_ERROR_t::Ok;
 
-    for (; this_begin != this_end; ++this_begin)
+    for (; first_1 != last_1; ++first_1)
     {
-        if (std::find(other_begin, other_end, *this_begin) != other_end)
+        if (std::find(first_2, last_2, *first_1) != last_2)
         {
             *result = false;
             break;
@@ -228,10 +215,10 @@ CPPY_ERROR_t CPPY_SET_isdisjoint(
 /* Report whether another set contains this set.
  */
 template <class Iteratable1, class Iteratable2>
-CPPY_ERROR_t CPPY_SET_issubset(
-    Iteratable1 this_begin, Iteratable1 this_end, Iteratable2 other_begin, Iteratable2 other_end, bool* const result)
+CPPY_ERROR_t
+CPPY_SET_issubset(Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, bool* const result)
 {
-    *result = std::includes(other_begin, other_end, this_begin, this_end);
+    *result = std::includes(first_2, last_2, first_1, last_1);
     return CPPY_ERROR_t::Ok;
 }
 
@@ -239,27 +226,27 @@ CPPY_ERROR_t CPPY_SET_issubset(
  */
 template <class Iteratable1, class Iteratable2>
 CPPY_ERROR_t CPPY_SET_issuperset(
-    Iteratable1 this_begin, Iteratable1 this_end, Iteratable2 other_begin, Iteratable2 other_end, bool* const result)
+    Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, bool* const result)
 {
-    *result = std::includes(this_begin, this_end, other_begin, other_end);
+    *result = std::includes(first_1, last_1, first_2, last_2);
     return CPPY_ERROR_t::Ok;
 }
 
 template <class Iteratable1, class Iteratable2>
-CPPY_ERROR_t CPPY_SET_isequal(
-    Iteratable1 this_begin, Iteratable1 this_end, Iteratable2 other_begin, Iteratable2 other_end, bool* const result)
+CPPY_ERROR_t
+CPPY_SET_isequal(Iteratable1 first_1, Iteratable1 last_1, Iteratable2 first_2, Iteratable2 last_2, bool* const result)
 {
-    for (auto it = this_begin; it != this_end; it++)
+    for (auto it = first_1; it != last_1; it++)
     {
-        if (std::find(other_begin, other_end, *it) == other_end)
+        if (std::find(first_2, last_2, *it) == last_2)
         {
             *result = false;
             return CPPY_ERROR_t::Ok;
         }
     }
-    for (auto it = other_begin; it != other_begin; it++)
+    for (auto it = first_2; it != first_2; it++)
     {
-        if (std::find(this_begin, this_end, *it) == this_end)
+        if (std::find(first_1, last_1, *it) == last_1)
         {
             *result = false;
             return CPPY_ERROR_t::Ok;

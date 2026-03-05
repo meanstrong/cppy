@@ -9,10 +9,10 @@
 /* Built-in vector.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_VECTOR_init(std::vector<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_VECTOR_init(std::vector<T>* const self, Iteratable first, Iteratable last)
 {
     CPPY_MutableSequence_clear(self);
-    return CPPY_MutableSequence_extend(self, begin, end);
+    return CPPY_MutableSequence_extend(self, first, last);
     ;
 }
 
@@ -58,9 +58,9 @@ CPPY_ERROR_t CPPY_VECTOR_count(const std::vector<T>& self, const T& element, int
 /* Extend list by appending elements from the iterable.
  */
 template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_VECTOR_extend(std::vector<T>* const self, Iteratable begin, Iteratable end)
+CPPY_ERROR_t CPPY_VECTOR_extend(std::vector<T>* const self, Iteratable first, Iteratable last)
 {
-    return CPPY_MutableSequence_extend(self, begin, end);
+    return CPPY_MutableSequence_extend(self, first, last);
 }
 
 /* Return first index of value.
