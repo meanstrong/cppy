@@ -138,9 +138,9 @@ CPPY_API CPPY_ERROR_t CPPY_STR_join(const std::string& str,
                                     const std::string iterable[],
                                     std::string* const result);
 
-template <class Iteratable, class Callable>
+template <class Iterable, class Callable>
 CPPY_API CPPY_ERROR_t
-CPPY_STR_join(const std::string& str, Iteratable first, Iteratable last, std::string* const result, Callable toString)
+CPPY_STR_join(const std::string& str, Iterable first, Iterable last, std::string* const result, Callable toString)
 {
     if (first == last)
     {

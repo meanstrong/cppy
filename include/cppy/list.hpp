@@ -8,8 +8,8 @@
 
 /* Built-in list.
  */
-template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iteratable first, Iteratable last)
+template <typename T, class Iterable>
+CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iterable first, Iterable last)
 {
     CPPY_MutableSequence_clear(self);
     return CPPY_MutableSequence_extend(self, first, last);
@@ -57,8 +57,8 @@ CPPY_ERROR_t CPPY_LIST_count(const std::list<T>& self, const T& element, int* co
 
 /* Extend list by appending elements from the iterable.
  */
-template <typename T, class Iteratable>
-CPPY_ERROR_t CPPY_LIST_extend(std::list<T>* const self, Iteratable first, Iteratable last)
+template <typename T, class Iterable>
+CPPY_ERROR_t CPPY_LIST_extend(std::list<T>* const self, Iterable first, Iterable last)
 {
     return CPPY_MutableSequence_extend(self, first, name);
 }
