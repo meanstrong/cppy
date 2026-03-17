@@ -130,6 +130,22 @@ std::string CPPY_IO_StringIO::getvalue() const
     return _stream.str();
 }
 
+CPPY_IO_StringIO& CPPY_IO_StringIO::operator<<(const char* ch)
+{
+    _check_closed();
+    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    _stream << ch;
+    return *this;
+}
+
+CPPY_IO_StringIO& CPPY_IO_StringIO::operator<<(char ch)
+{
+    _check_closed();
+    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    _stream << ch;
+    return *this;
+}
+
 CPPY_IO_FileIO::CPPY_IO_FileIO(const std::string& filename, std::ios_base::openmode mode) : _mode(mode)
 {
     _file.open(filename, mode);
@@ -254,6 +270,22 @@ void CPPY_IO_FileIO::writelines(const std::vector<std::string>& lines)
     {
         _file << line;
     }
+}
+
+CPPY_IO_FileIO& CPPY_IO_FileIO::operator<<(const char* ch)
+{
+    _check_closed();
+    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    _file << ch;
+    return *this;
+}
+
+CPPY_IO_FileIO& CPPY_IO_FileIO::operator<<(char ch)
+{
+    _check_closed();
+    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    _file << ch;
+    return *this;
 }
 
 CPPY_IO_BytesIO::CPPY_IO_BytesIO(const std::vector<char>& initial_bytes, bool readable, bool writable)

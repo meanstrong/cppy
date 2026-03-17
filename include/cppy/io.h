@@ -83,6 +83,18 @@ public:
     void writelines(const std::vector<std::string>& lines) override;
 
     std::string getvalue() const;
+
+    CPPY_IO_StringIO& operator<<(const char* ch);
+    CPPY_IO_StringIO& operator<<(char ch);
+
+    template <class _Elem, class _Traits, class _Alloc>
+    CPPY_IO_StringIO& operator<<(const std::basic_string<_Elem, _Traits, _Alloc>& s)
+    {
+        _check_closed();
+        CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+        _stream << s;
+        return *this;
+    }
 };
 
 /* Open a file.
@@ -153,6 +165,18 @@ public:
     void write(const std::string& s) override;
 
     void writelines(const std::vector<std::string>& lines) override;
+
+    CPPY_IO_FileIO& operator<<(const char* ch);
+    CPPY_IO_FileIO& operator<<(char ch);
+
+    template <class _Elem, class _Traits, class _Alloc>
+    CPPY_IO_FileIO& operator<<(const std::basic_string<_Elem, _Traits, _Alloc>& s)
+    {
+        _check_closed();
+        CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+        _file << s;
+        return *this;
+    }
 };
 
 /* Base class for buffered IO objects.
