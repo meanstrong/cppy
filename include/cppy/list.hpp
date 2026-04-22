@@ -13,7 +13,6 @@ CPPY_ERROR_t CPPY_LIST_init(std::list<T>* const self, Iterable first, Iterable l
 {
     CPPY_MutableSequence_clear(self);
     return CPPY_MutableSequence_extend(self, first, last);
-    ;
 }
 
 template <typename T>
@@ -60,7 +59,7 @@ CPPY_ERROR_t CPPY_LIST_count(const std::list<T>& self, const T& element, int* co
 template <typename T, class Iterable>
 CPPY_ERROR_t CPPY_LIST_extend(std::list<T>* const self, Iterable first, Iterable last)
 {
-    return CPPY_MutableSequence_extend(self, first, name);
+    return CPPY_MutableSequence_extend(self, first, last);
 }
 
 /* Return first index of value.
