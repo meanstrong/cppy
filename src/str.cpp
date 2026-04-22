@@ -72,7 +72,7 @@ CPPY_STR_count(const std::string& str, const std::string& sub, int* const result
     *result = 0;
     int cursor = start;
 
-    while (1)
+    while (true)
     {
         CPPY_STR_find(str, sub, &cursor, cursor, end);
 

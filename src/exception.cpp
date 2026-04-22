@@ -24,7 +24,7 @@ CPPY_Assertion_message& CPPY_Assertion_message::operator<<(BasicNarrowIoManip va
     return *this;
 }
 
-CPPY_Expect_result::CPPY_Expect_result(){};
+CPPY_Expect_result::CPPY_Expect_result(){}
 
 void CPPY_Expect_result::operator=(const CPPY_Assertion_message& result) const
 {

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "cppy/io.h"
 
 CPPY_IO_IOBase::CPPY_IO_IOBase() : _closed(false)
