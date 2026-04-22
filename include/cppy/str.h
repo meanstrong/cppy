@@ -511,10 +511,8 @@ CPPY_ERROR_t CPPY_STR_format(const std::string& str, std::string* result, const 
 CPPY_API CPPY_ERROR_t CPPY_STR_iscontain(const std::string& str, const std::string& other, bool* const result);
 
 CPPY_API CPPY_ERROR_t CPPY_STR_at(const std::string& str, int index, char* const result);
-// char operator[](int index) const;
 
 CPPY_API CPPY_ERROR_t CPPY_STR_isequal(const std::string& str, const std::string& other, bool* const result);
-// bool operator==(const std::string& other) const;
 
 CPPY_API CPPY_ERROR_t CPPY_STR_mul(const std::string& str, int n, std::string* const result);
 
