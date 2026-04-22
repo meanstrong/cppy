@@ -42,7 +42,7 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_max(Iterable first, Iterable last, Iterable*
 {
     *result = std::max_element(first, last);
     return CPPY_ERROR_t::Ok;
-};
+}
 
 /*
  * min(iterable, *[, default=obj, key=func]) -> value
@@ -58,7 +58,7 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_min(Iterable first, Iterable last, Iterable*
 {
     *result = std::min_element(first, last);
     return CPPY_ERROR_t::Ok;
-};
+}
 
 /*
  * Return True if bool(x) is True for all values x in the iterable.
@@ -70,12 +70,12 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_all(Iterable first, Iterable last, Pred func
 {
     *result = std::all_of(first, last, func);
     return CPPY_ERROR_t::Ok;
-};
+}
 template <class Iterable>
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_all(Iterable first, Iterable last, bool* const result)
 {
     return CPPY_BUILTINS_all(first, last, [](typename Iterable::value_type v) { return v; }, result);
-};
+}
 
 /*
  * Return True if bool(x) is True for any x in the iterable.
@@ -87,12 +87,12 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_any(Iterable first, Iterable last, Pred func
 {
     *result = std::any_of(first, last, func);
     return CPPY_ERROR_t::Ok;
-};
+}
 template <class Iterable>
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_any(Iterable first, Iterable last, bool* const result)
 {
     return CPPY_BUILTINS_any(first, last, [](typename Iterable::value_type v) { return v; }, result);
-};
+}
 
 /*
  * Return the sum of a 'start' value (default: 0) plus an iterable of numbers
@@ -106,7 +106,7 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sum(Iterable first, Iterable last, AddableT 
 {
     *result = std::accumulate(first, last, start);
     return CPPY_ERROR_t::Ok;
-};
+}
 
 /*
  * Return the tuple (x//y, x%y).  Invariant: div*y + mod == x.
@@ -117,7 +117,7 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_divmod(T x, T y, T* const div, T* const mod)
     *div = x / y;
     *mod = x % y;
     return CPPY_ERROR_t::Ok;
-};
+}
 
 /*
  * Return a new list containing all items from the iterable in ascending order.
@@ -130,11 +130,11 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last)
 {
     std::sort(first, last);
     return CPPY_ERROR_t::Ok;
-};
+}
 
 template <typename Iterable, typename Callable>
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last, Callable key)
 {
     std::sort(first, last, key);
     return CPPY_ERROR_t::Ok;
-};
+}
