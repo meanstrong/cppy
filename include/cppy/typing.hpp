@@ -90,17 +90,13 @@ CPPY_Sequence_index(const Sequence& self, const Element& element, int* const ind
             start = 0;
     }
 
-    int i = start;
-    while (i < end)
+    auto begin = self.begin() + start;
+    auto end_it = self.begin() + end;
+    auto it = std::find(begin, end_it, element);
+    if (it != end_it)
     {
-        Element e;
-        CPPY_Sequence_at(self, i, &e);
-        if (e == element)
-        {
-            *index = i;
-            return CPPY_ERROR_t::Ok;
-        }
-        i++;
+        *index = static_cast<int>(it - self.begin());
+        return CPPY_ERROR_t::Ok;
     }
     return CPPY_ERROR_t::ValueError;
 }
