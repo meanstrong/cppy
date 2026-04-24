@@ -60,27 +60,12 @@ CPPY_ERROR_t CPPY_Sequence_iscontain(const Sequence& self, const Element& elemen
 template <typename Sequence>
 CPPY_ERROR_t CPPY_Sequence_isequal(const Sequence& self, const Sequence& other, bool* const result)
 {
-    using SizeType = typename Sequence::size_type;
-    using ValueType = typename Sequence::value_type;
-    SizeType n_self = self.size();
-    SizeType n_other = other.size();
-    if (n_self != n_other)
+    if (self.size() != other.size())
     {
         *result = false;
         return CPPY_ERROR_t::Ok;
     }
-    ValueType v_self, v_other;
-    for (int i = 0; i < static_cast<int>(n_self); i++)
-    {
-        CPPY_Sequence_at(self, i, &v_self);
-        CPPY_Sequence_at(other, i, &v_other);
-        if (v_self != v_other)
-        {
-            *result = false;
-            return CPPY_ERROR_t::Ok;
-        }
-    }
-    *result = true;
+    *result = std::equal(self.begin(), self.end(), other.begin());
     return CPPY_ERROR_t::Ok;
 }
 
