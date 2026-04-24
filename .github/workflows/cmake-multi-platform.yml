@@ -69,12 +69,10 @@ jobs:
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      # Run test executable directly instead of ctest to avoid Windows discovery issues
+      working-directory: ${{ github.workspace }}
+      # Find and run test executable (handles different output directories across platforms)
       run: |
-        if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          ./bin/${{ matrix.build_type }}/TestCppy.exe
-        else
-          ./bin/TestCppy
-        fi
+        TEST_EXE=$(find . -name "TestCppy*" -type f -executable | head -1)
+        echo "Found test executable: $TEST_EXE"
+        $TEST_EXE
       shell: bash
