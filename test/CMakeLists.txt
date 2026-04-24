@@ -37,5 +37,7 @@ if(CPPY_CREATE_SHARED_LIBRARY)
 endif()
 
 include(GoogleTest)
-gtest_add_tests(TARGET ${PROJECT_NAME})
+# Use simple add_test instead of gtest_discover_tests/gtest_add_tests
+# to avoid Windows DLL loading issues during test discovery
+add_test(NAME AllTests COMMAND ${PROJECT_NAME})
 
