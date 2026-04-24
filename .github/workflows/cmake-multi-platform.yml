@@ -72,13 +72,27 @@ jobs:
       if: matrix.os == 'windows-latest'
       working-directory: ${{ github.workspace }}
       run: |
-        # Find test executable
-        $TEST_EXE = Get-ChildItem -Path build -Filter TestCppy.exe -Recurse -File | Select-Object -First 1 -ExpandProperty FullName
+        # Debug: list directory structure
+        Write-Host "=== Directory structure ===" -ForegroundColor Cyan
+        Get-ChildItem -Path . -Directory -Name | ForEach-Object { Write-Host "  $_" }
+
+        # Find test executable - search both build/ and out/ for CMake cache cases
+        Write-Host "`n=== Searching for TestCppy.exe ===" -ForegroundColor Cyan
+        $TEST_EXE = Get-ChildItem -Path build, out -Filter TestCppy.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+
+        if (-not $TEST_EXE) {
+          Write-Host "Fallback: search entire workspace" -ForegroundColor Yellow
+          $TEST_EXE = Get-ChildItem -Path . -Filter TestCppy.exe -Recurse -File | Select-Object -First 1 -ExpandProperty FullName
+        }
+
         Write-Host "Found test executable: $TEST_EXE"
-        # CD to EXE directory for DLL resolution
+
+        # CD to EXE directory for Windows DLL resolution
         $EXE_DIR = Split-Path $TEST_EXE -Parent
         Set-Location $EXE_DIR
         Write-Host "Running from: $PWD"
+        Write-Host "Directory contents:" -ForegroundColor Cyan
+        Get-ChildItem | ForEach-Object { Write-Host "  $($_.Name)" }
         & .\TestCppy.exe
       shell: powershell
 
