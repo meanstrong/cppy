@@ -37,5 +37,5 @@ if(CPPY_CREATE_SHARED_LIBRARY)
 endif()
 
 include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME})
+gtest_discover_tests(${PROJECT_NAME} DISCOVERY_MODE PRE_TEST)
 
