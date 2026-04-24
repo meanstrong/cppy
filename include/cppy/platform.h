@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #if defined(WIN32) | defined(_WIN64)
 
@@ -8,9 +8,9 @@
 
 #elif __linux__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #else /*not support*/
 #error "process info doesn't support this platform"

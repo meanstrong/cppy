@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <cstdlib>
 
@@ -22,7 +22,6 @@ public:
         if (!m_ptr)
             return CPPY_ERROR_t::MemoryError;
         return CPPY_ERROR_t::Ok;
-
     }
 
     void free()
