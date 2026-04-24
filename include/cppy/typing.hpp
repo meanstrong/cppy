@@ -90,7 +90,6 @@ CPPY_Sequence_index(const Sequence& self, const Element& element, int* const ind
 {
     int len = static_cast<int>(self.size());
 
-    int int_len = len;
     if (end > len)
         end = len;
     else if (end < 0)

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #if defined(WIN32) | defined(_WIN64)
 
@@ -28,7 +28,7 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int inter
 CPPY_API CPPY_ERROR_t CPPY_PLATFORM_memory(DWORDLONG* total, DWORDLONG* available);
 
 namespace cppy {
-	namespace internal {
-		double get_cpu_usage();
-	}
+    namespace internal {
+        double get_cpu_usage();
+    }
 }

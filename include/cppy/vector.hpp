@@ -13,7 +13,6 @@ CPPY_ERROR_t CPPY_VECTOR_init(std::vector<T>* const self, Iterable first, Iterab
 {
     CPPY_MutableSequence_clear(self);
     return CPPY_MutableSequence_extend(self, first, last);
-    ;
 }
 
 template <typename T>

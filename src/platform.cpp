@@ -1,20 +1,20 @@
-#include "cppy/platform.h"
+Ôªø#include "cppy/platform.h"
 
 CPPY_API CPPY_ERROR_t CPPY_PLATFORM_os_info(std::string* const result) {
 #if defined(WIN32) | defined(_WIN64)
-	return CPPY_ERROR_t::NotImplementedError;
+    return CPPY_ERROR_t::NotImplementedError;
 #elif __linux__
-	FILE* fp = fopen("/proc/version", "r");
-	if (NULL == fp)
-		return PyException::FileNotFoundError;
-	char szTest[1000] = { 0 };
-	while (!feof(fp)) {
-		memset(szTest, 0, sizeof(szTest));
-		fgets(szTest, sizeof(szTest) - 1, fp);
-		*result += szTest;
-	}
-	fclose(fp);
-	return PyException::Ok;
+    FILE* fp = fopen("/proc/version", "r");
+    if (NULL == fp)
+        return PyException::FileNotFoundError;
+    char szTest[1000] = { 0 };
+    while (!feof(fp)) {
+        memset(szTest, 0, sizeof(szTest));
+        fgets(szTest, sizeof(szTest) - 1, fp);
+        *result += szTest;
+    }
+    fclose(fp);
+    return PyException::Ok;
 #else /*not support*/
 #error "process info doesn't support this platform"
 #endif
@@ -22,26 +22,26 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_os_info(std::string* const result) {
 
 CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int interval) {
 #if defined(WIN32) | defined(_WIN64)
-	*percent = cppy::internal::get_cpu_usage();
-	if (interval > 0)
-	{
-		Sleep(interval * 1000);
-		*percent = cppy::internal::get_cpu_usage();
-	}
-	return CPPY_ERROR_t::Ok;
+    *percent = cppy::internal::get_cpu_usage();
+    if (interval > 0)
+    {
+        Sleep(interval * 1000);
+        *percent = cppy::internal::get_cpu_usage();
+    }
+    return CPPY_ERROR_t::Ok;
 #elif __linux__
 
-	FILE* fp = fopen("/proc/cpuinfo", "r");
-	if (NULL == fp)
-		return PyException::FileNotFoundError;
-	char szTest[1000] = { 0 };
-	while (!feof(fp)) {
-		memset(szTest, 0, sizeof(szTest));
-		fgets(szTest, sizeof(szTest) - 1, fp);
-		*result += szTest;
-	}
-	fclose(fp);
-	return PyException::Ok;
+    FILE* fp = fopen("/proc/cpuinfo", "r");
+    if (NULL == fp)
+        return PyException::FileNotFoundError;
+    char szTest[1000] = { 0 };
+    while (!feof(fp)) {
+        memset(szTest, 0, sizeof(szTest));
+        fgets(szTest, sizeof(szTest) - 1, fp);
+        *result += szTest;
+    }
+    fclose(fp);
+    return PyException::Ok;
 #else /*not support*/
 #error "process info doesn't support this platform"
 #endif
@@ -49,61 +49,61 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int inter
 
 CPPY_API CPPY_ERROR_t CPPY_PLATFORM_memory(DWORDLONG* total, DWORDLONG* available) {
 #if defined(WIN32) | defined(_WIN64)
-	MEMORYSTATUSEX memInfo;
-	memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-	GlobalMemoryStatusEx(&memInfo);
-	*total = memInfo.ullTotalPhys;
-	*available = memInfo.ullAvailPhys;
-	return CPPY_ERROR_t::Ok;
+    MEMORYSTATUSEX memInfo;
+    memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+    GlobalMemoryStatusEx(&memInfo);
+    *total = memInfo.ullTotalPhys;
+    *available = memInfo.ullAvailPhys;
+    return CPPY_ERROR_t::Ok;
 #elif __linux__
-	FILE* fp = fopen("/proc/meminfo", "r");
-	if (NULL == fp)
-		return PyException::FileNotFoundError;
-	char szTest[1000] = { 0 };
-	while (!feof(fp)) {
-		memset(szTest, 0, sizeof(szTest));
-		fgets(szTest, sizeof(szTest) - 1, fp);
-		*result += szTest;
-	}
-	fclose(fp);
-	return PyException::Ok;
+    FILE* fp = fopen("/proc/meminfo", "r");
+    if (NULL == fp)
+        return PyException::FileNotFoundError;
+    char szTest[1000] = { 0 };
+    while (!feof(fp)) {
+        memset(szTest, 0, sizeof(szTest));
+        fgets(szTest, sizeof(szTest) - 1, fp);
+        *result += szTest;
+    }
+    fclose(fp);
+    return PyException::Ok;
 #else /*not support*/
 #error "process info doesn't support this platform"
 #endif
 }
 
 namespace cppy {
-	namespace internal {
-		double get_cpu_usage() {
-			static FILETIME prevIdleTime, prevKernelTime, prevUserTime;
-			FILETIME idleTime, kernelTime, userTime;
+    namespace internal {
+        double get_cpu_usage() {
+            static FILETIME prevIdleTime, prevKernelTime, prevUserTime;
+            FILETIME idleTime, kernelTime, userTime;
 
-			// ªÒ»°µ±«∞œµÕ≥µƒø’œ– ±º‰°¢ƒ⁄∫ÀÃ¨ ±º‰∫Õ”√ªßÃ¨ ±º‰
-			if (!GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
-				return -1;
-			}
+            // Ëé∑ÂèñÂΩìÂâçÁ≥ªÁªüÁöÑÁ©∫Èó≤Êó∂Èó¥„ÄÅÂÜÖÊ†∏ÊÄÅÊó∂Èó¥ÂíåÁî®Êà∑ÊÄÅÊó∂Èó¥
+            if (!GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
+                return -1;
+            }
 
-			ULONGLONG prevIdle = ((ULONGLONG)prevIdleTime.dwHighDateTime << 32) | prevIdleTime.dwLowDateTime;
-			ULONGLONG idle = ((ULONGLONG)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
-			ULONGLONG prevKernel = ((ULONGLONG)prevKernelTime.dwHighDateTime << 32) | prevKernelTime.dwLowDateTime;
-			ULONGLONG kernel = ((ULONGLONG)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
-			ULONGLONG prevUser = ((ULONGLONG)prevUserTime.dwHighDateTime << 32) | prevUserTime.dwLowDateTime;
-			ULONGLONG user = ((ULONGLONG)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+            ULONGLONG prevIdle = ((ULONGLONG)prevIdleTime.dwHighDateTime << 32) | prevIdleTime.dwLowDateTime;
+            ULONGLONG idle = ((ULONGLONG)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+            ULONGLONG prevKernel = ((ULONGLONG)prevKernelTime.dwHighDateTime << 32) | prevKernelTime.dwLowDateTime;
+            ULONGLONG kernel = ((ULONGLONG)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+            ULONGLONG prevUser = ((ULONGLONG)prevUserTime.dwHighDateTime << 32) | prevUserTime.dwLowDateTime;
+            ULONGLONG user = ((ULONGLONG)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
 
-			ULONGLONG totalPrev = prevIdle + prevKernel + prevUser;
-			ULONGLONG total = idle + kernel + user;
+            ULONGLONG totalPrev = prevIdle + prevKernel + prevUser;
+            ULONGLONG total = idle + kernel + user;
 
-			ULONGLONG totalDelta = total - totalPrev;
-			ULONGLONG idleDelta = idle - prevIdle;
+            ULONGLONG totalDelta = total - totalPrev;
+            ULONGLONG idleDelta = idle - prevIdle;
 
-			double cpuUsage = 100.0 * (totalDelta - idleDelta) / totalDelta;
+            double cpuUsage = 100.0 * (totalDelta - idleDelta) / totalDelta;
 
-			// ∏¸–¬…œ“ª¥Œµƒ ±º‰
-			prevIdleTime = idleTime;
-			prevKernelTime = kernelTime;
-			prevUserTime = userTime;
+            // Êõ¥Êñ∞‰∏ä‰∏ÄÊ¨°ÁöÑÊó∂Èó¥
+            prevIdleTime = idleTime;
+            prevKernelTime = kernelTime;
+            prevUserTime = userTime;
 
-			return cpuUsage;
-		}
-	}
+            return cpuUsage;
+        }
+    }
 }
