@@ -2,8 +2,8 @@
 
 #include "cppy/int.h"
 
-
-CPPY_API CPPY_ERROR_t CPPY_INT_init(int* const x, const std::string& str, int base) {
+CPPY_API CPPY_ERROR_t CPPY_INT_init(int* const x, const std::string& str, int base)
+{
     try
     {
         *x = std::stoi(str, nullptr, base);
@@ -19,8 +19,10 @@ CPPY_API CPPY_ERROR_t CPPY_INT_init(int* const x, const std::string& str, int ba
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API CPPY_ERROR_t CPPY_INT_bit_length(int x, int* const result) {
-    if (x < 0) x = -x;
+CPPY_API CPPY_ERROR_t CPPY_INT_bit_length(int x, int* const result)
+{
+    if (x < 0)
+        x = -x;
     *result = 0;
 
     if (x >= 0x10000)
@@ -47,15 +49,15 @@ CPPY_API CPPY_ERROR_t CPPY_INT_bit_length(int x, int* const result) {
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API CPPY_ERROR_t CPPY_INT_bit_count(int x, int* const result) {
-    if (x < 0) x = -x;
+CPPY_API CPPY_ERROR_t CPPY_INT_bit_count(int x, int* const result)
+{
+    if (x < 0)
+        x = -x;
     *result = 0;
 
-    int i;
-    for (i = 1; i <= x; i = i << 1)
+    for (int i = 1; i <= x; i = i << 1)
         if (x & i)
             ++(*result);
 
     return CPPY_ERROR_t::Ok;
 }
-
