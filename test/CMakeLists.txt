@@ -29,13 +29,13 @@ set_target_properties(${PROJECT_NAME}
     COMPILE_PDB_OUTPUT_DIRECTORY "${WORKSPACE}/out/${PROJECT_NAME}/lib")
 if(CPPY_CREATE_SHARED_LIBRARY)
   add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${WORKSPACE}/out/cppy/bin/cppy.dll ${WORKSPACE}/out/TestCppy/bin/cppy.dll
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:cppy> ${WORKSPACE}/out/TestCppy/bin/cppy.dll
   )
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/bin/gtest.dll ${WORKSPACE}/out/TestCppy/bin/gtest.dll
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:GTest::gtest> ${WORKSPACE}/out/TestCppy/bin/gtest.dll
   )
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/bin/gtest_main.dll ${WORKSPACE}/out/TestCppy/bin/gtest_main.dll
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:GTest::gtest_main> ${WORKSPACE}/out/TestCppy/bin/gtest_main.dll
   )
   target_compile_definitions(${PROJECT_NAME} PUBLIC CPPY_LINKED_AS_SHARED_LIBRARY=1)
 endif()
