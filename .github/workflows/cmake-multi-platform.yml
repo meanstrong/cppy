@@ -72,17 +72,14 @@ jobs:
       if: matrix.os == 'windows-latest'
       working-directory: ${{ github.workspace }}
       run: |
-        # Debug: list directory structure
-        Write-Host "=== Directory structure ===" -ForegroundColor Cyan
-        Get-ChildItem -Path . -Directory -Name | ForEach-Object { Write-Host "  $_" }
+        # Priority 1: search build/ FIRST - gtest DLLs are always here
+        Write-Host "=== Priority: searching build/ directory ===" -ForegroundColor Cyan
+        $TEST_EXE = Get-ChildItem -Path build -Filter TestCppy.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
 
-        # Find test executable - search both build/ and out/ for CMake cache cases
-        Write-Host "`n=== Searching for TestCppy.exe ===" -ForegroundColor Cyan
-        $TEST_EXE = Get-ChildItem -Path build, out -Filter TestCppy.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-
+        # Fallback: only go to out/ IF NOTHING found in build/
         if (-not $TEST_EXE) {
-          Write-Host "Fallback: search entire workspace" -ForegroundColor Yellow
-          $TEST_EXE = Get-ChildItem -Path . -Filter TestCppy.exe -Recurse -File | Select-Object -First 1 -ExpandProperty FullName
+          Write-Host "Not found in build/, searching out/ directory" -ForegroundColor Yellow
+          $TEST_EXE = Get-ChildItem -Path out -Filter TestCppy.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
         }
 
         Write-Host "Found test executable: $TEST_EXE"
