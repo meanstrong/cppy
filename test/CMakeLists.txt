@@ -23,6 +23,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE cppy GTest::gtest_main)
 if(CPPY_CREATE_SHARED_LIBRARY)
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:cppy> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:GTest::gtest> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:GTest::gtest_main> $<TARGET_FILE_DIR:${PROJECT_NAME}>
   )
   target_compile_definitions(${PROJECT_NAME} PUBLIC CPPY_LINKED_AS_SHARED_LIBRARY=1)
 endif()

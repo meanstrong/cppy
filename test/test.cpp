@@ -185,9 +185,9 @@ TEST(TEST_CPPY_STR, at)
 TEST(TEST_CPPY_STR, encode)
 {
     std::string result;
-    EXPECT_EQ(CPPY_STR_encode(L"ÖÐÎÄ", &result, CP_UTF8), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(CPPY_STR_encode(L"\u4E2D\u6587", &result, CP_UTF8), CPPY_ERROR_t::Ok);
     char c;
-    char expect[6] /*{0xe4, 0xb8, 0xad, 0xe6, 0x96, 0x87}*/;
+    char expect[6];
     expect[0] = static_cast<char>(0xe4);
     expect[1] = static_cast<char>(0xb8);
     expect[2] = static_cast<char>(0xad);

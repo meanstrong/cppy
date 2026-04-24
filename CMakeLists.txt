@@ -9,6 +9,10 @@ if(NOT CYGWIN AND NOT MSYS AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL QNX)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
+if(MSVC)
+  add_compile_options(/utf-8)
+endif()
+
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(CPPY_CREATE_SHARED_LIBRARY "Build using shared libraries" ON)
 # set(BUILD_SHARED_LIBS ON CACHE BOOL "Build using shared libraries" FORCE)
