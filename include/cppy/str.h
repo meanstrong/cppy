@@ -503,7 +503,7 @@ CPPY_ERROR_t CPPY_STR_format(const std::string& str, std::string* result, const 
 {
     std::ostringstream oss;
     std::string_view view(str);
-    (cppy::internal::format_helper(oss, view, args), ...);
+    (format_helper(oss, view, args), ...);
     oss << view;
     *result = oss.str();
     return CPPY_ERROR_t::Ok;

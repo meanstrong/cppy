@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <climits>
 
 #include "cppy/exception.h"
 #include "cppy/internal/declare.h"

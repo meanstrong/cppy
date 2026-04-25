@@ -1,6 +1,10 @@
 #include <fstream>
 #include <iostream>
 
+#ifdef _WIN32
+#    include <windows.h>
+#endif
+
 #include <gtest/gtest.h>
 #include "cppy/cppy.h"
 
@@ -185,7 +189,11 @@ TEST(TEST_CPPY_STR, at)
 TEST(TEST_CPPY_STR, encode)
 {
     std::string result;
+#ifdef _WIN32
     EXPECT_EQ(CPPY_STR_encode(L"\u4E2D\u6587", &result, CP_UTF8), CPPY_ERROR_t::Ok);
+#else
+    EXPECT_EQ(CPPY_STR_encode(L"\u4E2D\u6587", &result, "UTF-8"), CPPY_ERROR_t::Ok);
+#endif
     char c;
     char expect[6];
     expect[0] = static_cast<char>(0xe4);
@@ -1113,7 +1121,7 @@ TEST(TEST_CPPY_ASSERT, assert)
     }
     catch (const CPPY_Assertion_message& result)
     {
-        UNREFERENCED_PARAMETER(result);
+        (void)result;
     }
 }
 

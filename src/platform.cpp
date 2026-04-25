@@ -118,7 +118,11 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int inter
 
     unsigned long long user1, nice1, system1, idle1, iowait1, irq1, softirq1;
     char buffer[256];
-    (void)fgets(buffer, sizeof(buffer), fp1);
+    if (!fgets(buffer, sizeof(buffer), fp1))
+    {
+        fclose(fp1);
+        return CPPY_ERROR_t::ValueError;
+    }
     sscanf(buffer,
            "cpu  %llu %llu %llu %llu %llu %llu %llu",
            &user1,
@@ -139,7 +143,11 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int inter
         return CPPY_ERROR_t::ValueError;
 
     unsigned long long user2, nice2, system2, idle2, iowait2, irq2, softirq2;
-    (void)fgets(buffer, sizeof(buffer), fp2);
+    if (!fgets(buffer, sizeof(buffer), fp2))
+    {
+        fclose(fp2);
+        return CPPY_ERROR_t::ValueError;
+    }
     sscanf(buffer,
            "cpu  %llu %llu %llu %llu %llu %llu %llu",
            &user2,
