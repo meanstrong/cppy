@@ -912,7 +912,7 @@ TEST(TEST_CPPY_VECTOR, sort)
 
 TEST(TEST_CPPY_PLATFORM, memory)
 {
-    DWORDLONG total, available;
+    uint64_t total, available;
     CPPY_PLATFORM_memory(&total, &available);
 }
 
