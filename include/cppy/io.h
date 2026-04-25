@@ -115,7 +115,7 @@ class CPPY_API CPPY_IO_FileIO : public CPPY_IO_TextIOBase
 {
 private:
     std::fstream _file;
-    std::ios_base::openmode _mode{0};
+    std::ios_base::openmode _mode{};
 
 public:
     CPPY_IO_FileIO(const std::string& filename, std::ios_base::openmode mode = std::ios_base::in);
@@ -137,7 +137,7 @@ public:
         case 'b':
             return std::ios_base::binary;
         default:
-            return 0;
+            return std::ios_base::openmode{};
         }
     }
 
