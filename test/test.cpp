@@ -971,7 +971,7 @@ TEST(TEST_CPPY_BUILTINS, _max)
         EXPECT_NEAR(*result, 5., 1.0e-16);
     }
     {
-        auto data = std::initializer_list{0., 2., 5., 3., 4.};
+        auto data = std::initializer_list<double>{0., 2., 5., 3., 4.};
         const double* result{nullptr};
         CPPY_BUILTINS_max(data.begin(), data.end(), &result);
         EXPECT_NEAR(*result, 5., 1.0e-16);
@@ -987,7 +987,7 @@ TEST(TEST_CPPY_BUILTINS, _min)
         EXPECT_NEAR(*result, 0., 1.0e-16);
     }
     {
-        auto data = std::initializer_list{0., 2., 5., 3., 4.};
+        auto data = std::initializer_list<double>{0., 2., 5., 3., 4.};
         const double* result{nullptr};
         CPPY_BUILTINS_min(data.begin(), data.end(), &result);
         EXPECT_NEAR(*result, 0., 1.0e-16);
@@ -1071,7 +1071,7 @@ TEST(TEST_CPPY_BUILTINS, sum)
         EXPECT_NEAR(result, 14., 1.0e-16);
     }
     {
-        auto data = std::initializer_list{0., 2., 5., 3., 4.};
+        auto data = std::initializer_list<double>{0., 2., 5., 3., 4.};
         double result;
         CPPY_BUILTINS_sum(data.begin(), data.end(), 0.0, &result);
         EXPECT_NEAR(result, 14., 1.0e-16);

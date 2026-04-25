@@ -97,7 +97,23 @@ jobs:
       if: matrix.os != 'windows-latest'
       working-directory: ${{ github.workspace }}
       run: |
-        TEST_EXE=$(find build -name "TestCppy" -type f -executable | head -1)
+        echo "=== Searching build/ directory ==="
+        find build -name "*TestCppy*" -type f 2>/dev/null | head -10
+        echo "=== Searching out/ directory ==="
+        find out -name "*TestCppy*" -type f 2>/dev/null | head -10
+        echo "=== Searching entire workspace ==="
+        find . -name "TestCppy" -type f -executable 2>/dev/null | head -5
+
+        TEST_EXE=$(find . -name "TestCppy" -type f -executable 2>/dev/null | head -1)
         echo "Found test executable: $TEST_EXE"
-        $TEST_EXE
+
+        if [ -z "$TEST_EXE" ]; then
+          echo "ERROR: Test executable not found!"
+          exit 1
+        fi
+
+        EXE_DIR=$(dirname "$TEST_EXE")
+        cd "$EXE_DIR"
+        echo "Running from: $PWD"
+        ./TestCppy
       shell: bash
