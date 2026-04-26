@@ -685,21 +685,20 @@ CPPY_API CPPY_ERROR_t CPPY_STR_islower(const std::string& str, bool* const resul
         *result = false;
         return CPPY_ERROR_t::Ok;
     }
-    if (len == 1)
-    {
-        *result = ::islower(str[0]);
-        return CPPY_ERROR_t::Ok;
-    }
-
+    bool has_cased = false;
     for (i = 0; i < len; ++i)
     {
-        if (!::islower(str[i]))
+        if (::isupper(str[i]))
         {
             *result = false;
             return CPPY_ERROR_t::Ok;
         }
+        if (::islower(str[i]))
+        {
+            has_cased = true;
+        }
     }
-    *result = true;
+    *result = has_cased;
     return CPPY_ERROR_t::Ok;
 }
 
@@ -711,21 +710,20 @@ CPPY_API CPPY_ERROR_t CPPY_STR_isupper(const std::string& str, bool* const resul
         *result = false;
         return CPPY_ERROR_t::Ok;
     }
-    if (len == 1)
-    {
-        *result = ::isupper(str[0]);
-        return CPPY_ERROR_t::Ok;
-    }
-
+    bool has_cased = false;
     for (i = 0; i < len; ++i)
     {
-        if (!::isupper(str[i]))
+        if (::islower(str[i]))
         {
             *result = false;
             return CPPY_ERROR_t::Ok;
         }
+        if (::isupper(str[i]))
+        {
+            has_cased = true;
+        }
     }
-    *result = true;
+    *result = has_cased;
     return CPPY_ERROR_t::Ok;
 }
 

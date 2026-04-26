@@ -379,50 +379,63 @@ TEST(TEST_CPPY_STR, isalnum)
 
 TEST(TEST_CPPY_STR, islower)
 {
-    {
-        std::string s = "hello world";
-        bool result;
-        EXPECT_EQ(CPPY_STR_islower(s, &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, true);
-    }
-    {
-        std::string s = "Hello World";
-        bool result;
-        EXPECT_EQ(CPPY_STR_islower(s, &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, false);
-    }
+    bool result;
+    EXPECT_EQ(CPPY_STR_islower("hello world", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(CPPY_STR_islower("Hello World", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_islower("", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_islower("123!@#", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_islower("   ", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_islower("a", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(CPPY_STR_islower("hello123", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
 }
 
 TEST(TEST_CPPY_STR, isupper)
 {
-    {
-        std::string s = "HELLO WORLD";
-        bool result;
-        EXPECT_EQ(CPPY_STR_isupper(s, &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, true);
-    }
-    {
-        std::string s = "Hello World";
-        bool result;
-        EXPECT_EQ(CPPY_STR_isupper(s, &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, false);
-    }
+    bool result;
+    EXPECT_EQ(CPPY_STR_isupper("HELLO WORLD", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(CPPY_STR_isupper("Hello World", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_isupper("", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_isupper("123!@#", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_isupper("   ", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_isupper("A", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(CPPY_STR_isupper("HELLO123", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
 }
 
 TEST(TEST_CPPY_STR, istitle)
 {
-    {
-        std::string s = "Hello World";
-        bool result;
-        EXPECT_EQ(CPPY_STR_istitle(s, &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, true);
-    }
-    {
-        std::string s = "hello world";
-        bool result;
-        EXPECT_EQ(CPPY_STR_istitle(s, &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, false);
-    }
+    bool result;
+    EXPECT_EQ(CPPY_STR_istitle("Hello World", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(CPPY_STR_istitle("hello world", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_istitle("", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_istitle("   ", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_istitle("123!@#", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_istitle("A", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(CPPY_STR_istitle("a", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ(CPPY_STR_istitle("Hello   World   123", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ(CPPY_STR_istitle("Hello WOrld", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
 }
 
 TEST(TEST_CPPY_STR, mul)
