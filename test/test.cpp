@@ -1286,9 +1286,8 @@ TEST(TEST_CPPY_RANDOM, shuffle)
 TEST(TEST_CPPY_IO, StringIO)
 {
     CPPY_IO_StringIO sio;
-    std::string result;
-    EXPECT_EQ(sio.write("hello world"), CPPY_ERROR_t::Ok);
-    EXPECT_EQ(sio.getvalue(&result), CPPY_ERROR_t::Ok);
+    sio.write("hello world");
+    std::string result = sio.getvalue();
     EXPECT_EQ(result, "hello world");
 }
 
@@ -1296,22 +1295,22 @@ TEST(TEST_CPPY_IO, BytesIO)
 {
     CPPY_IO_BytesIO bio;
     std::vector<char> data = {'h', 'e', 'l', 'l', 'o'};
-    std::vector<char> result;
-    EXPECT_EQ(bio.write(data), CPPY_ERROR_t::Ok);
-    EXPECT_EQ(bio.getvalue(&result), CPPY_ERROR_t::Ok);
+    bio.write(data);
+    std::vector<char> result = bio.getvalue();
     EXPECT_EQ(result.size(), 5);
 }
 
 TEST(TEST_CPPY_IO, text_file)
 {
+    const char* temp_file = "test_temp.txt";
     {
         constexpr std::ios_base::openmode mode = CPPY_IO_FileIO::mode('w');
-        CPPY_IO_FileIO file = CPPY_IO_FileIO("D:\\1.txt", mode);
+        CPPY_IO_FileIO file = CPPY_IO_FileIO(temp_file, mode);
         file.write("12345\n67890\n\n0000");
         file.flush();
     }
     {
-        CPPY_IO_FileIO file = CPPY_IO_FileIO("D:\\1.txt");
+        CPPY_IO_FileIO file = CPPY_IO_FileIO(temp_file);
         std::string content;
         file.readline(&content);
         std::cout << content.c_str() << std::endl;
