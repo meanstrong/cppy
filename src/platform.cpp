@@ -4,7 +4,19 @@
 
 CPPY_API CPPY_ERROR_t CPPY_PLATFORM_os_info(std::string* const result)
 {
-    return CPPY_ERROR_t::NotImplementedError;
+    OSVERSIONINFOEXA osvi = {0};
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
+    GetVersionExA((OSVERSIONINFOA*)&osvi);
+
+    char buffer[256];
+    sprintf(buffer, "Windows %d.%d.%d (SP %d.%d)",
+            osvi.dwMajorVersion,
+            osvi.dwMinorVersion,
+            osvi.dwBuildNumber,
+            osvi.wServicePackMajor,
+            osvi.wServicePackMinor);
+    *result = buffer;
+    return CPPY_ERROR_t::Ok;
 }
 
 CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int interval)
