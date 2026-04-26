@@ -241,6 +241,24 @@ TEST(TEST_CPPY_STR, endswith)
     }
 }
 
+TEST(TEST_CPPY_STR, partition)
+{
+    std::string result[3];
+    EXPECT_EQ(CPPY_STR_partition("hello:world", ":", result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result[0], "hello");
+    EXPECT_EQ(result[1], ":");
+    EXPECT_EQ(result[2], "world");
+}
+
+TEST(TEST_CPPY_STR, rpartition)
+{
+    std::string result[3];
+    EXPECT_EQ(CPPY_STR_rpartition("hello:world:test", ":", result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result[0], "hello:world");
+    EXPECT_EQ(result[1], ":");
+    EXPECT_EQ(result[2], "test");
+}
+
 TEST(TEST_CPPY_STR, slice)
 {
     {
@@ -277,20 +295,6 @@ TEST(TEST_CPPY_STR, upper)
     std::string result;
     EXPECT_EQ(CPPY_STR_upper(s, &result), CPPY_ERROR_t::Ok);
     EXPECT_EQ(result, "HELLO WORLD");
-}
-
-TEST(TEST_CPPY_STR, partition)
-{
-    std::string s = "hello:world";
-    std::string** result;
-    EXPECT_EQ(CPPY_STR_partition(s, ":", result), CPPY_ERROR_t::Ok);
-}
-
-TEST(TEST_CPPY_STR, rpartition)
-{
-    std::string s = "hello:world:test";
-    std::string** result;
-    EXPECT_EQ(CPPY_STR_rpartition(s, ":", result), CPPY_ERROR_t::Ok);
 }
 
 TEST(TEST_CPPY_STR, rfind)

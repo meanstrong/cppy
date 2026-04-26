@@ -39,7 +39,7 @@ CPPY_STR_count(const std::string& str, const std::string& sub, int* const result
  *  If the separator is not found, returns a 3-tuple containing the original string
  *  and two empty strings.
  */
-CPPY_API CPPY_ERROR_t CPPY_STR_partition(const std::string& str, const std::string& sep, std::string** const result);
+CPPY_API CPPY_ERROR_t CPPY_STR_partition(const std::string& str, const std::string& sep, std::string* const result);
 
 /* Partition the string into three parts using the given separator.
  *
@@ -50,7 +50,7 @@ CPPY_API CPPY_ERROR_t CPPY_STR_partition(const std::string& str, const std::stri
  *  If the separator is not found, returns a 3-tuple containing two empty strings
  *  and the original string.
  */
-CPPY_API CPPY_ERROR_t CPPY_STR_rpartition(const std::string& str, const std::string& sep, std::string** const result);
+CPPY_API CPPY_ERROR_t CPPY_STR_rpartition(const std::string& str, const std::string& sep, std::string* const result);
 
 /* S.startswith(prefix[, start[, end]]) -> bool
  *

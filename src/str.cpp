@@ -86,40 +86,40 @@ CPPY_STR_count(const std::string& str, const std::string& sub, int* const result
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API CPPY_ERROR_t CPPY_STR_partition(const std::string& str, const std::string& sep, std::string** const result)
+CPPY_API CPPY_ERROR_t CPPY_STR_partition(const std::string& str, const std::string& sep, std::string* const result)
 {
     int index = 0;
     CPPY_STR_find(str, sep, &index);
     if (index < 0)
     {
-        *(result[0]) = str;
-        *(result[1]) = "";
-        *(result[2]) = "";
+        result[0] = str;
+        result[1] = "";
+        result[2] = "";
     }
     else
     {
-        *(result[0]) = str.substr(0, index);
-        *(result[1]) = sep;
-        *(result[2]) = str.substr(index + sep.size(), str.size());
+        result[0] = str.substr(0, index);
+        result[1] = sep;
+        result[2] = str.substr(index + sep.size(), str.size());
     }
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API CPPY_ERROR_t CPPY_STR_rpartition(const std::string& str, const std::string& sep, std::string** const result)
+CPPY_API CPPY_ERROR_t CPPY_STR_rpartition(const std::string& str, const std::string& sep, std::string* const result)
 {
     int index = 0;
     CPPY_STR_rfind(str, sep, &index);
     if (index < 0)
     {
-        *(result[0]) = "";
-        *(result[1]) = "";
-        *(result[2]) = str;
+        result[0] = "";
+        result[1] = "";
+        result[2] = str;
     }
     else
     {
-        *(result[0]) = str.substr(0, index);
-        *(result[1]) = sep;
-        *(result[2]) = str.substr(index + sep.size(), str.size());
+        result[0] = str.substr(0, index);
+        result[1] = sep;
+        result[2] = str.substr(index + sep.size(), str.size());
     }
     return CPPY_ERROR_t::Ok;
 }
