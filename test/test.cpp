@@ -506,6 +506,7 @@ TEST(TEST_CPPY_STR, expandtabs)
     std::string s = "hello\tworld";
     std::string result;
     EXPECT_EQ(CPPY_STR_expandtabs(s, &result, 8), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "hello   world");
 }
 
 TEST(TEST_CPPY_STR, splitlines)
@@ -514,6 +515,9 @@ TEST(TEST_CPPY_STR, splitlines)
     std::vector<std::string> result;
     EXPECT_EQ(CPPY_STR_splitlines(s, &result, false), CPPY_ERROR_t::Ok);
     EXPECT_EQ(result.size(), 3);
+    EXPECT_EQ(result[0], "hello");
+    EXPECT_EQ(result[1], "world");
+    EXPECT_EQ(result[2], "test");
 }
 
 TEST(TEST_CPPY_INT, init)
@@ -1228,13 +1232,17 @@ TEST(TEST_CPPY_VECTOR, sort)
 TEST(TEST_CPPY_PLATFORM, memory)
 {
     uint64_t total, available;
-    CPPY_PLATFORM_memory(&total, &available);
+    EXPECT_EQ(CPPY_PLATFORM_memory(&total, &available), CPPY_ERROR_t::Ok);
+    EXPECT_GT(total, 0);
+    EXPECT_GT(available, 0);
 }
 
 TEST(TEST_CPPY_PLATFORM, cpu_percent)
 {
     double percent = 0.;
-    CPPY_PLATFORM_cpu_percent(&percent, 1);
+    EXPECT_EQ(CPPY_PLATFORM_cpu_percent(&percent, 1), CPPY_ERROR_t::Ok);
+    EXPECT_GE(percent, 0.0);
+    EXPECT_LE(percent, 100.0);
 }
 
 TEST(TEST_CPPY_PLATFORM, os_info)
@@ -1278,9 +1286,25 @@ TEST(TEST_CPPY_BUILTINS, sorted)
 
 TEST(TEST_CPPY_RANDOM, shuffle)
 {
-    std::vector<int> data{1, 2, 3, 4, 5};
+    std::vector<int> original{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> data = original;
     CPPY_RANDOM_Random rng;
     rng.shuffle(data.begin(), data.end());
+
+    bool is_order_changed = false;
+    for (size_t i = 0; i < original.size(); i++)
+    {
+        if (data[i] != original[i])
+        {
+            is_order_changed = true;
+            break;
+        }
+    }
+    EXPECT_TRUE(is_order_changed);
+
+    std::sort(data.begin(), data.end());
+    std::sort(original.begin(), original.end());
+    EXPECT_EQ(data, original);
 }
 
 TEST(TEST_CPPY_IO, StringIO)
@@ -1311,9 +1335,15 @@ TEST(TEST_CPPY_IO, text_file)
     }
     {
         CPPY_IO_FileIO file = CPPY_IO_FileIO(temp_file);
-        std::string content;
-        file.readline(&content);
-        std::cout << content.c_str() << std::endl;
+        std::string line1, line2, line3, line4;
+        EXPECT_EQ(file.readline(&line1), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(file.readline(&line2), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(file.readline(&line3), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(file.readline(&line4), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(line1, "12345");
+        EXPECT_EQ(line2, "67890");
+        EXPECT_EQ(line3, "");
+        EXPECT_EQ(line4, "0000");
     }
 }
 
