@@ -288,6 +288,7 @@ CPPY_API CPPY_ERROR_t CPPY_STR_strip(const std::string& str, std::string* const 
 CPPY_API CPPY_ERROR_t CPPY_STR_slice(const std::string& str, std::string* const result, int start, int stop, int step)
 {
     int len = (int)str.length();
+    result->clear();
 
     if (stop > len)
         stop = len;
@@ -304,9 +305,13 @@ CPPY_API CPPY_ERROR_t CPPY_STR_slice(const std::string& str, std::string* const 
             start = 0;
     }
 
-    if (start >= stop)
-        *result = "";
-    *result = str.substr(start, stop - start);
+    if (step <= 0)
+        step = 1;
+
+    for (int i = start; i < stop; i += step)
+    {
+        *result += str[i];
+    }
     return CPPY_ERROR_t::Ok;
 }
 
