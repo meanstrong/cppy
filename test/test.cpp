@@ -209,6 +209,313 @@ TEST(TEST_CPPY_STR, encode)
     }
 }
 
+TEST(TEST_CPPY_STR, startswith)
+{
+    {
+        std::string s = "hello world";
+        bool result;
+        EXPECT_EQ(CPPY_STR_startswith(s, "hello", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "hello world";
+        bool result;
+        EXPECT_EQ(CPPY_STR_startswith(s, "world", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, endswith)
+{
+    {
+        std::string s = "hello world";
+        bool result;
+        EXPECT_EQ(CPPY_STR_endswith(s, "world", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "hello world";
+        bool result;
+        EXPECT_EQ(CPPY_STR_endswith(s, "hello", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, slice)
+{
+    {
+        std::string s = "hello world";
+        std::string result;
+        EXPECT_EQ(CPPY_STR_slice(s, &result, 0, 5), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "hello");
+    }
+    {
+        std::string s = "hello world";
+        std::string result;
+        EXPECT_EQ(CPPY_STR_slice(s, &result, 6, 11), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "world");
+    }
+    {
+        std::string s = "hello world";
+        std::string result;
+        EXPECT_EQ(CPPY_STR_slice(s, &result, 0, 11, 2), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "hlowrd");
+    }
+}
+
+TEST(TEST_CPPY_STR, replace)
+{
+    std::string s = "hello hello world";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_replace(s, "hello", "hi", &result, -1), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "hi hi world");
+}
+
+TEST(TEST_CPPY_STR, upper)
+{
+    std::string s = "Hello World";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_upper(s, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "HELLO WORLD");
+}
+
+TEST(TEST_CPPY_STR, partition)
+{
+    std::string s = "hello:world";
+    std::string** result;
+    EXPECT_EQ(CPPY_STR_partition(s, ":", result), CPPY_ERROR_t::Ok);
+}
+
+TEST(TEST_CPPY_STR, rpartition)
+{
+    std::string s = "hello:world:test";
+    std::string** result;
+    EXPECT_EQ(CPPY_STR_rpartition(s, ":", result), CPPY_ERROR_t::Ok);
+}
+
+TEST(TEST_CPPY_STR, rfind)
+{
+    std::string s = "hello hello world";
+    int result;
+    EXPECT_EQ(CPPY_STR_rfind(s, "hello", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, 6);
+}
+
+TEST(TEST_CPPY_STR, rindex)
+{
+    std::string s = "hello hello world";
+    int result;
+    EXPECT_EQ(CPPY_STR_rindex(s, "hello", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, 6);
+}
+
+TEST(TEST_CPPY_STR, isspace)
+{
+    {
+        std::string s = "   \t\n";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isspace(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "hello";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isspace(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, isalpha)
+{
+    {
+        std::string s = "HelloWorld";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isalpha(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "Hello123";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isalpha(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, isdigit)
+{
+    {
+        std::string s = "12345";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isdigit(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "123a";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isdigit(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, isalnum)
+{
+    {
+        std::string s = "Hello123";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isalnum(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "Hello@World";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isalnum(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, islower)
+{
+    {
+        std::string s = "hello world";
+        bool result;
+        EXPECT_EQ(CPPY_STR_islower(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "Hello World";
+        bool result;
+        EXPECT_EQ(CPPY_STR_islower(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, isupper)
+{
+    {
+        std::string s = "HELLO WORLD";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isupper(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "Hello World";
+        bool result;
+        EXPECT_EQ(CPPY_STR_isupper(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, istitle)
+{
+    {
+        std::string s = "Hello World";
+        bool result;
+        EXPECT_EQ(CPPY_STR_istitle(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string s = "hello world";
+        bool result;
+        EXPECT_EQ(CPPY_STR_istitle(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, mul)
+{
+    std::string s = "abc";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_mul(s, 3, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "abcabcabc");
+}
+
+TEST(TEST_CPPY_STR, capitalize)
+{
+    std::string s = "hello world";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_capitalize(s, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "Hello world");
+}
+
+TEST(TEST_CPPY_STR, swapcase)
+{
+    std::string s = "Hello World";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_swapcase(s, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "hELLO wORLD");
+}
+
+TEST(TEST_CPPY_STR, title)
+{
+    std::string s = "hello world";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_title(s, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "Hello World");
+}
+
+TEST(TEST_CPPY_STR, removeprefix)
+{
+    std::string s = "TestHello";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_removeprefix(s, "Test", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "Hello");
+}
+
+TEST(TEST_CPPY_STR, removesuffix)
+{
+    std::string s = "HelloTest";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_removesuffix(s, "Test", &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "Hello");
+}
+
+TEST(TEST_CPPY_STR, zfill)
+{
+    std::string s = "42";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_zfill(s, 5, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "00042");
+}
+
+TEST(TEST_CPPY_STR, ljust)
+{
+    std::string s = "hello";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_ljust(s, 10, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "hello     ");
+}
+
+TEST(TEST_CPPY_STR, rjust)
+{
+    std::string s = "hello";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_rjust(s, 10, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "     hello");
+}
+
+TEST(TEST_CPPY_STR, center)
+{
+    std::string s = "hello";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_center(s, 11, &result, ' '), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "   hello   ");
+}
+
+TEST(TEST_CPPY_STR, expandtabs)
+{
+    std::string s = "hello\tworld";
+    std::string result;
+    EXPECT_EQ(CPPY_STR_expandtabs(s, &result, 8), CPPY_ERROR_t::Ok);
+}
+
+TEST(TEST_CPPY_STR, splitlines)
+{
+    std::string s = "hello\nworld\r\ntest";
+    std::vector<std::string> result;
+    EXPECT_EQ(CPPY_STR_splitlines(s, &result, false), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 3);
+}
+
 TEST(TEST_CPPY_INT, init)
 {
     {
@@ -928,6 +1235,71 @@ TEST(TEST_CPPY_PLATFORM, cpu_percent)
 {
     double percent = 0.;
     CPPY_PLATFORM_cpu_percent(&percent, 1);
+}
+
+TEST(TEST_CPPY_PLATFORM, os_info)
+{
+    std::string result;
+    EXPECT_EQ(CPPY_PLATFORM_os_info(&result), CPPY_ERROR_t::Ok);
+    EXPECT_FALSE(result.empty());
+}
+
+TEST(TEST_CPPY_DATETIME, now)
+{
+    {
+        std::chrono::steady_clock::time_point result;
+        EXPECT_EQ(CPPY_DATETIME_now(&result), CPPY_ERROR_t::Ok);
+    }
+    {
+        std::time_t result;
+        EXPECT_EQ(CPPY_DATETIME_now(&result), CPPY_ERROR_t::Ok);
+        EXPECT_GT(result, 0);
+    }
+}
+
+TEST(TEST_CPPY_BUILTINS, divmod)
+{
+    int div, mod;
+    EXPECT_EQ(CPPY_BUILTINS_divmod(13, 5, &div, &mod), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(div, 2);
+    EXPECT_EQ(mod, 3);
+}
+
+TEST(TEST_CPPY_BUILTINS, sorted)
+{
+    std::vector<int> data{3, 1, 4, 1, 5};
+    EXPECT_EQ(CPPY_BUILTINS_sorted(data.begin(), data.end()), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(data[0], 1);
+    EXPECT_EQ(data[1], 1);
+    EXPECT_EQ(data[2], 3);
+    EXPECT_EQ(data[3], 4);
+    EXPECT_EQ(data[4], 5);
+}
+
+TEST(TEST_CPPY_RANDOM, shuffle)
+{
+    std::vector<int> data{1, 2, 3, 4, 5};
+    CPPY_RANDOM_Random rng;
+    rng.shuffle(data.begin(), data.end());
+}
+
+TEST(TEST_CPPY_IO, StringIO)
+{
+    CPPY_IO_StringIO sio;
+    std::string result;
+    EXPECT_EQ(sio.write("hello world"), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(sio.getvalue(&result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, "hello world");
+}
+
+TEST(TEST_CPPY_IO, BytesIO)
+{
+    CPPY_IO_BytesIO bio;
+    std::vector<char> data = {'h', 'e', 'l', 'l', 'o'};
+    std::vector<char> result;
+    EXPECT_EQ(bio.write(data), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(bio.getvalue(&result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 5);
 }
 
 TEST(TEST_CPPY_IO, text_file)
