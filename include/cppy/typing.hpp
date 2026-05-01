@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <climits>
+#include <iterator>
 
 #include "cppy/exception.h"
 #include "cppy/internal/declare.h"
@@ -47,7 +48,9 @@ CPPY_ERROR_t CPPY_Reversible_reversed(Reversible* const self)
 template <typename Sequence, typename Element>
 CPPY_ERROR_t CPPY_Sequence_at(const Sequence& self, int index, Element* const element)
 {
-    *element = self[index];
+    auto it = self.begin();
+    std::advance(it, index);
+    *element = *it;
     return CPPY_ERROR_t::Ok;
 }
 
@@ -91,12 +94,14 @@ CPPY_Sequence_index(const Sequence& self, const Element& element, int* const ind
             start = 0;
     }
 
-    auto begin = self.begin() + start;
-    auto end_it = self.begin() + end;
+    auto begin = self.begin();
+    std::advance(begin, start);
+    auto end_it = self.begin();
+    std::advance(end_it, end);
     auto it = std::find(begin, end_it, element);
     if (it != end_it)
     {
-        *index = static_cast<int>(it - self.begin());
+        *index = static_cast<int>(std::distance(self.begin(), it));
         return CPPY_ERROR_t::Ok;
     }
     return CPPY_ERROR_t::ValueError;
@@ -126,7 +131,9 @@ CPPY_ERROR_t CPPY_MutableSequence_insert(MutableSequence* const self, int index,
         if (index < 0)
             index = 0;
     }
-    self->insert(self->begin() + index, element);
+    auto it = self->begin();
+    std::advance(it, index);
+    self->insert(it, element);
     return CPPY_ERROR_t::Ok;
 }
 
@@ -182,7 +189,9 @@ CPPY_ERROR_t CPPY_MutableSequence_pop(MutableSequence* self, Element* const elem
 
     index = index >= 0 ? index : index + len;
     CPPY_Sequence_at(*self, index, element);
-    self->erase(self->begin() + index);
+    auto it = self->begin();
+    std::advance(it, index);
+    self->erase(it);
     return CPPY_ERROR_t::Ok;
 }
 
