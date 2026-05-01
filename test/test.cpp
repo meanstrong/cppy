@@ -1242,12 +1242,12 @@ TEST(TEST_CPPY_STR, format)
     std::string s = "A{}B{}C{}D";
     {
         std::string result;
-        EXPECT_EQ(CPPY_STR_format(s, &result, 1, 2, 3), PyException::Ok);
+        EXPECT_EQ(CPPY_STR_format(s, &result, 1, 2, 3), CPPY_ERROR_t::Ok);
         EXPECT_EQ(result, "A1B2C3D");
     }
     {
         std::string result;
-        EXPECT_EQ(CPPY_STR_format(s, &result, "123", "456", "789"), PyException::Ok);
+        EXPECT_EQ(CPPY_STR_format(s, &result, "123", "456", "789"), CPPY_ERROR_t::Ok);
         EXPECT_EQ(result, "A123B456C789D");
     }
 }

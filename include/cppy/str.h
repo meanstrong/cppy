@@ -493,6 +493,25 @@ CPPY_API CPPY_ERROR_t CPPY_STR_isupper(const std::string& str, bool* const resul
  */
 CPPY_API CPPY_ERROR_t CPPY_STR_istitle(const std::string& str, bool* const result);
 
+namespace cppy
+{
+namespace internal
+{
+template <typename T>
+static void format_helper(std::ostringstream& oss, std::string_view& str, const T& value)
+{
+    std::size_t open_bracket = str.find('{');
+    std::size_t close_bracket = str.find('}', open_bracket + 1);
+    if (open_bracket == std::string::npos || close_bracket == std::string::npos)
+    {
+        return;
+    }
+    oss << str.substr(0, open_bracket) << value;
+    str = str.substr(close_bracket + 1);
+}
+} // namespace internal
+} // namespace cppy
+
 /* S.format(*args, **kwargs) -> str
  *
  *  Return a formatted version of S, using substitutions from args and kwargs.
@@ -503,7 +522,7 @@ CPPY_ERROR_t CPPY_STR_format(const std::string& str, std::string* result, const 
 {
     std::ostringstream oss;
     std::string_view view(str);
-    (format_helper(oss, view, args), ...);
+    (cppy::internal::format_helper(oss, view, args), ...);
     oss << view;
     *result = oss.str();
     return CPPY_ERROR_t::Ok;
@@ -538,23 +557,3 @@ CPPY_API CPPY_ERROR_t CPPY_STR_encode(const std::wstring& wstr, std::string* con
 CPPY_API CPPY_ERROR_t CPPY_STR_decode(const std::string& str, std::wstring* const result, const char* encoding);
 
 #endif
-
-namespace cppy
-{
-namespace internal
-{
-// https://codereview.stackexchange.com/questions/269425/implementing-stdformat
-template <typename T>
-static void format_helper(std::ostringstream& oss, std::string_view& str, const T& value)
-{
-    std::size_t open_bracket = str.find('{');
-    std::size_t close_bracket = str.find('}', open_bracket + 1);
-    if (open_bracket == std::string::npos || close_bracket == std::string::npos)
-    {
-        return;
-    }
-    oss << str.substr(0, open_bracket) << value;
-    str = str.substr(close_bracket + 1);
-}
-} // namespace internal
-} // namespace cppy
