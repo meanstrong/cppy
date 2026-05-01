@@ -1448,6 +1448,57 @@ TEST(TEST_CPPY_BUILTINS, reversed)
     EXPECT_EQ(str, "olleh");
 }
 
+TEST(TEST_CPPY_BUILTINS, slice)
+{
+    std::vector<int> data{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<int> result;
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 1, 7, 2, std::back_inserter(result))), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 3);
+    EXPECT_EQ(result[0], 1);
+    EXPECT_EQ(result[1], 3);
+    EXPECT_EQ(result[2], 5);
+    result.clear();
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 7, 1, -2, std::back_inserter(result))), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 3);
+    EXPECT_EQ(result[0], 7);
+    EXPECT_EQ(result[1], 5);
+    EXPECT_EQ(result[2], 3);
+    result.clear();
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), -3, 10, 1, std::back_inserter(result))), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 3);
+    EXPECT_EQ(result[0], 7);
+    EXPECT_EQ(result[1], 8);
+    EXPECT_EQ(result[2], 9);
+    result.clear();
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 2, 5, 1, std::back_inserter(result))), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 3);
+    EXPECT_EQ(result[0], 2);
+    EXPECT_EQ(result[1], 3);
+    EXPECT_EQ(result[2], 4);
+    result.clear();
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 5, 2, -1, std::back_inserter(result))), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 3);
+    EXPECT_EQ(result[0], 5);
+    EXPECT_EQ(result[1], 4);
+    EXPECT_EQ(result[2], 3);
+    result.clear();
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 0, 10, 3, std::back_inserter(result))), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 4);
+    EXPECT_EQ(result[0], 0);
+    EXPECT_EQ(result[1], 3);
+    EXPECT_EQ(result[2], 6);
+    EXPECT_EQ(result[3], 9);
+    result.clear();
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 0, 0, 1, std::back_inserter(result))), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 0);
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 0, 5, 0, std::back_inserter(result))),
+              CPPY_ERROR_t::ValueError);
+    int raw_out[5] = {};
+    EXPECT_EQ((CPPY_BUILTINS_slice(data.begin(), data.end(), 0, 5, 1, raw_out)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(raw_out[0], 0);
+    EXPECT_EQ(raw_out[4], 4);
+}
+
 TEST(TEST_CPPY_RANDOM, shuffle)
 {
     std::vector<int> original{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};

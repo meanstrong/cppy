@@ -229,3 +229,56 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_reversed(Iterable first, Iterable last)
     std::reverse(first, last);
     return CPPY_ERROR_t::Ok;
 }
+
+/*
+ * Create a slice object.  This is used for extended slicing.
+ */
+template <class Iterable, class OutputIter>
+CPPY_API CPPY_ERROR_t
+CPPY_BUILTINS_slice(Iterable first, Iterable last, int start, int stop, int step, OutputIter result)
+{
+    if (step == 0)
+        return CPPY_ERROR_t::ValueError;
+    const int len = static_cast<int>(std::distance(first, last));
+    if (step > 0)
+    {
+        if (start < 0)
+            start += len;
+        if (stop < 0)
+            stop += len;
+        if (start < 0)
+            start = 0;
+        if (stop > len)
+            stop = len;
+        if (start >= len || start >= stop)
+            return CPPY_ERROR_t::Ok;
+        for (int i = start; i < stop; i += step)
+        {
+            auto it = first;
+            std::advance(it, i);
+            *result = *it;
+            ++result;
+        }
+    }
+    else
+    {
+        if (start < 0)
+            start += len;
+        if (stop < 0)
+            stop += len;
+        if (start >= len)
+            start = len - 1;
+        if (stop < -1)
+            stop = -1;
+        if (start < 0 || start <= stop)
+            return CPPY_ERROR_t::Ok;
+        for (int i = start; i > stop; i += step)
+        {
+            auto it = first;
+            std::advance(it, i);
+            *result = *it;
+            ++result;
+        }
+    }
+    return CPPY_ERROR_t::Ok;
+}
