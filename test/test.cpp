@@ -1380,16 +1380,18 @@ TEST(TEST_CPPY_BUILTINS, filter)
     EXPECT_EQ((CPPY_BUILTINS_filter(data.begin(), data.end(), is_even, std::front_inserter(deque_out))),
               CPPY_ERROR_t::Ok);
     EXPECT_EQ(deque_out.size(), 5);
-    std::array<int, 5> array_out{};
-    auto it = array_out.begin();
-    EXPECT_EQ((CPPY_BUILTINS_filter(data.begin(), data.end(), is_even, it)), CPPY_ERROR_t::Ok);
-    EXPECT_EQ(array_out[0], 2);
-    EXPECT_EQ(array_out[4], 10);
     std::list<int> list_data{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<int> from_list;
     EXPECT_EQ((CPPY_BUILTINS_filter(list_data.begin(), list_data.end(), is_even, std::back_inserter(from_list))),
               CPPY_ERROR_t::Ok);
     EXPECT_EQ(from_list.size(), 5);
+    int raw_array[5]{0};
+    EXPECT_EQ((CPPY_BUILTINS_filter(data.begin(), data.end(), is_even, raw_array)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(raw_array[0], 2);
+    EXPECT_EQ(raw_array[1], 4);
+    EXPECT_EQ(raw_array[2], 6);
+    EXPECT_EQ(raw_array[3], 8);
+    EXPECT_EQ(raw_array[4], 10);
     std::vector<int> empty;
     std::vector<int> empty_out;
     EXPECT_EQ((CPPY_BUILTINS_filter(empty.begin(), empty.end(), is_even, std::back_inserter(empty_out))),
