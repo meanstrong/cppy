@@ -205,3 +205,13 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_chr(uint32_t i, std::string* const result)
     }
     return CPPY_ERROR_t::Ok;
 }
+
+/*
+ * Return an iterator yielding those items of iterable for which function(item) is true.
+ */
+template <class Iterable, class Pred, class OutputIter>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_filter(Iterable first, Iterable last, Pred func, OutputIter result)
+{
+    std::copy_if(first, last, result, func);
+    return CPPY_ERROR_t::Ok;
+}
