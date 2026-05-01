@@ -1813,6 +1813,23 @@ TEST(TEST_CPPY_RANDOM, choice)
     }
 }
 
+TEST(TEST_CPPY_RANDOM, normalvariate)
+{
+    CPPY_RANDOM_Random random;
+    {
+        double mu = 0.0, sigma = 1.0, x;
+        EXPECT_EQ(random.normalvariate(mu, sigma, &x), CPPY_ERROR_t::Ok);
+        EXPECT_GE(x, mu - 6 * sigma);
+        EXPECT_LE(x, mu + 6 * sigma);
+    }
+    {
+        float mu = 5.0f, sigma = 2.0f, x;
+        EXPECT_EQ(random.normalvariate(mu, sigma, &x), CPPY_ERROR_t::Ok);
+        EXPECT_GE(x, mu - 6 * sigma);
+        EXPECT_LE(x, mu + 6 * sigma);
+    }
+}
+
 TEST(TEST_CPPY_thread, thread_pool)
 {
     CPPY_CONCURRENT_ThreadPoolExecutor pool(static_cast<size_t>(4));
