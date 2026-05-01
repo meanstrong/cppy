@@ -215,3 +215,13 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_filter(Iterable first, Iterable last, Pred f
     std::copy_if(first, last, result, func);
     return CPPY_ERROR_t::Ok;
 }
+
+/*
+ * reverse iterator over the values of the given sequence.
+ */
+template <class Iterable>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_reversed(Iterable first, Iterable last)
+{
+    std::reverse(first, last);
+    return CPPY_ERROR_t::Ok;
+}

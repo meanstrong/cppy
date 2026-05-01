@@ -1399,6 +1399,32 @@ TEST(TEST_CPPY_BUILTINS, filter)
     EXPECT_EQ(empty_out.size(), 0);
 }
 
+TEST(TEST_CPPY_BUILTINS, reversed)
+{
+    std::vector<int> vec{1, 2, 3, 4, 5};
+    EXPECT_EQ((CPPY_BUILTINS_reversed(vec.begin(), vec.end())), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(vec.size(), 5);
+    EXPECT_EQ(vec[0], 5);
+    EXPECT_EQ(vec[1], 4);
+    EXPECT_EQ(vec[2], 3);
+    EXPECT_EQ(vec[3], 2);
+    EXPECT_EQ(vec[4], 1);
+    std::vector<int> single{42};
+    EXPECT_EQ((CPPY_BUILTINS_reversed(single.begin(), single.end())), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(single[0], 42);
+    std::vector<int> empty;
+    EXPECT_EQ((CPPY_BUILTINS_reversed(empty.begin(), empty.end())), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(empty.size(), 0);
+    std::list<int> lst{10, 20, 30, 40};
+    EXPECT_EQ((CPPY_BUILTINS_reversed(lst.begin(), lst.end())), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(lst.size(), 4);
+    EXPECT_EQ(lst.front(), 40);
+    EXPECT_EQ(lst.back(), 10);
+    std::string str = "hello";
+    EXPECT_EQ((CPPY_BUILTINS_reversed(str.begin(), str.end())), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(str, "olleh");
+}
+
 TEST(TEST_CPPY_RANDOM, shuffle)
 {
     std::vector<int> original{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
