@@ -127,16 +127,20 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_divmod(T x, T y, T* const div, T* const mod)
  * reverse flag can be set to request the result in descending order.
  */
 template <typename Iterable>
-CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last)
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last, bool reverse = false)
 {
     std::sort(first, last);
+    if (reverse)
+        std::reverse(first, last);
     return CPPY_ERROR_t::Ok;
 }
 
 template <typename Iterable, typename Callable>
-CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last, Callable key)
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last, Callable key, bool reverse = false)
 {
-    std::sort(first, last, key);
+    std::sort(first, last, [&](const auto& a, const auto& b) { return key(a) < key(b); });
+    if (reverse)
+        std::reverse(first, last);
     return CPPY_ERROR_t::Ok;
 }
 

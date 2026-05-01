@@ -1299,6 +1299,29 @@ TEST(TEST_CPPY_BUILTINS, sorted)
     EXPECT_EQ(data[2], 3);
     EXPECT_EQ(data[3], 4);
     EXPECT_EQ(data[4], 5);
+    std::vector<int> desc{3, 1, 4, 1, 5};
+    EXPECT_EQ(CPPY_BUILTINS_sorted(desc.begin(), desc.end(), true), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(desc[0], 5);
+    EXPECT_EQ(desc[1], 4);
+    EXPECT_EQ(desc[2], 3);
+    EXPECT_EQ(desc[3], 1);
+    EXPECT_EQ(desc[4], 1);
+    std::vector<std::string> strs{"apple", "date", "banana", "cherry"};
+    auto str_len = [](const std::string& s) { return s.size(); };
+    EXPECT_EQ((CPPY_BUILTINS_sorted(strs.begin(), strs.end(), str_len)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(strs[0], "date");
+    EXPECT_EQ(strs[1], "apple");
+    EXPECT_EQ(strs[2], "banana");
+    EXPECT_EQ(strs[3], "cherry");
+    std::vector<std::pair<int, std::string>> pairs{{3, "banana"}, {1, "cherry"}, {2, "apple"}};
+    auto get_second = [](const auto& p) { return p.second; };
+    EXPECT_EQ((CPPY_BUILTINS_sorted(pairs.begin(), pairs.end(), get_second)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(pairs[0].second, "apple");
+    EXPECT_EQ(pairs[0].first, 2);
+    EXPECT_EQ(pairs[1].second, "banana");
+    EXPECT_EQ(pairs[1].first, 3);
+    EXPECT_EQ(pairs[2].second, "cherry");
+    EXPECT_EQ(pairs[2].first, 1);
 }
 
 TEST(TEST_CPPY_BUILTINS, callable)
