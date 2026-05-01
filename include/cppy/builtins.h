@@ -140,29 +140,36 @@ CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last, Callab
     return CPPY_ERROR_t::Ok;
 }
 
+namespace cppy
+{
+namespace internal
+{
+template <typename U, typename = void>
+struct is_callable_impl : std::false_type
+{
+};
+template <typename U>
+struct is_callable_impl<U, std::void_t<decltype(&U::operator())>> : std::true_type
+{
+};
+template <typename R, typename... Args>
+struct is_callable_impl<R (*)(Args...), void> : std::true_type
+{
+};
+template <typename R, typename... Args>
+struct is_callable_impl<R(Args...), void> : std::true_type
+{
+};
+} // namespace internal
+} // namespace cppy
+
 /*
  * Return whether the object is callable (i.e., some kind of function).
  */
 template <typename T>
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_callable(bool* const result)
 {
-    template <typename U, typename = void>
-    struct is_callable_impl : std::false_type
-    {
-    };
-    template <typename U>
-    struct is_callable_impl<U, std::void_t<decltype(&U::operator())>> : std::true_type
-    {
-    };
-    template <typename R, typename... Args>
-    struct is_callable_impl<R (*)(Args...), void> : std::true_type
-    {
-    };
-    template <typename R, typename... Args>
-    struct is_callable_impl<R(Args...), void> : std::true_type
-    {
-    };
-    *result = is_callable_impl<std::decay_t<T>>::value;
+    *result = cppy::internal::is_callable_impl<std::decay_t<T>>::value;
     return CPPY_ERROR_t::Ok;
 }
 
