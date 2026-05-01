@@ -1,7 +1,8 @@
 #pragma once
 
 #include <algorithm>
-#include <numeric> // accumulate
+#include <numeric>
+#include <type_traits>
 
 #include "cppy/exception.h"
 #include "cppy/internal/declare.h"
@@ -136,5 +137,64 @@ template <typename Iterable, typename Callable>
 CPPY_API CPPY_ERROR_t CPPY_BUILTINS_sorted(Iterable first, Iterable last, Callable key)
 {
     std::sort(first, last, key);
+    return CPPY_ERROR_t::Ok;
+}
+
+/*
+ * Return whether the object is callable (i.e., some kind of function).
+ */
+template <typename T>
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_callable(bool* const result)
+{
+    template <typename U, typename = void>
+    struct is_callable_impl : std::false_type
+    {
+    };
+    template <typename U>
+    struct is_callable_impl<U, std::void_t<decltype(&U::operator())>> : std::true_type
+    {
+    };
+    template <typename R, typename... Args>
+    struct is_callable_impl<R (*)(Args...), void> : std::true_type
+    {
+    };
+    template <typename R, typename... Args>
+    struct is_callable_impl<R(Args...), void> : std::true_type
+    {
+    };
+    *result = is_callable_impl<std::decay_t<T>>::value;
+    return CPPY_ERROR_t::Ok;
+}
+
+/*
+ * Return a Unicode string of one character with ordinal i; 0 <= i <= 0x10ffff.
+ */
+CPPY_API CPPY_ERROR_t CPPY_BUILTINS_chr(uint32_t i, std::string* const result)
+{
+    result->clear();
+    if (i > 0x10FFFF)
+        return CPPY_ERROR_t::ValueError;
+    if (i <= 0x7F)
+    {
+        *result += static_cast<char>(i);
+    }
+    else if (i <= 0x7FF)
+    {
+        *result += static_cast<char>(0xC0 | ((i >> 6) & 0x1F));
+        *result += static_cast<char>(0x80 | (i & 0x3F));
+    }
+    else if (i <= 0xFFFF)
+    {
+        *result += static_cast<char>(0xE0 | ((i >> 12) & 0x0F));
+        *result += static_cast<char>(0x80 | ((i >> 6) & 0x3F));
+        *result += static_cast<char>(0x80 | (i & 0x3F));
+    }
+    else
+    {
+        *result += static_cast<char>(0xF0 | ((i >> 18) & 0x07));
+        *result += static_cast<char>(0x80 | ((i >> 12) & 0x3F));
+        *result += static_cast<char>(0x80 | ((i >> 6) & 0x3F));
+        *result += static_cast<char>(0x80 | (i & 0x3F));
+    }
     return CPPY_ERROR_t::Ok;
 }

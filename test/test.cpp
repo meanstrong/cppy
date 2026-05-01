@@ -1301,6 +1301,66 @@ TEST(TEST_CPPY_BUILTINS, sorted)
     EXPECT_EQ(data[4], 5);
 }
 
+TEST(TEST_CPPY_BUILTINS, callable)
+{
+    bool result;
+    struct Helper
+    {
+        static void plain_function(int)
+        {
+        }
+    };
+    struct NoCall
+    {
+    };
+    struct WithCall
+    {
+        void operator()()
+        {
+        }
+    };
+    struct WithCallArgs
+    {
+        void operator()(int)
+        {
+        }
+    };
+    EXPECT_EQ((CPPY_BUILTINS_callable<WithCall>(&result)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ((CPPY_BUILTINS_callable<NoCall>(&result)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, false);
+    EXPECT_EQ((CPPY_BUILTINS_callable<WithCallArgs>(&result)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    auto lambda_noargs = []() { return 42; };
+    EXPECT_EQ((CPPY_BUILTINS_callable<decltype(lambda_noargs)>(&result)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    auto lambda_withargs = [](int x) { return x + 1; };
+    EXPECT_EQ((CPPY_BUILTINS_callable<decltype(lambda_withargs)>(&result)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+    EXPECT_EQ((CPPY_BUILTINS_callable<decltype(&Helper::plain_function)>(&result)), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, true);
+}
+
+TEST(TEST_CPPY_BUILTINS, chr)
+{
+    std::string s;
+    EXPECT_EQ(CPPY_BUILTINS_chr(0x41, &s), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(s.size(), 1);
+    EXPECT_EQ((uint8_t)s[0], 0x41);
+    EXPECT_EQ(CPPY_BUILTINS_chr(0x4E2D, &s), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(s.size(), 3);
+    EXPECT_EQ((uint8_t)s[0], 0xE4);
+    EXPECT_EQ((uint8_t)s[1], 0xB8);
+    EXPECT_EQ((uint8_t)s[2], 0xAD);
+    EXPECT_EQ(CPPY_BUILTINS_chr(0x1F600, &s), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(s.size(), 4);
+    EXPECT_EQ((uint8_t)s[0], 0xF0);
+    EXPECT_EQ((uint8_t)s[1], 0x9F);
+    EXPECT_EQ((uint8_t)s[2], 0x98);
+    EXPECT_EQ((uint8_t)s[3], 0x80);
+    EXPECT_EQ(CPPY_BUILTINS_chr(0x110000, &s), CPPY_ERROR_t::ValueError);
+}
+
 TEST(TEST_CPPY_RANDOM, shuffle)
 {
     std::vector<int> original{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
