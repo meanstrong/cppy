@@ -153,8 +153,8 @@ CPPY_ERROR_t CPPY_MutableSequence_reverse(Iterable first, Iterable last)
 
 /* Extend list by appending elements from the iterable.
  */
-template <typename Iterator, class Iterable>
-CPPY_ERROR_t CPPY_MutableSequence_extend(Iterator inserter, Iterable first, Iterable last)
+template <typename BackInserter, class Iterable>
+CPPY_ERROR_t CPPY_MutableSequence_extend(BackInserter inserter, Iterable first, Iterable last)
 {
     std::copy(first, last, inserter);
     return CPPY_ERROR_t::Ok;
