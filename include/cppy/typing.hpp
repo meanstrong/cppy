@@ -38,10 +38,10 @@ CPPY_ERROR_t CPPY_Sized_len(const Sized& self, typename Sized::size_type* const 
 
 // class Collection(Sized, Iterable, Container)
 
-template <typename Reversible, typename Element>
-CPPY_ERROR_t CPPY_Reversible_reversed(Reversible* const self)
+template <typename Iterable, typename Element>
+CPPY_ERROR_t CPPY_Reversible_reversed(Iterable first, Iterable last)
 {
-    std::reverse(self->begin(), self->end());
+    std::reverse(first, last);
     return CPPY_ERROR_t::Ok;
 }
 
@@ -54,30 +54,26 @@ CPPY_ERROR_t CPPY_Sequence_at(const Sequence& self, int index, Element* const el
     return CPPY_ERROR_t::Ok;
 }
 
-template <typename Sequence, typename Element>
-CPPY_ERROR_t CPPY_Sequence_iscontain(const Sequence& self, const Element& element, bool* const result)
+template <typename Iterable, typename Element>
+CPPY_ERROR_t CPPY_Sequence_iscontain(Iterable first, Iterable last, const Element& element, bool* const result)
 {
-    *result = std::find(self.begin(), self.end(), element) != self.end();
+    *result = std::find(first, last, element) != last;
     return CPPY_ERROR_t::Ok;
 }
 
-template <typename Sequence>
-CPPY_ERROR_t CPPY_Sequence_isequal(const Sequence& self, const Sequence& other, bool* const result)
-{
-    if (self.size() != other.size())
-    {
-        *result = false;
-        return CPPY_ERROR_t::Ok;
-    }
-    *result = std::equal(self.begin(), self.end(), other.begin());
-    return CPPY_ERROR_t::Ok;
-}
-
-template <typename Sequence, typename Element>
+template <typename Iterable1, typename Iterable2>
 CPPY_ERROR_t
-CPPY_Sequence_index(const Sequence& self, const Element& element, int* const index, int start = 0, int end = INT_MAX)
+CPPY_Sequence_isequal(Iterable1 first1, Iterable1 last1, Iterable2 first2, Iterable2 last2, bool* const result)
 {
-    int len = static_cast<int>(self.size());
+    *result = std::equal(first1, last1, first2, last2);
+    return CPPY_ERROR_t::Ok;
+}
+
+template <typename Iterable, typename Element>
+CPPY_ERROR_t CPPY_Sequence_index(
+    Iterable first, Iterable last, const Element& element, int* const index, int start = 0, int end = INT_MAX)
+{
+    int len = static_cast<int>(std::distance(first, last));
 
     if (end > len)
         end = len;
@@ -94,23 +90,26 @@ CPPY_Sequence_index(const Sequence& self, const Element& element, int* const ind
             start = 0;
     }
 
-    auto begin = self.begin();
+    if (start >= end)
+        return CPPY_ERROR_t::ValueError;
+
+    auto begin = first;
     std::advance(begin, start);
-    auto end_it = self.begin();
+    auto end_it = first;
     std::advance(end_it, end);
     auto it = std::find(begin, end_it, element);
     if (it != end_it)
     {
-        *index = static_cast<int>(std::distance(self.begin(), it));
+        *index = static_cast<int>(std::distance(first, it));
         return CPPY_ERROR_t::Ok;
     }
     return CPPY_ERROR_t::ValueError;
 }
 
-template <typename Sequence, typename Element>
-CPPY_ERROR_t CPPY_Sequence_count(const Sequence& self, const Element& element, int* const count)
+template <typename Iterable, typename Element>
+CPPY_ERROR_t CPPY_Sequence_count(Iterable first, Iterable last, const Element& element, int* const count)
 {
-    *count = static_cast<int>(std::count(self.begin(), self.end(), element));
+    *count = static_cast<int>(std::count(first, last, element));
     return CPPY_ERROR_t::Ok;
 }
 
@@ -118,31 +117,19 @@ CPPY_ERROR_t CPPY_Sequence_count(const Sequence& self, const Element& element, i
 
 /* Insert object before index.
  */
-template <typename MutableSequence, typename Element>
-CPPY_ERROR_t CPPY_MutableSequence_insert(MutableSequence* const self, int index, const Element& element)
+template <typename Iterator, typename Element>
+CPPY_ERROR_t CPPY_MutableSequence_insert(Iterator inserter, const Element& element)
 {
-    int len = static_cast<int>(self->size());
-
-    if (index > len)
-        index = len;
-    else if (index < 0)
-    {
-        index += len;
-        if (index < 0)
-            index = 0;
-    }
-    auto it = self->begin();
-    std::advance(it, index);
-    self->insert(it, element);
+    *inserter = element;
     return CPPY_ERROR_t::Ok;
 }
 
 /* Append object to the end of the list
  */
-template <typename MutableSequence, typename Element>
-CPPY_ERROR_t CPPY_MutableSequence_append(MutableSequence* const self, const Element& element)
+template <typename Iterator, typename Element>
+CPPY_ERROR_t CPPY_MutableSequence_append(Iterator back_inserter, const Element& element)
 {
-    self->push_back(element);
+    *back_inserter = element;
     return CPPY_ERROR_t::Ok;
 }
 
@@ -157,19 +144,19 @@ CPPY_ERROR_t CPPY_MutableSequence_clear(MutableSequence* const self)
 
 /* Reverse *IN PLACE*.
  */
-template <typename MutableSequence>
-CPPY_ERROR_t CPPY_MutableSequence_reverse(MutableSequence* self)
+template <typename Iterable>
+CPPY_ERROR_t CPPY_MutableSequence_reverse(Iterable first, Iterable last)
 {
-    std::reverse(self->begin(), self->end());
+    std::reverse(first, last);
     return CPPY_ERROR_t::Ok;
 }
 
 /* Extend list by appending elements from the iterable.
  */
-template <typename MutableSequence, class Iterable>
-CPPY_ERROR_t CPPY_MutableSequence_extend(MutableSequence* const self, Iterable first, Iterable last)
+template <typename Iterator, class Iterable>
+CPPY_ERROR_t CPPY_MutableSequence_extend(Iterator inserter, Iterable first, Iterable last)
 {
-    self->insert(self->end(), first, last);
+    std::copy(first, last, inserter);
     return CPPY_ERROR_t::Ok;
 }
 
