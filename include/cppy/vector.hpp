@@ -131,7 +131,6 @@ CPPY_ERROR_t CPPY_VECTOR_isequal(const std::vector<T>& self, Iterable other_firs
 template <typename T>
 CPPY_ERROR_t CPPY_VECTOR_mul(const std::vector<T>& self, int n, std::vector<T>* result)
 {
-    CPPY_MutableSequence_clear(result);
     if (n <= 0)
         return CPPY_ERROR_t::Ok;
     if (n == 1)

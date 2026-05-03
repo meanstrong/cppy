@@ -1771,14 +1771,14 @@ TEST(TEST_CPPY_VECTOR, isequal)
         std::vector<int> this_vector{1, 2, 3};
         std::vector<int> other_vector{1, 2, 3};
         bool isequal;
-        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector, &isequal), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector.begin(), other_vector.end(), &isequal), CPPY_ERROR_t::Ok);
         EXPECT_TRUE(isequal);
     }
     {
         std::vector<int> this_vector{1, 2, 3};
         std::vector<int> other_vector{1, 2, 4};
         bool isequal;
-        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector, &isequal), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector.begin(), other_vector.end(), &isequal), CPPY_ERROR_t::Ok);
         EXPECT_FALSE(isequal);
     }
 }
