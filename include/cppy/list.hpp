@@ -134,7 +134,7 @@ CPPY_ERROR_t CPPY_LIST_reverse(std::list<T>* self)
 template <typename T>
 CPPY_ERROR_t CPPY_LIST_sort(std::list<T>* self)
 {
-    std::sort(self->begin(), self->end());
+    self->sort();
     return CPPY_ERROR_t::Ok;
 }
 
