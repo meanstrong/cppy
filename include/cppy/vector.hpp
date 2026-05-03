@@ -81,6 +81,19 @@ CPPY_VECTOR_index(const std::vector<T>& self, const T& element, int* const index
 template <typename T>
 CPPY_ERROR_t CPPY_VECTOR_insert(std::vector<T>* const self, int index, const T& element)
 {
+    int len = static_cast<int>(self->size());
+
+    if (index >= len)
+    {
+        self->push_back(element);
+        return CPPY_ERROR_t::Ok;
+    }
+    if (index < 0)
+    {
+        index += len;
+        if (index < 0)
+            index = 0;
+    }
     self->insert(self->begin() + index, element);
     return CPPY_ERROR_t::Ok;
 }
@@ -123,7 +136,8 @@ CPPY_ERROR_t CPPY_VECTOR_sort(std::vector<T>* self)
 }
 
 template <typename T, typename Iterable>
-CPPY_ERROR_t CPPY_VECTOR_isequal(const std::vector<T>& self, Iterable other_first, Iterable other_last, bool* const result)
+CPPY_ERROR_t
+CPPY_VECTOR_isequal(const std::vector<T>& self, Iterable other_first, Iterable other_last, bool* const result)
 {
     return CPPY_Sequence_isequal(self.begin(), self.end(), other_first, other_last, result);
 }

@@ -82,7 +82,22 @@ CPPY_LIST_index(const std::list<T>& self, const T& element, int* const index, in
 template <typename T>
 CPPY_ERROR_t CPPY_LIST_insert(std::list<T>* const self, int index, const T& element)
 {
-    self->insert(self->begin() + index, element);
+    int len = static_cast<int>(self->size());
+
+    if (index >= len)
+    {
+        self->push_back(element);
+        return CPPY_ERROR_t::Ok;
+    }
+    if (index < 0)
+    {
+        index += len;
+        if (index < 0)
+            index = 0;
+    }
+    auto it = self->begin();
+    std::advance(it, index);
+    self->insert(it, element);
     return CPPY_ERROR_t::Ok;
 }
 
