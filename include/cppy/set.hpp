@@ -48,7 +48,7 @@ CPPY_ERROR_t CPPY_SET_clear(std::set<T>* const self)
 /* Return a shallow copy of a set.
  */
 template <typename T>
-CPPY_ERROR_t CPPY_SET_copy(const std::set<T>& self,, std::set<T>* const result)
+CPPY_ERROR_t CPPY_SET_copy(const std::set<T>& self, std::set<T>* const result)
 {
     result->clear();
     result->insert(self.begin(), self.end());
