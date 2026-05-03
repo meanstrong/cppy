@@ -7,10 +7,10 @@
 #include "cppy/exception.h"
 #include "cppy/internal/declare.h"
 
-template <typename Container, typename Element>
-CPPY_ERROR_t CPPY_Container_iscontain(const Container& self, const Element& element, bool* const result)
+template <typename Iterable, typename Element>
+CPPY_ERROR_t CPPY_Container_iscontain(Iterable first, Iterable last, const Element& element, bool* const result)
 {
-    *result = self.find(element) != self.end();
+    *result = std::find(first, last, element) != last;
     return CPPY_ERROR_t::Ok;
 }
 
@@ -51,13 +51,6 @@ CPPY_ERROR_t CPPY_Sequence_at(const Sequence& self, int index, Element* const el
     auto it = self.begin();
     std::advance(it, index);
     *element = *it;
-    return CPPY_ERROR_t::Ok;
-}
-
-template <typename Iterable, typename Element>
-CPPY_ERROR_t CPPY_Sequence_iscontain(Iterable first, Iterable last, const Element& element, bool* const result)
-{
-    *result = std::find(first, last, element) != last;
     return CPPY_ERROR_t::Ok;
 }
 
@@ -117,8 +110,8 @@ CPPY_ERROR_t CPPY_Sequence_count(Iterable first, Iterable last, const Element& e
 
 /* Insert object before index.
  */
-template <typename Iterator, typename Element>
-CPPY_ERROR_t CPPY_MutableSequence_insert(Iterator inserter, const Element& element)
+template <typename Iterable, typename Element>
+CPPY_ERROR_t CPPY_MutableSequence_insert(Iterable inserter, const Element& element)
 {
     *inserter = element;
     return CPPY_ERROR_t::Ok;
@@ -126,19 +119,10 @@ CPPY_ERROR_t CPPY_MutableSequence_insert(Iterator inserter, const Element& eleme
 
 /* Append object to the end of the list
  */
-template <typename Iterator, typename Element>
-CPPY_ERROR_t CPPY_MutableSequence_append(Iterator back_inserter, const Element& element)
+template <typename Iterable, typename Element>
+CPPY_ERROR_t CPPY_MutableSequence_append(Iterable back_inserter, const Element& element)
 {
     *back_inserter = element;
-    return CPPY_ERROR_t::Ok;
-}
-
-/* Remove all items from list.
- */
-template <typename MutableSequence>
-CPPY_ERROR_t CPPY_MutableSequence_clear(MutableSequence* const self)
-{
-    self->clear();
     return CPPY_ERROR_t::Ok;
 }
 
@@ -153,10 +137,10 @@ CPPY_ERROR_t CPPY_MutableSequence_reverse(Iterable first, Iterable last)
 
 /* Extend list by appending elements from the iterable.
  */
-template <typename BackInserter, class Iterable>
-CPPY_ERROR_t CPPY_MutableSequence_extend(BackInserter inserter, Iterable first, Iterable last)
+template <typename Iterable, class Iterable>
+CPPY_ERROR_t CPPY_MutableSequence_extend(Iterable back_inserter, Iterable first, Iterable last)
 {
-    std::copy(first, last, inserter);
+    std::copy(first, last, back_inserter);
     return CPPY_ERROR_t::Ok;
 }
 

@@ -47,11 +47,11 @@ CPPY_ERROR_t CPPY_SET_clear(std::set<T>* const self)
 
 /* Return a shallow copy of a set.
  */
-template <typename T, class Iterable>
-CPPY_ERROR_t CPPY_SET_copy(Iterable first, Iterable last, std::set<T>* const result)
+template <typename T>
+CPPY_ERROR_t CPPY_SET_copy(const std::set<T>& self,, std::set<T>* const result)
 {
     result->clear();
-    result->insert(first, last);
+    result->insert(self.begin(), self.end());
     return CPPY_ERROR_t::Ok;
 }
 

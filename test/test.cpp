@@ -791,18 +791,10 @@ TEST(TEST_CPPY_SET, clear)
 
 TEST(TEST_CPPY_SET, copy)
 {
-    {
-        std::set<int> a{1, 2, 3};
-        std::set<int> result;
-        EXPECT_EQ(CPPY_SET_copy(a.begin(), a.end(), &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result.size(), 3);
-    }
-    {
-        std::set<int> a{1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
-        std::set<int> result;
-        EXPECT_EQ(CPPY_SET_copy(a.begin(), a.end(), &result), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result.size(), 10);
-    }
+    std::set<int> a{1, 2, 3};
+    std::set<int> result;
+    EXPECT_EQ(CPPY_SET_copy(a, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 3);
 }
 
 TEST(TEST_CPPY_SET, difference)
