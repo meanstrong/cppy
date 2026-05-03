@@ -521,42 +521,6 @@ TEST(TEST_CPPY_IO, text_file)
     }
 }
 
-TEST(TEST_CPPY_LIST, init)
-{
-    {
-        std::list<int> this_vector;
-        int data[3]{1, 2, 3};
-        EXPECT_EQ(CPPY_LIST_init<int>(&this_vector, data, data + 3), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(this_vector.size(), 3);
-        int i = 0;
-        for (auto it = this_vector.begin(); it != this_vector.end(); it++)
-        {
-            EXPECT_EQ(*it, data[i++]);
-        }
-    }
-    {
-        std::list<int> this_vector;
-        std::vector<int> data{1, 2, 3};
-        EXPECT_EQ(CPPY_LIST_init(&this_vector, data.begin(), data.end()), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(this_vector.size(), 3);
-        int i = 0;
-        for (auto it = this_vector.begin(); it != this_vector.end(); it++)
-        {
-            EXPECT_EQ(*it, data[i++]);
-        }
-    }
-}
-
-TEST(TEST_CPPY_LIST, iscontain)
-{
-    std::list<int> data = {1, 2, 3, 4, 5};
-    bool result;
-    EXPECT_EQ(CPPY_LIST_iscontain(data, 3, &result), CPPY_ERROR_t::Ok);
-    EXPECT_TRUE(result);
-    EXPECT_EQ(CPPY_LIST_iscontain(data, 99, &result), CPPY_ERROR_t::Ok);
-    EXPECT_FALSE(result);
-}
-
 TEST(TEST_CPPY_LIST, append)
 {
     std::list<int> data = {1, 2, 3};
@@ -598,6 +562,32 @@ TEST(TEST_CPPY_LIST, extend)
     EXPECT_EQ(dst.size(), 5);
 }
 
+TEST(TEST_CPPY_LIST, init)
+{
+    {
+        std::list<int> this_vector;
+        int data[3]{1, 2, 3};
+        EXPECT_EQ(CPPY_LIST_init<int>(&this_vector, data, data + 3), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(this_vector.size(), 3);
+        int i = 0;
+        for (auto it = this_vector.begin(); it != this_vector.end(); it++)
+        {
+            EXPECT_EQ(*it, data[i++]);
+        }
+    }
+    {
+        std::list<int> this_vector;
+        std::vector<int> data{1, 2, 3};
+        EXPECT_EQ(CPPY_LIST_init(&this_vector, data.begin(), data.end()), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(this_vector.size(), 3);
+        int i = 0;
+        for (auto it = this_vector.begin(); it != this_vector.end(); it++)
+        {
+            EXPECT_EQ(*it, data[i++]);
+        }
+    }
+}
+
 TEST(TEST_CPPY_LIST, insert)
 {
     {
@@ -619,6 +609,36 @@ TEST(TEST_CPPY_LIST, insert)
         std::advance(it, 2);
         EXPECT_EQ(*it, 99);
     }
+}
+
+TEST(TEST_CPPY_LIST, iscontain)
+{
+    std::list<int> data = {1, 2, 3, 4, 5};
+    bool result;
+    EXPECT_EQ(CPPY_LIST_iscontain(data, 3, &result), CPPY_ERROR_t::Ok);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(CPPY_LIST_iscontain(data, 99, &result), CPPY_ERROR_t::Ok);
+    EXPECT_FALSE(result);
+}
+
+TEST(TEST_CPPY_LIST, isequal)
+{
+    std::list<int> a = {1, 2, 3};
+    std::list<int> b = {1, 2, 3};
+    std::list<int> c = {3, 2, 1};
+    bool result;
+    EXPECT_EQ(CPPY_LIST_isequal(a, b.begin(), b.end(), &result), CPPY_ERROR_t::Ok);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(CPPY_LIST_isequal(a, c.begin(), c.end(), &result), CPPY_ERROR_t::Ok);
+    EXPECT_FALSE(result);
+}
+
+TEST(TEST_CPPY_LIST, mul)
+{
+    std::list<int> data = {1, 2};
+    std::list<int> result;
+    EXPECT_EQ(CPPY_LIST_mul(data, 3, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 6);
 }
 
 TEST(TEST_CPPY_LIST, pop)
@@ -661,26 +681,6 @@ TEST(TEST_CPPY_LIST, sort)
         EXPECT_GE(x, prev);
         prev = x;
     }
-}
-
-TEST(TEST_CPPY_LIST, isequal)
-{
-    std::list<int> a = {1, 2, 3};
-    std::list<int> b = {1, 2, 3};
-    std::list<int> c = {3, 2, 1};
-    bool result;
-    EXPECT_EQ(CPPY_LIST_isequal(a, b.begin(), b.end(), &result), CPPY_ERROR_t::Ok);
-    EXPECT_TRUE(result);
-    EXPECT_EQ(CPPY_LIST_isequal(a, c.begin(), c.end(), &result), CPPY_ERROR_t::Ok);
-    EXPECT_FALSE(result);
-}
-
-TEST(TEST_CPPY_LIST, mul)
-{
-    std::list<int> data = {1, 2};
-    std::list<int> result;
-    EXPECT_EQ(CPPY_LIST_mul(data, 3, &result), CPPY_ERROR_t::Ok);
-    EXPECT_EQ(result.size(), 6);
 }
 
 TEST(TEST_CPPY_MEMORY_array_handler, _int_double)
