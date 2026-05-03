@@ -547,6 +547,142 @@ TEST(TEST_CPPY_LIST, init)
     }
 }
 
+TEST(TEST_CPPY_LIST, iscontain)
+{
+    std::list<int> data = {1, 2, 3, 4, 5};
+    bool result;
+    EXPECT_EQ(CPPY_LIST_iscontain(data, 3, &result), CPPY_ERROR_t::Ok);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(CPPY_LIST_iscontain(data, 99, &result), CPPY_ERROR_t::Ok);
+    EXPECT_FALSE(result);
+}
+
+TEST(TEST_CPPY_LIST, append)
+{
+    std::list<int> data = {1, 2, 3};
+    EXPECT_EQ(CPPY_LIST_append(&data, 4), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(data.size(), 4);
+    EXPECT_EQ(data.back(), 4);
+}
+
+TEST(TEST_CPPY_LIST, clear)
+{
+    std::list<int> data = {1, 2, 3, 4, 5};
+    EXPECT_EQ(CPPY_LIST_clear(&data), CPPY_ERROR_t::Ok);
+    EXPECT_TRUE(data.empty());
+}
+
+TEST(TEST_CPPY_LIST, copy)
+{
+    std::list<int> data = {1, 2, 3, 4, 5};
+    std::list<int> result;
+    EXPECT_EQ(CPPY_LIST_copy(data, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 5);
+    EXPECT_EQ(result.front(), 1);
+    EXPECT_EQ(result.back(), 5);
+}
+
+TEST(TEST_CPPY_LIST, count)
+{
+    std::list<int> data = {1, 2, 3, 2, 1, 2, 4};
+    int result;
+    EXPECT_EQ(CPPY_LIST_count(data, 2, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, 3);
+}
+
+TEST(TEST_CPPY_LIST, extend)
+{
+    std::list<int> dst = {1, 2};
+    std::list<int> src = {3, 4, 5};
+    EXPECT_EQ(CPPY_LIST_extend(&dst, src.begin(), src.end()), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(dst.size(), 5);
+}
+
+TEST(TEST_CPPY_LIST, insert)
+{
+    {
+        std::list<int> data = {1, 2, 3};
+        EXPECT_EQ(CPPY_LIST_insert(&data, 1, 99), CPPY_ERROR_t::Ok);
+        auto it = data.begin();
+        std::advance(it, 1);
+        EXPECT_EQ(*it, 99);
+    }
+    {
+        std::list<int> data = {1, 2, 3};
+        EXPECT_EQ(CPPY_LIST_insert(&data, 999, 99), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(data.back(), 99);
+    }
+    {
+        std::list<int> data = {1, 2, 3};
+        EXPECT_EQ(CPPY_LIST_insert(&data, -1, 99), CPPY_ERROR_t::Ok);
+        auto it = data.begin();
+        std::advance(it, 2);
+        EXPECT_EQ(*it, 99);
+    }
+}
+
+TEST(TEST_CPPY_LIST, pop)
+{
+    std::list<int> data = {1, 2, 3, 4, 5};
+    int result;
+    EXPECT_EQ(CPPY_LIST_pop(&data, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, 5);
+    EXPECT_EQ(data.size(), 4);
+    EXPECT_EQ(CPPY_LIST_pop(&data, &result, 0), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, 1);
+    EXPECT_EQ(CPPY_LIST_pop(&data, &result, -1), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result, 4);
+}
+
+TEST(TEST_CPPY_LIST, remove)
+{
+    std::list<int> data = {1, 2, 3, 2, 4};
+    EXPECT_EQ(CPPY_LIST_remove(&data, 2), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(data.size(), 4);
+    EXPECT_EQ(CPPY_LIST_remove(&data, 99), CPPY_ERROR_t::ValueError);
+}
+
+TEST(TEST_CPPY_LIST, reverse)
+{
+    std::list<int> data = {1, 2, 3, 4, 5};
+    EXPECT_EQ(CPPY_LIST_reverse(&data), CPPY_ERROR_t::Ok);
+    auto it = data.begin();
+    EXPECT_EQ(*it++, 5);
+    EXPECT_EQ(*it++, 4);
+}
+
+TEST(TEST_CPPY_LIST, sort)
+{
+    std::list<int> data = {3, 1, 4, 1, 5, 9, 2};
+    EXPECT_EQ(CPPY_LIST_sort(&data), CPPY_ERROR_t::Ok);
+    int prev = 0;
+    for (int x : data)
+    {
+        EXPECT_GE(x, prev);
+        prev = x;
+    }
+}
+
+TEST(TEST_CPPY_LIST, isequal)
+{
+    std::list<int> a = {1, 2, 3};
+    std::list<int> b = {1, 2, 3};
+    std::list<int> c = {3, 2, 1};
+    bool result;
+    EXPECT_EQ(CPPY_LIST_isequal(a, b.begin(), b.end(), &result), CPPY_ERROR_t::Ok);
+    EXPECT_TRUE(result);
+    EXPECT_EQ(CPPY_LIST_isequal(a, c.begin(), c.end(), &result), CPPY_ERROR_t::Ok);
+    EXPECT_FALSE(result);
+}
+
+TEST(TEST_CPPY_LIST, mul)
+{
+    std::list<int> data = {1, 2};
+    std::list<int> result;
+    EXPECT_EQ(CPPY_LIST_mul(data, 3, &result), CPPY_ERROR_t::Ok);
+    EXPECT_EQ(result.size(), 6);
+}
+
 TEST(TEST_CPPY_MEMORY_array_handler, _int_double)
 {
     {
@@ -1771,14 +1907,16 @@ TEST(TEST_CPPY_VECTOR, isequal)
         std::vector<int> this_vector{1, 2, 3};
         std::vector<int> other_vector{1, 2, 3};
         bool isequal;
-        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector.begin(), other_vector.end(), &isequal), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector.begin(), other_vector.end(), &isequal),
+                  CPPY_ERROR_t::Ok);
         EXPECT_TRUE(isequal);
     }
     {
         std::vector<int> this_vector{1, 2, 3};
         std::vector<int> other_vector{1, 2, 4};
         bool isequal;
-        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector.begin(), other_vector.end(), &isequal), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_VECTOR_isequal(this_vector, other_vector.begin(), other_vector.end(), &isequal),
+                  CPPY_ERROR_t::Ok);
         EXPECT_FALSE(isequal);
     }
 }
