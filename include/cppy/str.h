@@ -11,10 +11,10 @@
 
 /* Create a new string object from the given object.
  */
-CPPY_API CPPY_ERROR_t CPPY_STR_init(const char* chars, std::string* const str);
-CPPY_API CPPY_ERROR_t CPPY_STR_init(double d, std::string* const str, int precision = 15);
+CPPY_API CPPY_ERROR_t CPPY_STR_init(std::string* const str, const char* chars);
+CPPY_API CPPY_ERROR_t CPPY_STR_init(std::string* const str, double d, int precision = 15);
 template <typename T>
-CPPY_API CPPY_ERROR_t CPPY_STR_init(T v, std::string* const str)
+CPPY_API CPPY_ERROR_t CPPY_STR_init(std::string* const str, T v)
 {
     *str = std::to_string(v);
     return CPPY_ERROR_t::Ok;

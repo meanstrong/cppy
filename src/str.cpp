@@ -11,13 +11,13 @@
 
 #include "cppy/str.h"
 
-CPPY_API CPPY_ERROR_t CPPY_STR_init(const char* chars, std::string* const str)
+CPPY_API CPPY_ERROR_t CPPY_STR_init(std::string* const str, const char* chars)
 {
     *str = chars;
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_API CPPY_ERROR_t CPPY_STR_init(double d, std::string* const str, int precision)
+CPPY_API CPPY_ERROR_t CPPY_STR_init(std::string* const str, double d, int precision)
 {
     std::ostringstream ss;
     std::string nstr{""}, estr{""};

@@ -18,22 +18,12 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_memory(uint64_t* total, uint64_t* available)
 #    include <Pdh.h>
 #    include <Windows.h>
 
-
-namespace cppy
-{
-namespace internal
-{
-double get_cpu_usage();
-}
-} // namespace cppy
-
 #elif __linux__
 
 #    include <unistd.h>
 #    include <cstdio>
 #    include <cstdlib>
 #    include <cstring>
-
 
 #else /*not support*/
 #    error "process info doesn't support this platform"
