@@ -1530,6 +1530,30 @@ TEST(TEST_CPPY_STR, index)
     }
 }
 
+TEST(TEST_CPPY_STR, init_double)
+{
+    {
+        std::string result;
+        EXPECT_EQ(CPPY_STR_init(&result, 0.0), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "0");
+    }
+    {
+        std::string result;
+        EXPECT_EQ(CPPY_STR_init(&result, 123.456), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "123.456");
+    }
+    {
+        std::string result;
+        EXPECT_EQ(CPPY_STR_init(&result, 123.0), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "123");
+    }
+    {
+        std::string result;
+        EXPECT_EQ(CPPY_STR_init(&result, 1.23e20), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "1.23e+20");
+    }
+}
+
 TEST(TEST_CPPY_STR, isalnum)
 {
     {
@@ -1562,6 +1586,25 @@ TEST(TEST_CPPY_STR, isalpha)
     }
 }
 
+TEST(TEST_CPPY_STR, iscontain)
+{
+    {
+        bool result;
+        EXPECT_EQ(CPPY_STR_iscontain("hello world", "world", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        bool result;
+        EXPECT_EQ(CPPY_STR_iscontain("hello world", "test", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+    {
+        bool result;
+        EXPECT_EQ(CPPY_STR_iscontain("", "", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+}
+
 TEST(TEST_CPPY_STR, isdigit)
 {
     {
@@ -1575,6 +1618,25 @@ TEST(TEST_CPPY_STR, isdigit)
         bool result;
         EXPECT_EQ(CPPY_STR_isdigit(s, &result), CPPY_ERROR_t::Ok);
         EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_STR, isequal)
+{
+    {
+        bool result;
+        EXPECT_EQ(CPPY_STR_isequal("hello", "hello", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        bool result;
+        EXPECT_EQ(CPPY_STR_isequal("hello", "world", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+    {
+        bool result;
+        EXPECT_EQ(CPPY_STR_isequal("", "", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
     }
 }
 
@@ -1668,6 +1730,25 @@ TEST(TEST_CPPY_STR, join)
         std::string result;
         EXPECT_EQ(CPPY_STR_join(",", s.begin(), s.end(), &result), CPPY_ERROR_t::Ok);
         EXPECT_EQ(result, "123,456,789");
+    }
+}
+
+TEST(TEST_CPPY_STR, length)
+{
+    {
+        int result;
+        EXPECT_EQ(CPPY_STR_length("", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 0);
+    }
+    {
+        int result;
+        EXPECT_EQ(CPPY_STR_length("hello", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 5);
+    }
+    {
+        int result;
+        EXPECT_EQ(CPPY_STR_length("hello world", &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 11);
     }
 }
 
@@ -2235,5 +2316,200 @@ TEST(TEST_CPPY_thread, thread_pool)
     for (size_t i = 0; i < args.size(); i++)
     {
         EXPECT_EQ(futures[i].get(), args[i] * 2);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, Container_iscontain)
+{
+    {
+        std::vector<int> v{1, 2, 3, 4, 5};
+        bool result;
+        EXPECT_EQ(CPPY_Container_iscontain(v.begin(), v.end(), 3, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::vector<int> v{1, 2, 3, 4, 5};
+        bool result;
+        EXPECT_EQ(CPPY_Container_iscontain(v.begin(), v.end(), 99, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+    {
+        std::list<std::string> l{"a", "b", "c"};
+        bool result;
+        EXPECT_EQ(CPPY_Container_iscontain(l.begin(), l.end(), std::string("b"), &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, Sized_len)
+{
+    {
+        std::vector<int> v{1, 2, 3};
+        std::vector<int>::size_type result;
+        EXPECT_EQ(CPPY_Sized_len(v, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 3);
+    }
+    {
+        std::list<std::string> l{"a", "b"};
+        std::list<std::string>::size_type result;
+        EXPECT_EQ(CPPY_Sized_len(l, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 2);
+    }
+    {
+        std::set<int> s{1, 2, 3, 4};
+        std::set<int>::size_type result;
+        EXPECT_EQ(CPPY_Sized_len(s, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 4);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, Reversible_reversed)
+{
+    {
+        std::vector<int> v{1, 2, 3};
+        EXPECT_EQ(CPPY_Reversible_reversed(v.begin(), v.end()), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(v[0], 3);
+        EXPECT_EQ(v[1], 2);
+        EXPECT_EQ(v[2], 1);
+    }
+    {
+        std::list<int> l{1, 2, 3};
+        EXPECT_EQ(CPPY_Reversible_reversed(l.begin(), l.end()), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(l.front(), 3);
+        EXPECT_EQ(l.back(), 1);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, Sequence_at)
+{
+    {
+        std::vector<int> v{10, 20, 30};
+        int result;
+        EXPECT_EQ(CPPY_Sequence_at(v, 1, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 20);
+    }
+    {
+        std::list<std::string> l{"a", "b", "c"};
+        std::string result;
+        EXPECT_EQ(CPPY_Sequence_at(l, 2, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "c");
+    }
+}
+
+TEST(TEST_CPPY_TYPING, Sequence_isequal)
+{
+    {
+        std::vector<int> v1{1, 2, 3};
+        std::vector<int> v2{1, 2, 3};
+        bool result;
+        EXPECT_EQ(CPPY_Sequence_isequal(v1.begin(), v1.end(), v2.begin(), v2.end(), &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::list<int> l1{1, 2, 3};
+        std::vector<int> v2{1, 2, 4};
+        bool result;
+        EXPECT_EQ(CPPY_Sequence_isequal(l1.begin(), l1.end(), v2.begin(), v2.end(), &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, false);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, Sequence_index)
+{
+    {
+        std::vector<int> v{10, 20, 30, 40, 50};
+        int result;
+        EXPECT_EQ(CPPY_Sequence_index(v.begin(), v.end(), 30, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 2);
+    }
+    {
+        std::vector<int> v{10, 20, 30, 40, 50};
+        int result;
+        EXPECT_EQ(CPPY_Sequence_index(v.begin(), v.end(), 99, &result), CPPY_ERROR_t::ValueError);
+    }
+    {
+        std::list<std::string> l{"a", "b", "c", "d"};
+        int result;
+        EXPECT_EQ(CPPY_Sequence_index(l.begin(), l.end(), std::string("c"), &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 2);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, Sequence_count)
+{
+    {
+        std::vector<int> v{1, 2, 2, 3, 2, 4};
+        int result;
+        EXPECT_EQ(CPPY_Sequence_count(v.begin(), v.end(), 2, &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 3);
+    }
+    {
+        std::list<std::string> l{"a", "b", "a", "c"};
+        int result;
+        EXPECT_EQ(CPPY_Sequence_count(l.begin(), l.end(), std::string("a"), &result), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, 2);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, MutableSequence_append)
+{
+    {
+        std::vector<int> v{1, 2, 3};
+        EXPECT_EQ(CPPY_MutableSequence_append(std::back_inserter(v), 4), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(v.size(), 4);
+        EXPECT_EQ(v[3], 4);
+    }
+    {
+        std::list<std::string> l{"a", "b"};
+        EXPECT_EQ(CPPY_MutableSequence_append(std::back_inserter(l), std::string("c")), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(l.size(), 3);
+        EXPECT_EQ(l.back(), "c");
+    }
+}
+
+TEST(TEST_CPPY_TYPING, MutableSequence_insert)
+{
+    {
+        std::vector<int> v{1, 2, 3};
+        EXPECT_EQ(CPPY_MutableSequence_insert(v.insert(v.begin() + 1), 99), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(v.size(), 4);
+        EXPECT_EQ(v[1], 99);
+    }
+    {
+        std::list<std::string> l{"a", "c"};
+        auto it = l.begin();
+        ++it;
+        EXPECT_EQ(CPPY_MutableSequence_insert(l.insert(it), std::string("b")), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(l.size(), 3);
+        EXPECT_EQ(*++l.begin(), "b");
+    }
+}
+
+TEST(TEST_CPPY_TYPING, MutableSequence_reverse)
+{
+    {
+        std::vector<int> v{1, 2, 3};
+        EXPECT_EQ(CPPY_MutableSequence_reverse(v.begin(), v.end()), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(v[0], 3);
+        EXPECT_EQ(v[1], 2);
+        EXPECT_EQ(v[2], 1);
+    }
+}
+
+TEST(TEST_CPPY_TYPING, MutableSequence_extend)
+{
+    {
+        std::vector<int> v{1, 2};
+        std::vector<int> add{3, 4, 5};
+        EXPECT_EQ(CPPY_MutableSequence_extend(std::back_inserter(v), add.begin(), add.end()), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(v.size(), 5);
+        EXPECT_EQ(v[2], 3);
+        EXPECT_EQ(v[4], 5);
+    }
+    {
+        std::list<int> l{1, 2};
+        int add[] = {3, 4};
+        EXPECT_EQ(CPPY_MutableSequence_extend(std::back_inserter(l), add, add + 2), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(l.size(), 4);
     }
 }
