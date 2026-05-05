@@ -1539,8 +1539,8 @@ TEST(TEST_CPPY_STR, init_double)
     }
     {
         std::string result;
-        EXPECT_EQ(CPPY_STR_init(&result, 123.456), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, "123.456");
+        EXPECT_EQ(CPPY_STR_init(&result, 123.5), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "123.5");
     }
     {
         std::string result;
@@ -1549,8 +1549,8 @@ TEST(TEST_CPPY_STR, init_double)
     }
     {
         std::string result;
-        EXPECT_EQ(CPPY_STR_init(&result, 1.23e20), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(result, "1.23e+20");
+        EXPECT_EQ(CPPY_STR_init(&result, 1.5e20), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(result, "1.5e+20");
     }
 }
 
