@@ -38,7 +38,7 @@ CPPY_ERROR_t CPPY_Sized_len(const Sized& self, typename Sized::size_type* const 
 
 // class Collection(Sized, Iterable, Container)
 
-template <typename Iterable, typename Element>
+template <typename Iterable>
 CPPY_ERROR_t CPPY_Reversible_reversed(Iterable first, Iterable last)
 {
     std::reverse(first, last);
