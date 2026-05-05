@@ -54,22 +54,6 @@ private:
     pointer m_ptr;
 };
 
-namespace cppy {
-    namespace internal {
-        template <size_t N, typename T, typename... Types>
-        struct GetTypeAtIndex
-        {
-            using type = typename GetTypeAtIndex<N - 1, Types...>::type;
-        };
-
-        template <typename T, typename... Types>
-        struct GetTypeAtIndex<0, T, Types...>
-        {
-            using type = T;
-        };
-    }
-}
-
 template <typename... Types>
 struct CPPY_MEMORY_array_handler
 {
@@ -82,7 +66,7 @@ public:
 
     template <std::size_t N>
     using pointer_type_at = value_type_at<N>*;
-    
+
     template <std::size_t N>
     using pointer_address_type_at = pointer_type_at<N>*;
 

@@ -7,6 +7,7 @@
 
 #include "cppy/exception.h"
 #include "cppy/internal/declare.h"
+#include "cppy/internal/internal.h"
 
 /* Create a new string object from the given object.
  */
@@ -492,25 +493,6 @@ CPPY_API CPPY_ERROR_t CPPY_STR_isupper(const std::string& str, bool* const resul
  *  follow uncased characters and lowercase characters only cased ones.
  */
 CPPY_API CPPY_ERROR_t CPPY_STR_istitle(const std::string& str, bool* const result);
-
-namespace cppy
-{
-namespace internal
-{
-template <typename T>
-static void format_helper(std::ostringstream& oss, std::string_view& str, const T& value)
-{
-    std::size_t open_bracket = str.find('{');
-    std::size_t close_bracket = str.find('}', open_bracket + 1);
-    if (open_bracket == std::string::npos || close_bracket == std::string::npos)
-    {
-        return;
-    }
-    oss << str.substr(0, open_bracket) << value;
-    str = str.substr(close_bracket + 1);
-}
-} // namespace internal
-} // namespace cppy
 
 /* S.format(*args, **kwargs) -> str
  *
