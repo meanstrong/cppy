@@ -860,11 +860,12 @@ TEST(TEST_CPPY_PLATFORM, os_info)
 
 TEST(TEST_CPPY_RANDOM, choice)
 {
-    CPPY_RANDOM_Random random;
+    CPPY_Random random;
+    CPPY_RANDOM_init(&random);
     {
         std::vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         int x;
-        random.choice(a.begin(), a.end(), &x);
+        CPPY_RANDOM_choice(&random, a.begin(), a.end(), &x);
         bool is_contain{false};
         CPPY_VECTOR_iscontain(a, x, &is_contain);
         EXPECT_TRUE(is_contain);
@@ -872,7 +873,7 @@ TEST(TEST_CPPY_RANDOM, choice)
     {
         std::list<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         int x;
-        random.choice(a.begin(), a.end(), &x);
+        CPPY_RANDOM_choice(&random, a.begin(), a.end(), &x);
         bool is_contain{false};
         CPPY_LIST_iscontain(a, x, &is_contain);
         EXPECT_TRUE(is_contain);
@@ -881,16 +882,17 @@ TEST(TEST_CPPY_RANDOM, choice)
 
 TEST(TEST_CPPY_RANDOM, normalvariate)
 {
-    CPPY_RANDOM_Random random;
+    CPPY_Random random;
+    CPPY_RANDOM_init(&random);
     {
         double mu = 0.0, sigma = 1.0, x;
-        EXPECT_EQ(random.normalvariate(mu, sigma, &x), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_RANDOM_normalvariate(&random, mu, sigma, &x), CPPY_ERROR_t::Ok);
         EXPECT_GE(x, mu - 6 * sigma);
         EXPECT_LE(x, mu + 6 * sigma);
     }
     {
         float mu = 5.0f, sigma = 2.0f, x;
-        EXPECT_EQ(random.normalvariate(mu, sigma, &x), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_RANDOM_normalvariate(&random, mu, sigma, &x), CPPY_ERROR_t::Ok);
         EXPECT_GE(x, mu - 6 * sigma);
         EXPECT_LE(x, mu + 6 * sigma);
     }
@@ -898,16 +900,17 @@ TEST(TEST_CPPY_RANDOM, normalvariate)
 
 TEST(TEST_CPPY_RANDOM, randint)
 {
-    CPPY_RANDOM_Random random;
+    CPPY_Random random;
+    CPPY_RANDOM_init(&random);
     {
         int a{1}, b{10}, x;
-        random.randint(1, 10, &x);
+        CPPY_RANDOM_randint(&random, 1, 10, &x);
         EXPECT_GE(x, a);
         EXPECT_LE(x, b);
     }
     {
         size_t a{1}, b{10}, x;
-        random.randint(a, b, &x);
+        CPPY_RANDOM_randint(&random, a, b, &x);
         EXPECT_GE(x, a);
         EXPECT_LE(x, b);
     }
@@ -915,16 +918,17 @@ TEST(TEST_CPPY_RANDOM, randint)
 
 TEST(TEST_CPPY_RANDOM, random)
 {
-    CPPY_RANDOM_Random random;
+    CPPY_Random random;
+    CPPY_RANDOM_init(&random);
     {
         double x;
-        EXPECT_EQ(random.uniform(1.0, 10.0, &x), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_RANDOM_uniform(&random, 1.0, 10.0, &x), CPPY_ERROR_t::Ok);
         EXPECT_GE(x, 1.0);
         EXPECT_LT(x, 10.0);
     }
     {
         double x;
-        EXPECT_EQ(random.random(&x), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_RANDOM_random(&random, &x), CPPY_ERROR_t::Ok);
         EXPECT_GE(x, 0.0);
         EXPECT_LT(x, 1.0);
     }
@@ -934,8 +938,9 @@ TEST(TEST_CPPY_RANDOM, shuffle)
 {
     std::vector<int> original{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<int> data = original;
-    CPPY_RANDOM_Random rng;
-    rng.shuffle(data.begin(), data.end());
+    CPPY_Random rng;
+    CPPY_RANDOM_init(&rng);
+    CPPY_RANDOM_shuffle(&rng, data.begin(), data.end());
 
     bool is_order_changed = false;
     for (size_t i = 0; i < original.size(); i++)
@@ -955,19 +960,32 @@ TEST(TEST_CPPY_RANDOM, shuffle)
 
 TEST(TEST_CPPY_RANDOM, uniform)
 {
-    CPPY_RANDOM_Random random;
+    CPPY_Random random;
+    CPPY_RANDOM_init(&random);
     {
         float a{1.}, b{10.}, x;
-        random.uniform(a, b, &x);
+        CPPY_RANDOM_uniform(&random, a, b, &x);
         EXPECT_GE(x, a);
         EXPECT_LE(x, b);
     }
     {
         double a{1.}, b{10.}, x;
-        random.uniform(a, b, &x);
+        CPPY_RANDOM_uniform(&random, a, b, &x);
         EXPECT_GE(x, a);
         EXPECT_LE(x, b);
     }
+}
+
+TEST(TEST_CPPY_RANDOM, seed)
+{
+    CPPY_Random random1, random2;
+    CPPY_RANDOM_init(&random1, 42);
+    CPPY_RANDOM_init(&random2, 42);
+
+    int x1, x2;
+    CPPY_RANDOM_randint(&random1, 1, 100, &x1);
+    CPPY_RANDOM_randint(&random2, 1, 100, &x2);
+    EXPECT_EQ(x1, x2);
 }
 
 TEST(TEST_CPPY_SET, _union)
