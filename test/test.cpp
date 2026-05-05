@@ -484,17 +484,21 @@ TEST(TEST_CPPY_INT, init)
 TEST(TEST_CPPY_IO, BytesIO)
 {
     CPPY_IO_BytesIO bio;
+    CPPY_IO_BytesIO_init(&bio);
     std::vector<char> data = {'h', 'e', 'l', 'l', 'o'};
-    bio.write(data);
-    std::vector<char> result = bio.getvalue();
+    CPPY_IO_BytesIO_write(&bio, data);
+    std::vector<char> result;
+    CPPY_IO_BytesIO_getvalue(&bio, &result);
     EXPECT_EQ(result.size(), 5);
 }
 
 TEST(TEST_CPPY_IO, StringIO)
 {
     CPPY_IO_StringIO sio;
-    sio.write("hello world");
-    std::string result = sio.getvalue();
+    CPPY_IO_StringIO_init(&sio);
+    CPPY_IO_StringIO_write(&sio, "hello world");
+    std::string result;
+    CPPY_IO_StringIO_getvalue(&sio, &result);
     EXPECT_EQ(result, "hello world");
 }
 
@@ -502,22 +506,26 @@ TEST(TEST_CPPY_IO, text_file)
 {
     const char* temp_file = "test_temp.txt";
     {
-        constexpr std::ios_base::openmode mode = CPPY_IO_FileIO::mode('w');
-        CPPY_IO_FileIO file = CPPY_IO_FileIO(temp_file, mode);
-        file.write("12345\n67890\n\n0000");
-        file.flush();
+        constexpr std::ios_base::openmode mode = CPPY_IO_mode('w');
+        CPPY_IO_FileIO file;
+        CPPY_IO_FileIO_init(&file, temp_file, mode);
+        CPPY_IO_FileIO_write(&file, "12345\n67890\n\n0000");
+        CPPY_IO_FileIO_flush(&file);
+        CPPY_IO_FileIO_close(&file);
     }
     {
-        CPPY_IO_FileIO file = CPPY_IO_FileIO(temp_file);
+        CPPY_IO_FileIO file;
+        CPPY_IO_FileIO_init(&file, temp_file);
         std::string line1, line2, line3, line4;
-        EXPECT_EQ(file.readline(&line1), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(file.readline(&line2), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(file.readline(&line3), CPPY_ERROR_t::Ok);
-        EXPECT_EQ(file.readline(&line4), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_IO_FileIO_readline(&file, &line1), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_IO_FileIO_readline(&file, &line2), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_IO_FileIO_readline(&file, &line3), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_IO_FileIO_readline(&file, &line4), CPPY_ERROR_t::Ok);
         EXPECT_EQ(line1, "12345");
         EXPECT_EQ(line2, "67890");
         EXPECT_EQ(line3, "");
         EXPECT_EQ(line4, "0000");
+        CPPY_IO_FileIO_close(&file);
     }
 }
 

@@ -1,342 +1,267 @@
 #include "cppy/io.h"
 
-CPPY_IO_IOBase::CPPY_IO_IOBase() : _closed(false)
+CPPY_ERROR_t CPPY_IO_StringIO_init(CPPY_IO_StringIO* handle, const std::string& initial_value, bool readable, bool writable)
 {
-}
+    handle->closed = false;
+    handle->readable = readable;
+    handle->writable = writable;
 
-bool CPPY_IO_IOBase::closed() const
-{
-    return _closed;
-}
-
-void CPPY_IO_IOBase::close()
-{
-    _closed = true;
-}
-
-void CPPY_IO_IOBase::flush()
-{
-}
-
-void CPPY_IO_IOBase::_check_closed() const
-{
-    CPPY_ASSERT(!_closed) << "ValueError: I/O operation on closed file.";
-}
-
-CPPY_IO_StringIO::CPPY_IO_StringIO(const std::string& initial_value, bool readable, bool writable)
-    : _readable(readable), _writable(writable)
-{
     if (writable)
     {
-        _stream << initial_value;
+        handle->stream << initial_value;
     }
     else if (readable)
     {
-        _stream.str(initial_value);
+        handle->stream.str(initial_value);
     }
+
+    return CPPY_ERROR_t::Ok;
 }
 
-void CPPY_IO_StringIO::flush()
+CPPY_ERROR_t CPPY_IO_StringIO_close(CPPY_IO_StringIO* handle)
 {
-    _stream.flush();
+    handle->closed = true;
+    return CPPY_ERROR_t::Ok;
 }
 
-bool CPPY_IO_StringIO::readable()
+CPPY_ERROR_t CPPY_IO_StringIO_flush(CPPY_IO_StringIO* handle)
 {
-    return _readable;
+    handle->stream.flush();
+    return CPPY_ERROR_t::Ok;
 }
 
-bool CPPY_IO_StringIO::writable()
+CPPY_ERROR_t CPPY_IO_StringIO_read(CPPY_IO_StringIO* handle, std::string* const result, size_t size)
 {
-    return _writable;
-}
-
-CPPY_ERROR_t CPPY_IO_StringIO::read(std::string* const result, size_t size)
-{
-    _check_closed();
-    CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->readable) << "io.UnsupportedOperation: not readable";
 
     if (size == static_cast<size_t>(-1))
     {
-        *result = _stream.str().substr(_stream.tellg());
-        _stream.seekg(0, std::ios::end);
+        *result = handle->stream.str().substr(handle->stream.tellg());
+        handle->stream.seekg(0, std::ios::end);
     }
     else
     {
         result->resize(size);
-        if (!_stream.read(&result->front(), size))
+        if (!handle->stream.read(&result->front(), size))
             return CPPY_ERROR_t::EOFError;
-        result->resize(_stream.gcount());
+        result->resize(handle->stream.gcount());
     }
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_ERROR_t CPPY_IO_StringIO::readline(std::string* const result, size_t size)
+CPPY_ERROR_t CPPY_IO_StringIO_readline(CPPY_IO_StringIO* handle, std::string* const result, size_t size)
 {
-    _check_closed();
-    CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->readable) << "io.UnsupportedOperation: not readable";
 
     if (size == static_cast<size_t>(-1))
     {
-        if (!std::getline(_stream, *result))
+        if (!std::getline(handle->stream, *result))
             return CPPY_ERROR_t::EOFError;
     }
     else
     {
         result->resize(size);
-        if (!_stream.getline(&result->front(), size))
+        if (!handle->stream.getline(&result->front(), size))
             return CPPY_ERROR_t::EOFError;
-        result->resize(_stream.gcount());
+        result->resize(handle->stream.gcount());
     }
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_ERROR_t CPPY_IO_StringIO::readlines(std::vector<std::string>* const result)
+CPPY_ERROR_t CPPY_IO_StringIO_readlines(CPPY_IO_StringIO* handle, std::vector<std::string>* const result)
 {
-    _check_closed();
-    CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->readable) << "io.UnsupportedOperation: not readable";
 
     std::string line;
-    while (std::getline(_stream, line))
+    while (std::getline(handle->stream, line))
     {
         result->push_back(line);
     }
     return CPPY_ERROR_t::Ok;
 }
 
-void CPPY_IO_StringIO::write(const std::string& s)
+CPPY_ERROR_t CPPY_IO_StringIO_write(CPPY_IO_StringIO* handle, const std::string& s)
 {
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->writable) << "io.UnsupportedOperation: not writable";
 
-    _stream << s;
+    handle->stream << s;
+    return CPPY_ERROR_t::Ok;
 }
 
-void CPPY_IO_StringIO::writelines(const std::vector<std::string>& lines)
+CPPY_ERROR_t CPPY_IO_StringIO_writelines(CPPY_IO_StringIO* handle, const std::vector<std::string>& lines)
 {
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->writable) << "io.UnsupportedOperation: not writable";
 
     for (const auto& line : lines)
     {
-        _stream << line;
-    }
-}
-
-std::string CPPY_IO_StringIO::getvalue() const
-{
-    return _stream.str();
-}
-
-CPPY_IO_StringIO& CPPY_IO_StringIO::operator<<(const char* ch)
-{
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
-    _stream << ch;
-    return *this;
-}
-
-CPPY_IO_StringIO& CPPY_IO_StringIO::operator<<(char ch)
-{
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
-    _stream << ch;
-    return *this;
-}
-
-CPPY_IO_FileIO::CPPY_IO_FileIO(const std::string& filename, std::ios_base::openmode mode) : _mode(mode)
-{
-    _file.open(filename, mode);
-    CPPY_ASSERT(_file.is_open()) << "FileNotFoundError: No such file or directory: '" << filename << "'";
-}
-
-// constexpr std::ios_base::openmode CPPY_IO_FileIO::mode(const char c)
-//{
-//     switch (c)
-//     {
-//     case 'r':
-//         return std::ios_base::in;
-//     case 'w':
-//         return std::ios_base::out | std::ios_base::trunc;
-//     case 'a':
-//         return std::ios_base::out | std::ios_base::app;
-//     case '+':
-//         return std::ios_base::in | std::ios_base::out;
-//     case 'b':
-//         return std::ios_base::binary;
-//     default:
-//         return 0;
-//     }
-// }
-
-CPPY_IO_FileIO::~CPPY_IO_FileIO()
-{
-    if (_file.is_open())
-    {
-        _file.close();
-    }
-}
-
-void CPPY_IO_FileIO::close()
-{
-    _check_closed();
-    _file.close();
-    CPPY_IO_IOBase::close();
-}
-
-void CPPY_IO_FileIO::flush()
-{
-    _file.flush();
-}
-
-bool CPPY_IO_FileIO::readable()
-{
-    return _mode & std::ios_base::in;
-}
-
-bool CPPY_IO_FileIO::writable()
-{
-    return _mode & (std::ios_base::out | std::ios_base::app);
-}
-
-CPPY_ERROR_t CPPY_IO_FileIO::read(std::string* const result, size_t size)
-{
-    _check_closed();
-    CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
-
-    if (size == static_cast<size_t>(-1))
-    {
-        *result = std::string(std::istreambuf_iterator<char>(_file), {});
-    }
-    else
-    {
-        result->resize(size);
-        if (!_file.read(&result->front(), size))
-            return CPPY_ERROR_t::EOFError;
-        result->resize(_file.gcount());
+        handle->stream << line;
     }
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_ERROR_t CPPY_IO_FileIO::readline(std::string* const result, size_t size)
+CPPY_ERROR_t CPPY_IO_StringIO_getvalue(CPPY_IO_StringIO* handle, std::string* const result)
 {
-    _check_closed();
-    CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
+    *result = handle->stream.str();
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_FileIO_init(CPPY_IO_FileIO* handle, const std::string& filename, std::ios_base::openmode mode)
+{
+    handle->closed = false;
+    handle->mode = mode;
+    handle->file.open(filename, mode);
+
+    CPPY_ASSERT(handle->file.is_open()) << "FileNotFoundError: No such file or directory: '" << filename << "'";
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_FileIO_close(CPPY_IO_FileIO* handle)
+{
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    handle->file.close();
+    handle->closed = true;
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_FileIO_flush(CPPY_IO_FileIO* handle)
+{
+    handle->file.flush();
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_FileIO_read(CPPY_IO_FileIO* handle, std::string* const result, size_t size)
+{
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->mode & std::ios_base::in) << "io.UnsupportedOperation: not readable";
 
     if (size == static_cast<size_t>(-1))
     {
-        if (!std::getline(_file, *result))
+        std::stringstream ss;
+        ss << handle->file.rdbuf();
+        *result = ss.str();
+    }
+    else
+    {
+        result->resize(size);
+        if (!handle->file.read(&result->front(), size))
+            return CPPY_ERROR_t::EOFError;
+        result->resize(handle->file.gcount());
+    }
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_FileIO_readline(CPPY_IO_FileIO* handle, std::string* const result, size_t size)
+{
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->mode & std::ios_base::in) << "io.UnsupportedOperation: not readable";
+
+    if (size == static_cast<size_t>(-1))
+    {
+        if (!std::getline(handle->file, *result))
             return CPPY_ERROR_t::EOFError;
     }
     else
     {
         result->resize(size);
-        if (!_file.getline(&result->front(), size))
+        if (!handle->file.getline(&result->front(), size))
             return CPPY_ERROR_t::EOFError;
-        result->resize(_file.gcount());
+        result->resize(handle->file.gcount());
     }
     return CPPY_ERROR_t::Ok;
 }
 
-CPPY_ERROR_t CPPY_IO_FileIO::readlines(std::vector<std::string>* const result)
+CPPY_ERROR_t CPPY_IO_FileIO_readlines(CPPY_IO_FileIO* handle, std::vector<std::string>* const result)
 {
-    _check_closed();
-    CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->mode & std::ios_base::in) << "io.UnsupportedOperation: not readable";
 
     std::string line;
-    while (std::getline(_file, line))
+    while (std::getline(handle->file, line))
     {
         result->push_back(line);
     }
     return CPPY_ERROR_t::Ok;
 }
 
-void CPPY_IO_FileIO::write(const std::string& s)
+CPPY_ERROR_t CPPY_IO_FileIO_write(CPPY_IO_FileIO* handle, const std::string& s)
 {
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
 
-    _file << s;
-}
-
-void CPPY_IO_FileIO::writelines(const std::vector<std::string>& lines)
-{
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
-
-    for (const auto& line : lines)
-    {
-        _file << line;
-    }
-}
-
-CPPY_IO_FileIO& CPPY_IO_FileIO::operator<<(const char* ch)
-{
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
-    _file << ch;
-    return *this;
-}
-
-CPPY_IO_FileIO& CPPY_IO_FileIO::operator<<(char ch)
-{
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
-    _file << ch;
-    return *this;
-}
-
-CPPY_IO_BytesIO::CPPY_IO_BytesIO(const std::vector<char>& initial_bytes, bool readable, bool writable)
-    : _buffer(initial_bytes), _position(0), _readable(readable), _writable(writable)
-{
-}
-
-bool CPPY_IO_BytesIO::readable()
-{
-    return _readable;
-}
-
-bool CPPY_IO_BytesIO::writable()
-{
-    return _writable;
-}
-
-CPPY_ERROR_t CPPY_IO_BytesIO::read(std::vector<char>* const result, size_t size)
-{
-    _check_closed();
-    CPPY_ASSERT(readable()) << "io.UnsupportedOperation: not readable";
-
-    if (size == static_cast<size_t>(-1) || _position + size > _buffer.size())
-    {
-        size = _buffer.size() - _position;
-    }
-
-    result->insert(result->end(), _buffer.begin() + _position, _buffer.begin() + _position + size);
-    _position += size;
+    handle->file << s;
     return CPPY_ERROR_t::Ok;
 }
 
-void CPPY_IO_BytesIO::write(const std::vector<char>& data)
+CPPY_ERROR_t CPPY_IO_FileIO_writelines(CPPY_IO_FileIO* handle, const std::vector<std::string>& lines)
 {
-    _check_closed();
-    CPPY_ASSERT(writable()) << "io.UnsupportedOperation: not writable";
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
 
-    if (_position > _buffer.size())
+    for (const auto& line : lines)
     {
-        _buffer.resize(_position);
+        handle->file << line;
     }
-
-    size_t space_needed = _position + data.size() - _buffer.size();
-    if (space_needed > 0)
-    {
-        _buffer.resize(_buffer.size() + space_needed);
-    }
-
-    std::copy(data.begin(), data.end(), _buffer.begin() + _position);
-    _position += data.size();
+    return CPPY_ERROR_t::Ok;
 }
 
-std::vector<char> CPPY_IO_BytesIO::getvalue() const
+CPPY_ERROR_t CPPY_IO_BytesIO_init(CPPY_IO_BytesIO* handle, const std::vector<char>& initial_bytes, bool readable, bool writable)
 {
-    return _buffer;
+    handle->buffer = initial_bytes;
+    handle->position = 0;
+    handle->closed = false;
+    handle->readable = readable;
+    handle->writable = writable;
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_BytesIO_close(CPPY_IO_BytesIO* handle)
+{
+    handle->closed = true;
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_BytesIO_read(CPPY_IO_BytesIO* handle, std::vector<char>* const result, size_t size)
+{
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->readable) << "io.UnsupportedOperation: not readable";
+
+    if (size == static_cast<size_t>(-1) || handle->position + size > handle->buffer.size())
+    {
+        size = handle->buffer.size() - handle->position;
+    }
+
+    result->resize(size);
+    std::copy(handle->buffer.begin() + handle->position,
+              handle->buffer.begin() + handle->position + size,
+              result->begin());
+    handle->position += size;
+
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_BytesIO_write(CPPY_IO_BytesIO* handle, const std::vector<char>& data)
+{
+    CPPY_ASSERT(!handle->closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(handle->writable) << "io.UnsupportedOperation: not writable";
+
+    if (handle->position + data.size() > handle->buffer.size())
+    {
+        handle->buffer.resize(handle->position + data.size());
+    }
+
+    std::copy(data.begin(), data.end(), handle->buffer.begin() + handle->position);
+    handle->position += data.size();
+
+    return CPPY_ERROR_t::Ok;
+}
+
+CPPY_ERROR_t CPPY_IO_BytesIO_getvalue(CPPY_IO_BytesIO* handle, std::vector<char>* const result)
+{
+    *result = handle->buffer;
+    return CPPY_ERROR_t::Ok;
 }
