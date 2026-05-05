@@ -9,24 +9,47 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_os_info(std::string* const result)
     GetVersionExA((OSVERSIONINFOA*)&osvi);
 
     char buffer[256];
-    sprintf(buffer, "Windows %d.%d.%d (SP %d.%d)",
-            osvi.dwMajorVersion,
-            osvi.dwMinorVersion,
-            osvi.dwBuildNumber,
-            osvi.wServicePackMajor,
-            osvi.wServicePackMinor);
+    snprintf(buffer,
+             sizeof(buffer),
+             "Windows %d.%d.%d (SP %d.%d)",
+             osvi.dwMajorVersion,
+             osvi.dwMinorVersion,
+             osvi.dwBuildNumber,
+             osvi.wServicePackMajor,
+             osvi.wServicePackMinor);
     *result = buffer;
     return CPPY_ERROR_t::Ok;
 }
 
+static void get_cpu_times(ULONGLONG* idle, ULONGLONG* kernel, ULONGLONG* user)
+{
+    FILETIME idleTime, kernelTime, userTime;
+    GetSystemTimes(&idleTime, &kernelTime, &userTime);
+
+    *idle = ((ULONGLONG)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+    *kernel = ((ULONGLONG)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+    *user = ((ULONGLONG)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+}
+
 CPPY_API CPPY_ERROR_t CPPY_PLATFORM_cpu_percent(double* const percent, int interval)
 {
-    *percent = cppy::internal::get_cpu_usage();
-    if (interval > 0)
-    {
-        Sleep(interval * 1000);
-        *percent = cppy::internal::get_cpu_usage();
-    }
+    ULONGLONG idle1, kernel1, user1;
+    ULONGLONG idle2, kernel2, user2;
+
+    get_cpu_times(&idle1, &kernel1, &user1);
+
+    if (interval <= 0)
+        interval = 1;
+    Sleep(interval * 1000);
+
+    get_cpu_times(&idle2, &kernel2, &user2);
+
+    ULONGLONG total1 = idle1 + kernel1 + user1;
+    ULONGLONG total2 = idle2 + kernel2 + user2;
+    ULONGLONG idleDelta = idle2 - idle1;
+    ULONGLONG totalDelta = total2 - total1;
+
+    *percent = 100.0 * (totalDelta - idleDelta) / totalDelta;
     return CPPY_ERROR_t::Ok;
 }
 
@@ -39,44 +62,6 @@ CPPY_API CPPY_ERROR_t CPPY_PLATFORM_memory(uint64_t* total, uint64_t* available)
     *available = memInfo.ullAvailPhys;
     return CPPY_ERROR_t::Ok;
 }
-
-namespace cppy
-{
-namespace internal
-{
-double get_cpu_usage()
-{
-    static FILETIME prevIdleTime, prevKernelTime, prevUserTime;
-    FILETIME idleTime, kernelTime, userTime;
-
-    if (!GetSystemTimes(&idleTime, &kernelTime, &userTime))
-    {
-        return -1;
-    }
-
-    ULONGLONG prevIdle = ((ULONGLONG)prevIdleTime.dwHighDateTime << 32) | prevIdleTime.dwLowDateTime;
-    ULONGLONG idle = ((ULONGLONG)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
-    ULONGLONG prevKernel = ((ULONGLONG)prevKernelTime.dwHighDateTime << 32) | prevKernelTime.dwLowDateTime;
-    ULONGLONG kernel = ((ULONGLONG)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
-    ULONGLONG prevUser = ((ULONGLONG)prevUserTime.dwHighDateTime << 32) | prevUserTime.dwLowDateTime;
-    ULONGLONG user = ((ULONGLONG)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
-
-    ULONGLONG totalPrev = prevIdle + prevKernel + prevUser;
-    ULONGLONG total = idle + kernel + user;
-
-    ULONGLONG totalDelta = total - totalPrev;
-    ULONGLONG idleDelta = idle - prevIdle;
-
-    double cpuUsage = 100.0 * (totalDelta - idleDelta) / totalDelta;
-
-    prevIdleTime = idleTime;
-    prevKernelTime = kernelTime;
-    prevUserTime = userTime;
-
-    return cpuUsage;
-}
-} // namespace internal
-} // namespace cppy
 
 #elif __linux__
 
