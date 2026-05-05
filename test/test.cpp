@@ -502,6 +502,27 @@ TEST(TEST_CPPY_IO, StringIO)
     EXPECT_EQ(result, "hello world");
 }
 
+TEST(TEST_CPPY_IO, StringIO_stream)
+{
+    CPPY_IO_StringIO sio;
+    CPPY_IO_StringIO_init(&sio);
+    sio << "Hello" << ", " << "world!" << '\n';
+    std::string result;
+    CPPY_IO_StringIO_getvalue(&sio, &result);
+    EXPECT_EQ(result, "Hello, world!\n");
+}
+
+TEST(TEST_CPPY_IO, StringIO_manipulator)
+{
+    CPPY_IO_StringIO sio;
+    CPPY_IO_StringIO_init(&sio);
+    sio << "Line1" << std::endl << "Line2" << std::endl;
+    std::string result;
+    CPPY_IO_StringIO_getvalue(&sio, &result);
+    EXPECT_TRUE(result.find("Line1\n") != std::string::npos);
+    EXPECT_TRUE(result.find("Line2\n") != std::string::npos);
+}
+
 TEST(TEST_CPPY_IO, text_file)
 {
     const char* temp_file = "test_temp.txt";
@@ -525,6 +546,29 @@ TEST(TEST_CPPY_IO, text_file)
         EXPECT_EQ(line2, "67890");
         EXPECT_EQ(line3, "");
         EXPECT_EQ(line4, "0000");
+        CPPY_IO_FileIO_close(&file);
+    }
+}
+
+TEST(TEST_CPPY_IO, FileIO_stream)
+{
+    const char* temp_file = "test_stream.txt";
+    {
+        constexpr std::ios_base::openmode mode = CPPY_IO_mode('w');
+        CPPY_IO_FileIO file;
+        CPPY_IO_FileIO_init(&file, temp_file, mode);
+        file << "Line1" << '\n' << "Line2" << '\n';
+        CPPY_IO_FileIO_flush(&file);
+        CPPY_IO_FileIO_close(&file);
+    }
+    {
+        CPPY_IO_FileIO file;
+        CPPY_IO_FileIO_init(&file, temp_file);
+        std::string line1, line2;
+        EXPECT_EQ(CPPY_IO_FileIO_readline(&file, &line1), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_IO_FileIO_readline(&file, &line2), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(line1, "Line1");
+        EXPECT_EQ(line2, "Line2");
         CPPY_IO_FileIO_close(&file);
     }
 }

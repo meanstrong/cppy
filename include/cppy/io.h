@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ios>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -9,8 +10,6 @@
 
 #include <fstream>
 #include <sstream>
-#include <string>
-#include <vector>
 
 struct CPPY_IO_StringIO
 {
@@ -35,6 +34,72 @@ struct CPPY_IO_BytesIO
     bool readable;
     bool writable;
 };
+
+inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, const char* s)
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
+    self.stream << s;
+    return self;
+}
+
+inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, char ch)
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
+    self.stream << ch;
+    return self;
+}
+
+template <class _Elem, class _Traits, class _Alloc>
+inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, const std::basic_string<_Elem, _Traits, _Alloc>& s)
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
+    self.stream << s;
+    return self;
+}
+
+inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, std::ostream& (*manip)(std::ostream&))
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
+    manip(self.stream);
+    return self;
+}
+
+inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, const char* s)
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
+    self.file << s;
+    return self;
+}
+
+inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, char ch)
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
+    self.file << ch;
+    return self;
+}
+
+template <class _Elem, class _Traits, class _Alloc>
+inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, const std::basic_string<_Elem, _Traits, _Alloc>& s)
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
+    self.file << s;
+    return self;
+}
+
+inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, std::ostream& (*manip)(std::ostream&))
+{
+    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
+    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
+    manip(self.file);
+    return self;
+}
 
 CPPY_API constexpr std::ios_base::openmode CPPY_IO_mode(const char c)
 {
