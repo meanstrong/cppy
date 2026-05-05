@@ -2471,7 +2471,7 @@ TEST(TEST_CPPY_TYPING, MutableSequence_insert)
 {
     {
         std::vector<int> v{1, 2, 3};
-        EXPECT_EQ(CPPY_MutableSequence_insert(v.insert(v.begin() + 1), 99), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_MutableSequence_insert(std::inserter(v, v.begin() + 1), 99), CPPY_ERROR_t::Ok);
         EXPECT_EQ(v.size(), 4);
         EXPECT_EQ(v[1], 99);
     }
@@ -2479,9 +2479,14 @@ TEST(TEST_CPPY_TYPING, MutableSequence_insert)
         std::list<std::string> l{"a", "c"};
         auto it = l.begin();
         ++it;
-        EXPECT_EQ(CPPY_MutableSequence_insert(l.insert(it), std::string("b")), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(CPPY_MutableSequence_insert(std::inserter(l, it), std::string("b")), CPPY_ERROR_t::Ok);
         EXPECT_EQ(l.size(), 3);
         EXPECT_EQ(*++l.begin(), "b");
+    }
+    {
+        std::list<int> l{3, 4, 5};
+        EXPECT_EQ(CPPY_MutableSequence_insert(std::front_inserter(l), 2), CPPY_ERROR_t::Ok);
+        EXPECT_EQ(l.front(), 2);
     }
 }
 
