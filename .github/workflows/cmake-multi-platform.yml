@@ -68,52 +68,5 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Test on Windows
-      if: matrix.os == 'windows-latest'
-      working-directory: ${{ github.workspace }}
-      run: |
-        # Priority 1: search build/ FIRST - gtest DLLs are always here
-        Write-Host "=== Priority: searching build/ directory ===" -ForegroundColor Cyan
-        $TEST_EXE = Get-ChildItem -Path build -Filter TestCppy.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-
-        # Fallback: only go to out/ IF NOTHING found in build/
-        if (-not $TEST_EXE) {
-          Write-Host "Not found in build/, searching out/ directory" -ForegroundColor Yellow
-          $TEST_EXE = Get-ChildItem -Path out -Filter TestCppy.exe -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-        }
-
-        Write-Host "Found test executable: $TEST_EXE"
-
-        # CD to EXE directory for Windows DLL resolution
-        $EXE_DIR = Split-Path $TEST_EXE -Parent
-        Set-Location $EXE_DIR
-        Write-Host "Running from: $PWD"
-        Write-Host "Directory contents:" -ForegroundColor Cyan
-        Get-ChildItem | ForEach-Object { Write-Host "  $($_.Name)" }
-        & .\TestCppy.exe
-      shell: powershell
-
-    - name: Test on Linux
-      if: matrix.os != 'windows-latest'
-      working-directory: ${{ github.workspace }}
-      run: |
-        echo "=== Searching build/ directory ==="
-        find build -name "*TestCppy*" -type f 2>/dev/null | head -10
-        echo "=== Searching out/ directory ==="
-        find out -name "*TestCppy*" -type f 2>/dev/null | head -10
-        echo "=== Searching entire workspace ==="
-        find . -name "TestCppy" -type f -executable 2>/dev/null | head -5
-
-        TEST_EXE=$(find . -name "TestCppy" -type f -executable 2>/dev/null | head -1)
-        echo "Found test executable: $TEST_EXE"
-
-        if [ -z "$TEST_EXE" ]; then
-          echo "ERROR: Test executable not found!"
-          exit 1
-        fi
-
-        EXE_DIR=$(dirname "$TEST_EXE")
-        cd "$EXE_DIR"
-        echo "Running from: $PWD"
-        ./TestCppy
-      shell: bash
+    - name: Test
+      run: ctest --output-on-failure --test-dir ${{ steps.strings.outputs.build-output-dir }} -C ${{ matrix.build_type }}
