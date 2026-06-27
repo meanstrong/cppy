@@ -1,105 +1,90 @@
 #pragma once
 
 #include <ios>
-#include <ostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include "cppy/exception.h"
 #include "cppy/internal/declare.h"
 
-#include <fstream>
-#include <sstream>
+// ===== StringIO =====
 
-struct CPPY_IO_StringIO
-{
-    std::stringstream stream;
-    bool closed;
-    bool readable;
-    bool writable;
-};
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_init(std::stringstream* strm, const std::string& initial_value = "");
 
-struct CPPY_IO_FileIO
-{
-    std::fstream file;
-    bool closed;
-    std::ios_base::openmode mode;
-};
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_read(std::stringstream* strm, std::string* const result, size_t size = -1);
 
-struct CPPY_IO_BytesIO
-{
-    std::vector<char> buffer;
-    size_t position;
-    bool closed;
-    bool readable;
-    bool writable;
-};
+CPPY_API CPPY_ERROR_t
+CPPY_IO_StringIO_readline(std::stringstream* strm, std::string* const result, size_t size = -1);
 
-inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, const char* s)
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
-    self.stream << s;
-    return self;
-}
+CPPY_API CPPY_ERROR_t
+CPPY_IO_StringIO_readlines(std::stringstream* strm, std::vector<std::string>* const result);
 
-inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, char ch)
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
-    self.stream << ch;
-    return self;
-}
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_write(std::stringstream* strm, const std::string& s);
 
-template <class _Elem, class _Traits, class _Alloc>
-inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, const std::basic_string<_Elem, _Traits, _Alloc>& s)
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
-    self.stream << s;
-    return self;
-}
+CPPY_API CPPY_ERROR_t
+CPPY_IO_StringIO_writelines(std::stringstream* strm, const std::vector<std::string>& lines);
 
-inline CPPY_IO_StringIO& operator<<(CPPY_IO_StringIO& self, std::ostream& (*manip)(std::ostream&))
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.writable) << "io.UnsupportedOperation: not writable";
-    manip(self.stream);
-    return self;
-}
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_getvalue(std::stringstream* strm, std::string* const result);
 
-inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, const char* s)
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
-    self.file << s;
-    return self;
-}
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_seek(std::stringstream* strm, long pos, int whence);
 
-inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, char ch)
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
-    self.file << ch;
-    return self;
-}
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_tell(std::stringstream* strm, long* const result);
 
-template <class _Elem, class _Traits, class _Alloc>
-inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, const std::basic_string<_Elem, _Traits, _Alloc>& s)
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
-    self.file << s;
-    return self;
-}
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_truncate(std::stringstream* strm, long size = -1);
 
-inline CPPY_IO_FileIO& operator<<(CPPY_IO_FileIO& self, std::ostream& (*manip)(std::ostream&))
-{
-    CPPY_ASSERT(!self.closed) << "ValueError: I/O operation on closed file.";
-    CPPY_ASSERT(self.mode & (std::ios_base::out | std::ios_base::app)) << "io.UnsupportedOperation: not writable";
-    manip(self.file);
-    return self;
-}
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_close(std::stringstream* strm);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_flush(std::stringstream* strm);
+
+// ===== FileIO =====
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_open(std::fstream* file,
+                                          const std::string& filename,
+                                          std::ios_base::openmode mode = std::ios_base::in);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_close(std::fstream* file);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_flush(std::fstream* file);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_read(std::fstream* file, std::string* const result, size_t size = -1);
+
+CPPY_API CPPY_ERROR_t
+CPPY_IO_FileIO_readline(std::fstream* file, std::string* const result, size_t size = -1);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_readlines(std::fstream* file, std::vector<std::string>* const result);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_write(std::fstream* file, const std::string& s);
+
+CPPY_API CPPY_ERROR_t
+CPPY_IO_FileIO_writelines(std::fstream* file, const std::vector<std::string>& lines);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_seek(std::fstream* file, long pos, int whence);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_tell(std::fstream* file, long* const result);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_truncate(std::fstream* file, long size = -1);
+
+// ===== BytesIO =====
+
+CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_init(std::vector<char>* buf, const std::vector<char>& initial_bytes = {});
+
+CPPY_API CPPY_ERROR_t
+CPPY_IO_BytesIO_read(std::vector<char>* buf, size_t* pos, std::vector<char>* const result, size_t size = -1);
+
+CPPY_API CPPY_ERROR_t
+CPPY_IO_BytesIO_write(std::vector<char>* buf, size_t* pos, const std::vector<char>& data);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_getvalue(std::vector<char>* buf, std::vector<char>* const result);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_seek(std::vector<char>* buf, size_t* pos, long offset, int whence);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_tell(std::vector<char>* buf, size_t* pos, long* const result);
+
+CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_truncate(std::vector<char>* buf, size_t* pos, long size = -1);
+
+// ===== Helper: mode string to openmode =====
 
 CPPY_API constexpr std::ios_base::openmode CPPY_IO_mode(const char c)
 {
@@ -125,36 +110,3 @@ constexpr std::ios_base::openmode CPPY_IO_mode(Args... args)
 {
     return (CPPY_IO_mode(args) | ...);
 };
-
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_init(CPPY_IO_StringIO* handle,
-                                            const std::string& initial_value = "",
-                                            bool readable = true,
-                                            bool writable = true);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_close(CPPY_IO_StringIO* handle);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_flush(CPPY_IO_StringIO* handle);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_read(CPPY_IO_StringIO* handle, std::string* const result, size_t size = -1);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_readline(CPPY_IO_StringIO* handle, std::string* const result, size_t size = -1);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_readlines(CPPY_IO_StringIO* handle, std::vector<std::string>* const result);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_write(CPPY_IO_StringIO* handle, const std::string& s);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_writelines(CPPY_IO_StringIO* handle, const std::vector<std::string>& lines);
-CPPY_API CPPY_ERROR_t CPPY_IO_StringIO_getvalue(CPPY_IO_StringIO* handle, std::string* const result);
-
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_init(CPPY_IO_FileIO* handle,
-                                          const std::string& filename,
-                                          std::ios_base::openmode mode = std::ios_base::in);
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_close(CPPY_IO_FileIO* handle);
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_flush(CPPY_IO_FileIO* handle);
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_read(CPPY_IO_FileIO* handle, std::string* const result, size_t size = -1);
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_readline(CPPY_IO_FileIO* handle, std::string* const result, size_t size = -1);
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_readlines(CPPY_IO_FileIO* handle, std::vector<std::string>* const result);
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_write(CPPY_IO_FileIO* handle, const std::string& s);
-CPPY_API CPPY_ERROR_t CPPY_IO_FileIO_writelines(CPPY_IO_FileIO* handle, const std::vector<std::string>& lines);
-
-CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_init(CPPY_IO_BytesIO* handle,
-                                           const std::vector<char>& initial_bytes = {},
-                                           bool readable = true,
-                                           bool writable = true);
-CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_close(CPPY_IO_BytesIO* handle);
-CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_read(CPPY_IO_BytesIO* handle, std::vector<char>* const result, size_t size = -1);
-CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_write(CPPY_IO_BytesIO* handle, const std::vector<char>& data);
-CPPY_API CPPY_ERROR_t CPPY_IO_BytesIO_getvalue(CPPY_IO_BytesIO* handle, std::vector<char>* const result);
