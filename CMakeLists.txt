@@ -39,4 +39,6 @@ set_target_properties(${PROJECT_NAME}
     COMPILE_PDB_OUTPUT_DIRECTORY "${WORKSPACE}/out/${PROJECT_NAME}/lib")
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
+enable_testing()
+
 add_subdirectory(test)

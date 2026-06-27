@@ -17,7 +17,6 @@ include_directories(${WORKSPACE}/include)
 
 set(EXECUTABLE_OUTPUT_PATH ${WORKSPACE}/out)
 
-enable_testing()
 add_executable(${PROJECT_NAME} ${TESTCPPY_SRC_LIST})
 target_link_libraries(${PROJECT_NAME} PRIVATE cppy GTest::gtest_main)
 if(CPPY_CREATE_SHARED_LIBRARY)
